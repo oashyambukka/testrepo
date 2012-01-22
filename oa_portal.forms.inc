@@ -107,7 +107,7 @@ function oa_portal_p1_application_form($form_state) {
   $proforgs['org_role'] = textfield('Role');
   $proforgs['org_start'] = date_popup('From');
   $proforgs['org_end'] = date_popup('To');
-  $form['proforgs']['orgs']][] = $proforgs;
+  $form['proforgs']['orgs'][] = $proforgs;
 
   $terms_desc = '<p>I certify that the information provided on this Application is accurate. I understand 
   that the withholding of information or the giving of false information on this Application may 
