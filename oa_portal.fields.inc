@@ -96,3 +96,13 @@ function terms($desc) {
   );
   return $element;
 }
+
+function address() {
+  $elements = array();
+  $elements['address1'] = textfield('Address');
+  $elements['address2'] = textfield('');
+  $elements['city'] = textfield('City');
+  $elements['state'] = textfield('State');
+  $elements['zip'] = textfield('Zip Code');
+  return $elements;
+}

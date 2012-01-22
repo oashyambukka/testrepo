@@ -70,7 +70,6 @@ function oa_portal_admin() {
  */
 /*
 function oa_portal_'. $pk .'_'. $sk .'_form($form_state) {
-  $form = array(\'#ajax\' => array(\'enabled\' => TRUE));
   $form[\'intro\'] = array(
     \'#type\' => \'markup\',
     \'#value\' => t(\'\'),

@@ -6,8 +6,6 @@ include_once('oa_portal.fields.inc');
  * Form callback for Application form
  */
 function oa_portal_p1_application_form($form_state) {
-  $form = array('#ajax' => array('enabled' => TRUE));
-
   $form['intro'] = array(
     '#type' => 'markup',
     '#value' => t('If you are ready to begin working.....'),
@@ -135,7 +133,20 @@ function oa_portal_p1_application_form($form_state) {
   return $form;
 }
 
+function oa_portal_p1_contact_form() {
+  $form['contact'] = fieldset('Contact Information');
+  $form['contact']['first_name'] = textfield('First Name');
+  $form['contact']['middle'] = textfield('Middle Initial');
+  $form['contact']['address'] = address();
+  $form['contact']['primary_phone'] = textfield('Primary Phone');
+  $form['contact']['mobile_phone'] = textfield('Cell Phone');
+  $form['contact']['email'] = textfield('Email');
+  oa_portal_submit($form);
+}
+
+
 function oa_portal_submit(&$form) {
+  $form['#ajax'] = array('enabled' => TRUE);
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Finalize'),
@@ -144,18 +155,3 @@ function oa_portal_submit(&$form) {
 }
 
 
-function oa_portal_p1_contact_form() {
-  $form['contact']['first_name'] = array(
-    '#type' => 'textfield',
-    '#title' => t('First Name'),
-    '#required' => TRUE,
-  );
-
-  $form['contact']['last_name'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Last Name'),
-    '#required' => TRUE,
-  );
-  
-  
-}
