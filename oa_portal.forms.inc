@@ -85,13 +85,13 @@ function oa_portal_p1_application_form($form_state) {
     '#field_suffix' => t('Miles'),
   ));
   
-  $form[''][''] = array(
-    '#type' => '',
-    '#title' => t(''),
-    '#options' => array('opt1' => 'Opt 1'),
-  );
-  
-  
+  $form['preferences']['type'] = checkboxes('Check preferred employment type', array('Contract', 'Contract-to-hire', 'Direct Hire'));
+  $form['preferences']['work_days'] = checkboxes('Check the days you are willing to work',
+    array('Any', 'M', 'T', 'W', 'Th', 'F', 'S', 'Su'));
+  $form['preferences']['shifts'] = checkboxes('Check the shifts you are willing to work',
+    array('Any', 'Days', 'Nights', 'Evenings', 'Weekends'));
+
+
   // Licensures & Certifications
   $form['licecerts'] = fieldset('Licensures/Certifications');
 

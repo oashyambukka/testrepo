@@ -46,6 +46,17 @@ function checkbox($title) {
   return $element;
 }
 
+function checkboxes($title, $choices) {
+  $element = array(
+    '#type' => 'checkboxes',
+    '#title' => t($title),
+    '#options' => drupal_map_assoc($choices),
+    '#required' => TRUE,
+  );
+  return $element;
+}
+
+
 function checkboxes_yesno($title) {
   $element = array(
     '#type' => 'checkboxes',
