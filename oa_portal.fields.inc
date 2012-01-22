@@ -25,7 +25,7 @@ function terms() {
     '#required' => TRUE,
     '#options' => array(
       1 => t('I accept'), 0 => t('I do not accept')
-    )
+    ),
     '#prefix' => 'I certify that the information........',
   );
   foreach ($ops AS $k => $v) {

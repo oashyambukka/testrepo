@@ -74,7 +74,7 @@ function oa_portal_p1_application_form($form_state) {
     '#type' => 'radios',
     '#title' => t('Salary'),
     '#options' => array('annual' => t('Annual'), 'hourly' => t('Hourly'))
-  )
+  );
   $exp_fields['description'] = textarea('Description', 5);
 
   $form['experience']['exp'][] = $exp_fields;
