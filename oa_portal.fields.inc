@@ -92,7 +92,8 @@ function terms($desc) {
     '#options' => array(
       1 => t('I accept'), 0 => t('I do not accept')
     ),
-    '#description' => $desc,
+    '#prefix' => '<div class="oa-terms-field">'. $desc,
+    '#suffix' => '</div>',
   );
   return $element;
 }
