@@ -32,12 +32,7 @@ function oa_portal_p1_application_form($form_state) {
     '#options' => array(1 => 'Yes', 0 => 'No'),
     '#required' => TRUE,
   );
-  $edu_fields['degree'] = array(
-    '#type' => 'select',
-    '#title' => t('Degree Earned'),
-    '#options' => array('associates' => 'Associates'),
-    '#required' => TRUE,
-  );
+  $edu_fields['degree'] = select('Degree Earned', array('Associates'));
   $edu_fields['city'] = textfield('City');
   $edu_fields['state'] = textfield('State');
   $edu_fields['year'] = textfield('Year');
@@ -57,14 +52,8 @@ function oa_portal_p1_application_form($form_state) {
   $exp_fields['employer'] = textfield('Employer');
   $exp_fields['city'] = textfield('City');
   $exp_fields['state'] = textfield('State', 2);
-  $exp_fields['start_date'] = array(
-    '#type' => 'date',
-    '#title' => t('Start Date'),
-  );
-  $exp_fields['end_date'] = array(
-    '#type' => 'date',
-    '#title' => t('End Date'),
-  );
+  $exp_fields['start_date'] = date_popup('Start Date');
+  $exp_fields['end_date'] = date_popup('End Date');
   $exp_fields['present'] = checkbox('Present');
   $exp_fields['title'] = textfield('Title');
   $exp_fields['salary'] = textfield('Salary');
@@ -79,6 +68,7 @@ function oa_portal_p1_application_form($form_state) {
   $exp_fields['reason'] = textfield('Reason for leaving');
   $form['experience']['exp'][] = $exp_fields;
   
+  
   // Preferences
   $form['preferences'] = fieldset('Preferences');
   $form['preferences']['distance'] = textfield('How far are you willing to commute on a daily basis?', 3, array(
@@ -91,35 +81,57 @@ function oa_portal_p1_application_form($form_state) {
   $form['preferences']['shifts'] = checkboxes('Check the shifts you are willing to work',
     array('Any', 'Days', 'Nights', 'Evenings', 'Weekends'));
 
-
+  $form['preferences']['ptft'] = checkboxes('Would you prefer to work', array('Either', 'Part-time', 'Full-time'));
+  $form['preferences']['legal_right'] = checkboxes_yesno('Can you, after employment, submit verification of your legal right to work in the U.S.?');
+  $form['preferences']['felony'] = checkboxes_yesno('Have you been convicted of a felony within the last seven years?');
+  $form['preferences']['felony']['#suffix'] = t('(An affirmative response to this question will not necessarily disqualify you from employment)<br \>MA residents should not answer this question');
+  $form['preferences']['drug_alcohol_screen'] = checkboxes_yesno('As a condition of employment, you may be required to take and pass a drug and/or alcohol screen. Testing will be done at the company\'s expense and administered by a testing facility designated by the company. Results of any testing will be kept strictly confidential. If requested, are you willing to take the drug and/or alcohol screen?');
+  $form['preferences']['referral'] = select('How did you hear about On Assignment Healthcare Staffing?',
+    array('onassignment.com', 'other'));
+  
+  
+  $form['preferences']['experience'] = textfield('Total years of experience');
+  
   // Licensures & Certifications
   $form['licecerts'] = fieldset('Licensures/Certifications');
 
   $lc_fields['name'] = textfield('Licensure/Certification');
   $lc_fields['state'] = textfield('State', 2);
   $lc_fields['number'] = textfield('License Number', 12);
-  $lc_fields['expiry_date'] = array(
-    '#type' => 'date',
-    '#title' => t('Expires'),
-    '#required' => TRUE,
-  );
+  $lc_fields['expiry_date'] = date_popup('Expires');
+
   $form['licecerts']['lc'][] = $lc_fields;
   
   
-  $form['proforgs'] = array(
-    '#type' => 'fieldset',
-    '#title' => t(''),
-    '#tree' => TRUE,
-  );
-  $form[''][''] = array(
-    '#type' => '',
-    '#title' => t(''),
-    '#options' => array('opt1' => 'Opt 1'),
-  );
-  
-  $form['terms'] = terms();
+  $form['proforgs'] = fieldset('Professional Organizations');
+  $proforgs['none'] = checkbox('I am not a member of any organizations');
+  $proforgs['org_name'] = textfield('Organization');
+  $proforgs['org_role'] = textfield('Role');
+  $proforgs['org_start'] = date_popup('From');
+  $proforgs['org_end'] = date_popup('To');
+  $form['proforgs']['orgs']][] = $proforgs;
 
-  oa_portal_submit(&$form);
+  $terms_desc = '<p>I certify that the information provided on this Application is accurate. I understand 
+  that the withholding of information or the giving of false information on this Application may 
+  result in a refusal to hire or disciplinary action including, but not limited to, termination. 
+  I understand and agree that if I am offered employment by the company, it will be on an at-will basis. 
+  This means that either the Company or I may terminate the employment relationship at any time, 
+  for any reason, with or without cause or notice. I also understand and agree that only an officer 
+  of the Company can enter into an agreement on any other terms and he/she can only do so in writing 
+  signed by the officer and me. I have read the above before signing this Application.</p>
+  <p>I further understand and waive my right of privacy in this investigation and release and hold 
+  harmless On Assignment from any liability</p>
+  <p>I agree that any decision to hire me is contingent upon the results of my report, and certify that all
+  statements and answers on my Application, resume, or interview are true and complete to the best of my
+  knowledge. I understand that if any statements are false or that if information has been omitted, this will
+  be cause for disqualification and immediate termination of my employment. I further authorize 
+  On Assignment to check my conviction record as needed, on a continuous basis as it relates to my employment.</p>
+  <p>I authorize On Assignment to release any employment records, including health records submitted 
+  to On Assignment to any customer of On Assignment for consideration of employment at customer facility.</p>';
+  
+  $form['terms'] = terms($terms_desc);
+
+  oa_portal_submit($form);
   return $form;
 }
 

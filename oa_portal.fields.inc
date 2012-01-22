@@ -56,6 +56,24 @@ function checkboxes($title, $choices) {
   return $element;
 }
 
+function date_popup($title) {
+  $element = array(
+    '#type' => 'date_popup',
+    '#title' => t($title),
+    '#required' => TRUE,
+  );
+  return $element;
+}
+
+function select($title, $choices) {
+  $element = array(
+    '#type' => 'select',
+    '#title' => t($title),
+    '#options' => drupal_map_assoc($choices),
+    '#required' => TRUE,
+  );
+  return $element;
+}
 
 function checkboxes_yesno($title) {
   $element = array(
@@ -67,14 +85,14 @@ function checkboxes_yesno($title) {
   return $element;
 }
 
-function terms() {
+function terms($desc) {
   $element = array(
     '#type' => 'radios',
     '#required' => TRUE,
     '#options' => array(
       1 => t('I accept'), 0 => t('I do not accept')
     ),
-    '#prefix' => 'I certify that the information........',
+    '#description' => $desc,
   );
   return $element;
 }
