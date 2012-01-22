@@ -1,21 +1,58 @@
 <?php
 
-function textfield($title, $opt1, $opt2) {
+function fieldset($title, $description = NULL) {
+  $element = array(
+    '#type' => 'fieldset',
+    '#tree' => TRUE,
+    '#title' => t($title),
+    '#description' => $description,
+  );
+  return $element;
+}
+
+function textfield($title, $opt1 = NULL, $opt2 = NULL) {
   $element = array(
     '#type' => 'textfield',
     '#required' => TRUE,
     '#title' => t($title),
   );
-  if (int($opt1)) {
+  if (is_int($opt1)) {
     $element['#length'] = $opt1;
-    $opt = $opt2;
+    $opt = ($opt2) ? $opt2 : array();
   }
   else {
-    $opt = $opt1;
+    $opt = ($opt1) ? $opt1 : array();
   }
   foreach ($opt AS $k => $v) {
     $element[$k] = $v;
   }
+  return $element;
+}
+
+function textarea($title) {
+  $element = array(
+    '#type' => 'textarea',
+    '#required' => TRUE,
+    '#title' => t($title),
+  );
+  return $element;
+}
+
+function checkbox($title) {
+  $element = array(
+    '#type' => 'checkbox',
+    '#title' => t($title),
+  );
+  return $element;
+}
+
+function checkboxes_yesno($title) {
+  $element = array(
+    '#type' => 'checkboxes',
+    '#title' => t($title),
+    '#options' => array(1 => t('Yes'), 0 => t('No')),
+    '#required' => TRUE,
+  );
   return $element;
 }
 
@@ -28,9 +65,5 @@ function terms() {
     ),
     '#prefix' => 'I certify that the information........',
   );
-  foreach ($ops AS $k => $v) {
-    $element[$k] = $v;
-  }
   return $element;
-  
 }

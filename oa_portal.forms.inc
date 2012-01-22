@@ -3,11 +3,10 @@
 include_once('oa_portal.fields.inc');
 
 /**
- * Form callback for onboarding form
+ * Form callback for Application form
  */
 function oa_portal_p1_application_form($form_state) {
-  $form = array();
-  $fields = new oafieds();
+  $form = array('#ajax' => array('enabled' => TRUE));
 
   $form['intro'] = array(
     '#type' => 'markup',
@@ -23,7 +22,8 @@ function oa_portal_p1_application_form($form_state) {
   $form['contact']['emerg2_phone'] = textfield('Phone');
 
   // Education
-  $form['education'] = textfield('Education');
+  $form['education'] = fieldset('Education', 'Please do not note the year high school diploma was received');
+
   $edu_fields = array();
   $edu_fields['school'] = textfield('School', array('#options' => array('opt1' => 'Opt 1')));
   $edu_fields['grad_status'] = array(
@@ -44,7 +44,7 @@ function oa_portal_p1_application_form($form_state) {
   $edu_fields['major'] = textfield('Major');
   $edu_fields['minor'] = textfield('Minor');
   $edu_fields['coursework1'] = textfield('Relevant Course Work');
-  $edu_fields['coursework2'] = textfield();
+  $edu_fields['coursework2'] = textfield('');
 
   // @TODO Enable multiple entry
   $form['education']['edu'][] = $edu_fields;
@@ -52,7 +52,8 @@ function oa_portal_p1_application_form($form_state) {
   
   // Experience
   $form['experience'] = fieldset('Experience');
-  
+
+  $form['experience']['recent_grad'] = checkbox('Check box if you are a recent college graduate');  
   $exp_fields['employer'] = textfield('Employer');
   $exp_fields['city'] = textfield('City');
   $exp_fields['state'] = textfield('State', 2);
@@ -64,10 +65,7 @@ function oa_portal_p1_application_form($form_state) {
     '#type' => 'date',
     '#title' => t('End Date'),
   );
-  $exp_fields['present'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Present'),
-  );
+  $exp_fields['present'] = checkbox('Present');
   $exp_fields['title'] = textfield('Title');
   $exp_fields['salary'] = textfield('Salary');
   $exp_fields['salary_period'] = array(
@@ -76,13 +74,15 @@ function oa_portal_p1_application_form($form_state) {
     '#options' => array('annual' => t('Annual'), 'hourly' => t('Hourly'))
   );
   $exp_fields['description'] = textarea('Description', 5);
-
+  $exp_fields['supervisor'] = textfield('Immediate Supervisor');
+  $exp_fields['may_contact'] = checkboxes_yesno('May we contact?');
+  $exp_fields['reason'] = textfield('Reason for leaving');
   $form['experience']['exp'][] = $exp_fields;
   
   // Preferences
   $form['preferences'] = fieldset('Preferences');
   $form['preferences']['distance'] = textfield('How far are you willing to commute on a daily basis?', 3, array(
-    '#suffix' => t('Miles'),
+    '#field_suffix' => t('Miles'),
   ));
   
   $form[''][''] = array(
