@@ -1,0 +1,167 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function oa_portal_menu() {
+  $items = array();
+  
+  $p = oa_portal_api();
+  foreach ($p AS $pk => $phase) {
+    foreach ($phase AS $sk => $section) {
+      if (!strpos('#', $sk)) {
+        $items[$pk .'/'. $sk] = array(
+          'title' => $section['#title'],
+          'page callback' => 'drupal_get_form',
+          'page arguments' => array('oa_portal_'. $pk .'_'. $sk .'_form'),
+          'access callback' => 'oa_portal_access',
+          'access arguments' => array($pk, $sk),
+        );
+      }
+    }
+  }
+  return $items;
+}
+
+/**
+ * Access callback for menu items
+ */
+function oa_portal_access($phase, $section) {
+  global $user;
+  // Load portal data for user
+  
+  $p = oa_portal_api();
+  // Acceptable s
+  // Check if phase is unlocked
+  if (in_array($p[$phase]['#status'], array('', 'open'))) {
+    // Check if section has not yet been finalized
+    if (in_array($p[$phase][$section]['#status'], array('', 'rejected'))) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * 
+ */
+function oa_portal_api() {
+  $p = array();
+  $p['p1'] = array(
+    '#title' => t('Phase 1'),
+    '#status' => '',
+    'contact' => array(
+      '#title' => t('Contact Information'),
+      '#dependencies' => array(),
+      '#status' => 'closed',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'application' => array(
+      '#title' => t('Application'),
+      '#dependencies' => array(),
+      '#status' => 'open',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'checklist' => array(
+      '#title' => t('Checklist'),
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+  );
+  $p['p2'] = array(
+    '#title' => t('Phase 2'),
+    '#status' => '',
+    'professional_orgs' => array(
+      '#title' => t('Professional Organizations'),
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'licensure_certs' => array(
+      '#title' => t('Licensure Certifications'),
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'background_reference' => array(
+      '#title' => t('Background/Reference Check'),
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'capabilities' => array(
+      '#title' => t('Capabilities Questionnaire'),
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'policies' => array(
+      '#title' => t('Policies & Agreements'),
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'medical' => array(
+      '#title' => t('Medical Authorization and Disclosures'),
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'competency' => array(
+      '#title' => t('Competency Test'),
+      '#status' => '',
+    ),
+  );
+  $p['p3'] = array(
+    '#title' => t('Phase 3'),
+    '#status' => '',
+    'paycheque' => array(
+      '#title' => t('Paycheque Method'),
+      '#phase' => 3,
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'w4' => array(
+      '#title' => t('W4'),
+      '#phase' => 3,
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'i9' => array(
+      '#title' => t('I-9'),
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'eeo' => array(
+      '#title' => t('EEO Form'),
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+    'work_policy' => array(
+      '#title' => t('Work Policy'),
+      '#dependencies' => array(),
+      '#status' => '',
+      '#data' => array(),
+      '#docs' => array(),
+    ),
+  );
+  return $p;
+}

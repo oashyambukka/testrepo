@@ -1,0 +1,8 @@
+; oaportal.info
+name = "OA Healthcare Portal UI"
+description = ""
+core = 6.x
+package = "On Assignment"
+
+dependencies[] = devel
+dependencies[] = soapclient
