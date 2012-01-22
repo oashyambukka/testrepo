@@ -1,16 +1,25 @@
 <?php
 
+include_once('oa_portal.forms.inc');
+
 /**
  * Implements hook_menu().
  */
 function oa_portal_menu() {
   $items = array();
   
+  $items['admin/portal'] = array(
+    'title' => 'OA Portal Admin', 
+    'page callback' => 'oa_portal_admin', 
+    'access arguments' => array('access content'), 
+  );
+  
   $p = oa_portal_api();
   foreach ($p AS $pk => $phase) {
     foreach ($phase AS $sk => $section) {
       if (!strpos('#', $sk)) {
         $items[$pk .'/'. $sk] = array(
+          'type' => MENU_CALLBACK,
           'title' => $section['#title'],
           'page callback' => 'drupal_get_form',
           'page arguments' => array('oa_portal_'. $pk .'_'. $sk .'_form'),
@@ -40,6 +49,24 @@ function oa_portal_access($phase, $section) {
     }
   }
   return FALSE;
+}
+
+/**
+ * Menu callback for admin page
+ */
+function oa_portal_admin() {
+  $p = oa_portal_api();
+  foreach ($p AS $pk => $phase) {
+    $output .= '<h3>'. $phase['#title'] .'</h3>';
+    $rows = array();
+    foreach ($phase AS $sk => $section) {
+      if (!strpos('#', $sk)) {
+        $rows[] = array(l($section['#title'], $pk .'/'. $sk), 'oa_portal_'. $pk .'_'. $sk .'_form');
+      }
+    }
+    $output .= theme('table', array('Section', 'Form callback'), $rows);
+  }
+  return $output;
 }
 
 /**

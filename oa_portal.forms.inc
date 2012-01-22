@@ -1,5 +1,7 @@
 <?php
 
+include_once('oa_portal.fields.inc');
+
 /**
  * Form callback for onboarding form
  */
