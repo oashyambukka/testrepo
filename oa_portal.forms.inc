@@ -6,10 +6,8 @@ include_once('oa_portal.fields.inc');
  * Form callback for Application form
  */
 function oa_portal_p1_application_form($form_state) {
-  $form['intro'] = array(
-    '#type' => 'markup',
-    '#value' => t('If you are ready to begin working.....'),
-  );
+  $form = array();
+  $form['#description'] = 'If you are ready to begin working.....';
   
   // Contact Information
   $form['contact'] = fieldset('Contact Information');
@@ -24,15 +22,10 @@ function oa_portal_p1_application_form($form_state) {
 
   $edu_fields = array();
   $edu_fields['school'] = textfield('School', array('#options' => array('opt1' => 'Opt 1')));
-  $edu_fields['grad_status'] = array(
-    '#type' => 'radios',
-    '#title' => t('Did you graduate'),
-    '#options' => array(1 => 'Yes', 0 => 'No'),
-    '#required' => TRUE,
-  );
+  $edu_fields['grad_status'] = radios('Did you graduate', array(1 => 'Yes', 0 => 'No'));
   $edu_fields['degree'] = select('Degree Earned', array('Associates'));
   $edu_fields['city'] = textfield('City');
-  $edu_fields['state'] = textfield('State');
+  $edu_fields['state'] = state();
   $edu_fields['year'] = textfield('Year');
   $edu_fields['major'] = textfield('Major');
   $edu_fields['minor'] = textfield('Minor');
@@ -49,17 +42,13 @@ function oa_portal_p1_application_form($form_state) {
   $form['experience']['recent_grad'] = checkbox('Check box if you are a recent college graduate');  
   $exp_fields['employer'] = textfield('Employer');
   $exp_fields['city'] = textfield('City');
-  $exp_fields['state'] = textfield('State', 2);
+  $exp_fields['state'] = state('State');
   $exp_fields['start_date'] = date_popup('Start Date');
   $exp_fields['end_date'] = date_popup('End Date');
   $exp_fields['present'] = checkbox('Present');
   $exp_fields['title'] = textfield('Title');
   $exp_fields['salary'] = textfield('Salary');
-  $exp_fields['salary_period'] = array(
-    '#type' => 'radios',
-    '#title' => t('Salary'),
-    '#options' => array('annual' => t('Annual'), 'hourly' => t('Hourly'))
-  );
+  $exp_fields['salary_period'] = radios('Salary', array('annual' => t('Annual'), 'hourly' => t('Hourly')));
   $exp_fields['description'] = textarea('Description', 5);
   $exp_fields['supervisor'] = textfield('Immediate Supervisor');
   $exp_fields['may_contact'] = checkboxes_yesno('May we contact?');
@@ -73,12 +62,9 @@ function oa_portal_p1_application_form($form_state) {
     '#field_suffix' => t('Miles'),
   ));
   
-  $form['preferences']['type'] = checkboxes('Check preferred employment type', array('Contract', 'Contract-to-hire', 'Direct Hire'));
-  $form['preferences']['work_days'] = checkboxes('Check the days you are willing to work',
-    array('Any', 'M', 'T', 'W', 'Th', 'F', 'S', 'Su'));
-  $form['preferences']['shifts'] = checkboxes('Check the shifts you are willing to work',
-    array('Any', 'Days', 'Nights', 'Evenings', 'Weekends'));
-
+  $form['preferences']['type'] = checkboxes('Check preferred employment type', array('Contract', 'Contract-to-hire', 'Direct Hire'), TRUE);
+  $form['preferences']['work_days'] = checkboxes('Check the days you are willing to work', array('Any', 'M', 'T', 'W', 'Th', 'F', 'S', 'Su'), TRUE);
+  $form['preferences']['shifts'] = checkboxes('Check the shifts you are willing to work', array('Any', 'Days', 'Nights', 'Evenings', 'Weekends'), TRUE);
   $form['preferences']['ptft'] = checkboxes('Would you prefer to work', array('Either', 'Part-time', 'Full-time'));
   $form['preferences']['legal_right'] = checkboxes_yesno('Can you, after employment, submit verification of your legal right to work in the U.S.?');
   $form['preferences']['felony'] = checkboxes_yesno('Have you been convicted of a felony within the last seven years?');
@@ -94,7 +80,7 @@ function oa_portal_p1_application_form($form_state) {
   $form['licecerts'] = fieldset('Licensures/Certifications');
 
   $lc_fields['name'] = textfield('Licensure/Certification');
-  $lc_fields['state'] = textfield('State', 2);
+  $lc_fields['state'] = state();
   $lc_fields['number'] = textfield('License Number', 12);
   $lc_fields['expiry_date'] = date_popup('Expires');
 
@@ -133,6 +119,22 @@ function oa_portal_p1_application_form($form_state) {
   return $form;
 }
 
+/**
+ * Form validation callback for Application
+ */
+/*
+function oa_portal_p1_application_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for Application
+ */
+/*
+function oa_portal_p1_application_form_submit($form, &$form_state) {
+}
+*/
+
 function oa_portal_p1_contact_form() {
   $form['contact'] = fieldset('Contact Information');
   $form['contact']['first_name'] = textfield('First Name');
@@ -143,6 +145,110 @@ function oa_portal_p1_contact_form() {
   $form['contact']['email'] = textfield('Email');
   oa_portal_submit($form);
 }
+
+/**
+ * Form validation callback for Contact
+ */
+/*
+function oa_portal_p1_contact_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for Background/Reference Check
+ */
+/*
+function oa_portal_p1_contact_form_submit($form, &$form_state) {
+}
+*/
+
+/**
+ * Form callback for Background/Reference Check
+ */
+function oa_portal_p2_background_reference_form($form_state) {
+  $form = array();
+  $form['#description'] = t('');
+
+  // 
+  $form['consent'] = fieldset('Background Investigation Consent');
+  $form['consent']['maiden_name'] = textfield('Maiden/other names used');
+  $form['consent']['dob'] = date_popup('Date of birth');
+  $form['consent']['sin'] = textfield_sin();
+  $form['consent']['dl_number'] = textfield('Driver License Number');
+  $form['consent']['dl_state'] = state('Driver License State');
+  $form['consent']['residence_state'] = textfield('Lived at your current address since');
+  $form['consent']['disclaimer'] = markup('Note: We need 7 years of address history. Please add all addresses for the past 7 years.')
+  $form['consent']['certification'] = checkbox('I certify...');
+  
+  $form['reference1'] = fieldset('Reference Check 1');
+  
+  $ref = array();
+  $ref['company'] = select('Company', array('Company A', 'Company B'));
+  $ref['supervisor'] = textfield('Supervisor');
+  $ref['address'] = address();
+  $ref['phone'] = textfield('Phone');
+  $ref['email'] = email();
+  $ref['certification'] = checkbox('I hereby give permission to the above named employer to release information to On Assignment regarding my performance while employed at that facility');
+  
+  oa_portal_submit(&$form);
+  return $form;
+}
+
+/**
+ * Form validation callback for Background/Reference Check
+ */
+/*
+function oa_portal_p2_background_reference_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for Background/Reference Check
+ */
+/*
+function oa_portal_p2_background_reference_form($form, &$form_state) {
+}
+*/
+
+
+
+/**
+ * Form callback for Professional Organizations
+ */
+function oa_portal_p2_professional_orgs_form($form_state) {
+  $form = array('#ajax' => array('enabled' => TRUE));
+
+  $form['prof_orgs'] = fieldset('Professional Organizations');
+  $form['prof_orgs']['no_orgs'] = checkbox('I am not a member of any organizations');
+  $org['org_name'] = textfield('Organization');
+  $org['org_name'] = textfield('Role');
+  $org['org_name'] = date_popup('From');
+  $org['org_name'] = date_popup('To');
+  $form['org_1'] = $org;
+  $form['org_1']['#tree'] = TRUE;
+  $form['org_2'] = $org;
+  $form['org_2']['#tree'] = TRUE;
+
+  oa_portal_submit(&$form);
+  return $form;
+}
+
+/**
+ * Form validation callback for Professional Organizations
+ */
+/*
+function oa_portal_p2_professional_orgs_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for Professional Organizations
+ */
+/*
+function oa_portal_p2_professional_orgs_form_submit($form, &$form_state) {
+
+}
+*/
 
 
 function oa_portal_submit(&$form) {

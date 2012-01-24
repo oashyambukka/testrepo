@@ -70,10 +70,8 @@ function oa_portal_admin() {
  */
 /*
 function oa_portal_'. $pk .'_'. $sk .'_form($form_state) {
-  $form[\'intro\'] = array(
-    \'#type\' => \'markup\',
-    \'#value\' => t(\'\'),
-  );
+  $form = array();
+  $form[\'#description\'] = t('');
   
   // 
   $form[\'\'] = fieldset(\'\');
@@ -109,7 +107,7 @@ function oa_portal_'. $pk .'_'. $sk .'_form_validate($form, &$form_state) {
  * Form submission callback for '. $section['#title'] .'
  */
 /*
-function oa_portal_'. $pk .'_'. $sk .'_form($form, &$form_state) {
+function oa_portal_'. $pk .'_'. $sk .'_form_submit($form, &$form_state) {
 
 }
 */

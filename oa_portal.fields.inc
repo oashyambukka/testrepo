@@ -1,5 +1,13 @@
 <?php
 
+function markup($value) {
+  $element = array(
+    '#type' => 'markup',
+    '#value' => t($value),
+  );
+  return $element;
+}
+
 function fieldset($title, $description = NULL) {
   $element = array(
     '#type' => 'fieldset',
@@ -10,22 +18,41 @@ function fieldset($title, $description = NULL) {
   return $element;
 }
 
-function textfield($title, $opt1 = NULL, $opt2 = NULL) {
+function textfield($title, $length = null) {
   $element = array(
     '#type' => 'textfield',
     '#required' => TRUE,
     '#title' => t($title),
+    '#length' => $length,
   );
-  if (is_int($opt1)) {
-    $element['#length'] = $opt1;
-    $opt = ($opt2) ? $opt2 : array();
-  }
-  else {
-    $opt = ($opt1) ? $opt1 : array();
-  }
-  foreach ($opt AS $k => $v) {
-    $element[$k] = $v;
-  }
+  return $element;
+}
+
+function email($title = null) {
+  $element = array(
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#title' => ($title) ? t($title) : t('Email'),
+    '#length' => 100,
+    // @TODO Add validation
+  );
+  return $element;
+}
+
+function textfield_sin() {
+  $element = array(
+    '#type' => 'fieldset',
+    '#title' => t('Social Security Number'),
+    '#attributes' => array('class' => 'sin-field'),
+    '#tree' => TRUE,
+  );
+  $el = array(
+    '#type' => 'textfield',
+    '#size' => 3,
+  );
+  $element[] = $el;
+  $element[] = $el;
+  $element[] = $el;
   return $element;
 }
 
@@ -46,11 +73,21 @@ function checkbox($title) {
   return $element;
 }
 
-function checkboxes($title, $choices) {
+function checkboxes($title, $choices, $map = FALSE) {
   $element = array(
     '#type' => 'checkboxes',
     '#title' => t($title),
-    '#options' => drupal_map_assoc($choices),
+    '#options' => ($map) ? drupal_map_assoc($choices) : $choices,
+    '#required' => TRUE,
+  );
+  return $element;
+}
+
+function radios($title, $choices) {
+  $element = array(
+    '#type' => 'radios',
+    '#title' => t($title),
+    '#options' => $choices, //drupal_map_assoc($choices),
     '#required' => TRUE,
   );
   return $element;
@@ -71,6 +108,16 @@ function select($title, $choices) {
     '#title' => t($title),
     '#options' => drupal_map_assoc($choices),
     '#required' => TRUE,
+  );
+  return $element;
+}
+
+function state($title = null) {
+  $element = array(
+    '#type' => 'select',
+    '#required' => TRUE,
+    '#title' => ($title) ? t($title) : t('State'),
+    '#options' => drupal_map_assoc(array('AB', 'AL')),
   );
   return $element;
 }
