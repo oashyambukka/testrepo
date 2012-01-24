@@ -14,6 +14,7 @@ function fieldset($title, $description = NULL) {
     '#tree' => TRUE,
     '#title' => t($title),
     '#description' => $description,
+    '#collapsible' => TRUE,
   );
   return $element;
 }
@@ -149,6 +150,7 @@ function address() {
   $elements = array();
   $elements['address1'] = textfield('Address');
   $elements['address2'] = textfield('');
+  $elements['address2']['#required'] = FALSE;
   $elements['city'] = textfield('City');
   $elements['state'] = textfield('State');
   $elements['zip'] = textfield('Zip Code');

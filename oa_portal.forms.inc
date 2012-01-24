@@ -139,11 +139,13 @@ function oa_portal_p1_contact_form() {
   $form['contact'] = fieldset('Contact Information');
   $form['contact']['first_name'] = textfield('First Name');
   $form['contact']['middle'] = textfield('Middle Initial');
+  $form['contact']['middle']['#required'] = FALSE;
   $form['contact']['address'] = address();
   $form['contact']['primary_phone'] = textfield('Primary Phone');
   $form['contact']['mobile_phone'] = textfield('Cell Phone');
   $form['contact']['email'] = textfield('Email');
   oa_portal_submit($form);
+  return $form;
 }
 
 /**
@@ -177,7 +179,7 @@ function oa_portal_p2_background_reference_form($form_state) {
   $form['consent']['dl_number'] = textfield('Driver License Number');
   $form['consent']['dl_state'] = state('Driver License State');
   $form['consent']['residence_state'] = textfield('Lived at your current address since');
-  $form['consent']['disclaimer'] = markup('Note: We need 7 years of address history. Please add all addresses for the past 7 years.')
+  $form['consent']['disclaimer'] = markup('Note: We need 7 years of address history. Please add all addresses for the past 7 years.');
   $form['consent']['certification'] = checkbox('I certify...');
   
   $form['reference1'] = fieldset('Reference Check 1');
@@ -221,13 +223,13 @@ function oa_portal_p2_professional_orgs_form($form_state) {
   $form['prof_orgs'] = fieldset('Professional Organizations');
   $form['prof_orgs']['no_orgs'] = checkbox('I am not a member of any organizations');
   $org['org_name'] = textfield('Organization');
-  $org['org_name'] = textfield('Role');
-  $org['org_name'] = date_popup('From');
-  $org['org_name'] = date_popup('To');
-  $form['org_1'] = $org;
-  $form['org_1']['#tree'] = TRUE;
-  $form['org_2'] = $org;
-  $form['org_2']['#tree'] = TRUE;
+  $org['org_role'] = textfield('Role');
+  $org['org_date_from'] = date_popup('From');
+  $org['org_date_to'] = date_popup('To');
+  $form['prof_orgs']['org1']['#tree'] = TRUE;
+  $form['prof_orgs']['org1'] = $org;
+  $form['prof_orgs']['org2']['#tree'] = TRUE;
+  $form['prof_orgs']['org2'] = $org;
 
   oa_portal_submit(&$form);
   return $form;

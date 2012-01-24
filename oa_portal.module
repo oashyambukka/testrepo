@@ -71,7 +71,7 @@ function oa_portal_admin() {
 /*
 function oa_portal_'. $pk .'_'. $sk .'_form($form_state) {
   $form = array();
-  $form[\'#description\'] = t('');
+  $form[\'#description\'] = t(\'\');
   
   // 
   $form[\'\'] = fieldset(\'\');
@@ -87,9 +87,7 @@ function oa_portal_'. $pk .'_'. $sk .'_form($form_state) {
   oa_portal_submit(&$form);
   return $form;
 }
-*/
-
-';
+*/';
          $code .= '/**
  * Form validation callback for '. $section['#title'] .'
  */
@@ -246,3 +244,4 @@ function oa_portal_api() {
   );
   return $p;
 }
+
