@@ -213,7 +213,6 @@ function oa_portal_p2_background_reference_form($form, &$form_state) {
 */
 
 
-
 /**
  * Form callback for Professional Organizations
  */

@@ -245,3 +245,43 @@ function oa_portal_api() {
   return $p;
 }
 
+
+/**
+ * Soap client
+ */
+function oa_portal_soap($method, $params) {
+  $wsdl = 'http://sena-demo.net:46200/idcws/GenericSoapPort?WSDL';
+  $options = array('use' => 'encoded', 'style' => 'rpc');
+  $client = soapclient_init_client($wsdl, TRUE, $options);
+
+  if (!empty($client['#error'])) {
+    drupal_set_message('Could not open connection to the web service');
+    watchdog('oa-portal-soap', 'Could not connect to web service.', array(), WATCHDOG_ERROR);
+    return FALSE;
+  }
+  $result = $client['#return']->call($method, $params);
+
+  if ($result['#error'] !== FALSE) {
+    dsm($client, $method . ' - Soap init $client after call()');
+    drupal_set_message('An error occurred. Please try again later.');
+    watchdog('oa-portal-soap', 'Could not get results from web service.', array(), WATCHDOG_ERROR);
+    return FALSE;
+  }
+
+//  dsm($result, $method . ' SOAP returning');
+  return $result['#return'];
+}
+
+/**
+ * SOAP interface for Job Search
+ */
+function oa_portal_soap_search() {
+  $params = array();
+  $results = oa_portal_soap('PING_SERVER', $params);
+  
+  if (is_array($results)) {
+    dsm($results, 'SOAP $results');
+    return $results;
+  }
+  return array();
+}
