@@ -2,6 +2,13 @@
 
 include_once('oa_portal.forms.inc');
 
+/* MS: Added to apply CSS & JS */
+function oa_portal_init() {
+	drupal_add_css(drupal_get_path('module', 'oa_portal') . '/css/forms.css');
+	//drupal_add_js(drupal_get_path('module', 'oa_portal') . '/js/forms.js');
+}
+
+
 /**
  * Implements hook_menu().
  */

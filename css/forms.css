@@ -1,0 +1,90 @@
+/* Stylesheet for OA Portal forms */
+
+form {
+	color:#333;
+	font-family:Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+}
+
+form fieldset {
+	clear:both;
+	background:#fff;
+	width:100%;
+	min-width:600px;
+	margin-top:10px;
+	margin-bottom:7px;
+	padding:0;
+	border:none;
+}
+form fieldset legend a:link,visited,hover,focus {color:#fff;text-decoration:none}
+form fieldset legend {
+	-moz-box-shadow: -2px -2px 2px rgba(0,0,0,.25) inset, 2px 2px 2px rgba(255,255,255,.5) inset;
+	-webkit-box-shadow: -2px -2px 2px rgba(0,0,0,.25) inset, 2px 2px 2px rgba(255,255,255,.5) inset;
+	box-shadow: -2px -2px 2px rgba(0,0,0,.25) inset, 2px 2px 2px rgba(255,255,255,.5) inset;
+	background:#7a7a7a;
+	font-size:150%;
+	font-weight:normal;
+	width:100%;
+	padding:6px 0 3px 10px;
+}
+.form-item {
+	float:left;
+	clear:both;
+	width:100%;
+	padding:0;
+}
+.form-item label {
+	float:left;
+	display:inline;
+	padding-right:5px;
+}
+
+/* Displays checkboxes,radio-buttons horizontally */
+.form-checkboxes .form-item,
+.form-radios .form-item {
+	width:auto;
+	clear:none;
+	display:inline;
+	float:left;
+	padding-right:10px;
+}
+.form-checkboxes .form-item label.option,
+.form-radios .form-item label.option {
+	font-weight:bold;
+}
+div.resizable-textarea {
+	width:85%;
+	display:inline;
+	float:left;
+}
+form input#edit-submit.form-submit {
+	background:#5b97b1;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px; 
+	border:none;
+	text-transform:uppercase;
+	padding:2px 6px;
+	font-size:150%;
+	color:white;
+	clear:both;
+	float:right;
+}
+
+
+
+/* Application form *************************/
+.oa-terms-field {
+	background:#EEEEEE;
+	overflow:hidden;
+	padding:5px 25px;
+	margin-left:20%;
+	float:right;
+	outline: 2px solid #666;
+}
+.oa-terms-field p {
+	font-family:Tahoma, Geneva, sans-serif;
+	font-weight:normal;
+	color:#003300;
+}
