@@ -18,7 +18,7 @@ function oa_portal_menu() {
   $items['admin/portal'] = array(
     'title' => 'OA Portal Admin', 
     'page callback' => 'oa_portal_admin', 
-    'access arguments' => array('access content'), 
+    'access arguments' => array('administer site configuration'), 
   );
   
   $p = oa_portal_api();
@@ -64,6 +64,8 @@ return TRUE;
  * Menu callback for admin page
  */
 function oa_portal_admin() {
+  oa_portal_soap_ping_server();
+
   $p = oa_portal_api();
   foreach ($p AS $pk => $phase) {
     $output .= '<h3>'. $phase['#title'] .'</h3>';
@@ -252,39 +254,36 @@ function oa_portal_api() {
   return $p;
 }
 
-
-/**
- * Soap client
- */
 function oa_portal_soap($method, $params) {
-  $wsdl = 'http://sena-demo.net:46200/idcws/GenericSoapPort?WSDL';
-  $options = array('use' => 'encoded', 'style' => 'rpc');
-  $client = soapclient_init_client($wsdl, TRUE, $options);
-
-  if (!empty($client['#error'])) {
-    drupal_set_message('Could not open connection to the web service');
-    watchdog('oa-portal-soap', 'Could not connect to web service.', array(), WATCHDOG_ERROR);
-    return FALSE;
-  }
-  $result = $client['#return']->call($method, $params);
-
-  if ($result['#error'] !== FALSE) {
-    dsm($client, $method . ' - Soap init $client after call()');
-    drupal_set_message('An error occurred. Please try again later.');
-    watchdog('oa-portal-soap', 'Could not get results from web service.', array(), WATCHDOG_ERROR);
-    return FALSE;
+  ini_set('display_errors', 1);
+  require_once('/var/aegir/drupal-6.22/sites/oahealth.resonancedev.ca/modules/soapclient/modules/soapclient/nusoap/nusoap.php');
+  $wsdl = './sites/oahealth.resonancedev.ca/modules/oahealthportal/ping.wsdl';
+  $client = new nusoap_client($wsdl, 'wsdl');
+  $client->decode_utf8 = false;
+  $client->xml_encoding = 'UTF-8';
+  $client->soap_defencoding = 'UTF-8';
+  $client->setCredentials('weblogic', '0ATraining');
+  $err = $client->getError();
+  if ($err) {
+    dsm($err, 'SOAP Client Error');
   }
 
-//  dsm($result, $method . ' SOAP returning');
-  return $result['#return'];
+  $result = $client->call($method, array(), 'http://tempuri.org', '', $header);
+  if ($client->error_str) {
+    dsm($client->error_str, 'SOAP Error');
+  }
+
+  dsm($client, '$client, post call()');
+  dsm($result, 'Results');
+  return $result;
 }
 
 /**
  * SOAP interface for Job Search
  */
-function oa_portal_soap_search() {
+function oa_portal_soap_ping_server() {
   $params = array();
-  $results = oa_portal_soap('PING_SERVER', $params);
+  $results = oa_portal_soap('pingServer', $params);
   
   if (is_array($results)) {
     dsm($results, 'SOAP $results');
