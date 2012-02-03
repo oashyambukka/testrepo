@@ -217,8 +217,6 @@ function oa_portal_p2_background_reference_form($form, &$form_state) {
  * Form callback for Professional Organizations
  */
 function oa_portal_p2_professional_orgs_form($form_state) {
-  $form = array('#ajax' => array('enabled' => TRUE));
-
   $form['prof_orgs'] = fieldset('Professional Organizations');
   $form['prof_orgs']['no_orgs'] = checkbox('I am not a member of any organizations');
   $org['org_name'] = textfield('Organization');
@@ -253,6 +251,7 @@ function oa_portal_p2_professional_orgs_form_submit($form, &$form_state) {
 
 
 function oa_portal_submit(&$form) {
+  $form['#attributes'] = array('class' => 'oaportal');
   $form['#ajax'] = array('enabled' => TRUE);
   $form['submit'] = array(
     '#type' => 'submit',
