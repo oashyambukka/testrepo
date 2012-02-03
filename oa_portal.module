@@ -64,8 +64,9 @@ return TRUE;
  * Menu callback for admin page
  */
 function oa_portal_admin() {
-  oa_portal_soap_ping_server();
-
+//  oa_portal_soap_ping_server();
+  $output = drupal_get_form('oa_portal_soap_file_form');
+  
   $p = oa_portal_api();
   foreach ($p AS $pk => $phase) {
     $output .= '<h3>'. $phase['#title'] .'</h3>';
@@ -254,6 +255,9 @@ function oa_portal_api() {
   return $p;
 }
 
+/**
+ * SOAP interface
+ */
 function oa_portal_soap($method, $params) {
   ini_set('display_errors', 1);
   require_once dirname(__FILE__) . '../soapclient/modules/soapclient/nusoap/nusoap.php');
@@ -268,26 +272,55 @@ function oa_portal_soap($method, $params) {
     dsm($err, 'SOAP Client Error');
   }
 
-  $result = $client->call($method, array(), 'http://tempuri.org', '', $header);
-  if ($client->error_str) {
-    dsm($client->error_str, 'SOAP Error');
-  }
+  $result = $client->call($method, $params);
+  // if ($client->error_str) {
+  //   dsm($client->error_str, 'SOAP Error');
+  // }
 
-  dsm($client, '$client, post call()');
   dsm($result, 'Results');
   return $result;
 }
 
 /**
- * SOAP interface for Job Search
+ * Test ping server
  */
 function oa_portal_soap_ping_server() {
-  $params = array();
-  $results = oa_portal_soap('pingServer', $params);
+  $results = oa_portal_soap('pingServer', array());
   
   if (is_array($results)) {
     dsm($results, 'SOAP $results');
     return $results;
   }
   return array();
+}
+
+function oa_portal_soap_file_form($form_state) {
+  $form['#attributes'] = array('enctype' => "multipart/form-data");
+  $form['upload'] = array(
+    '#type' => 'file', 
+    '#title' => t('Post a file to UCM'),
+    '#size' => 40,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Upload',
+  );
+  return $form;
+}
+
+function oa_portal_soap_file_form_submit($form, &$form_state) {
+  $file = file_check_upload('upload');
+  dsm($file, '$file');
+/*
+  $handle = fopen($file->path, "r");
+  $contents = fread($handle, filesize($file->path));
+  fclose($handle);
+  $encoded_content = base64_encode($contents);
+
+  $results = oa_portal_soap('CheckInUniversal', array($file->filename, $encoded_content));
+  
+  if (is_array($results)) {
+    dsm($results, 'SOAP $results for file upload');
+  }
+  */
 }
