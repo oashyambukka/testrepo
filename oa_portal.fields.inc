@@ -36,8 +36,15 @@ function email($title = null) {
     '#title' => ($title) ? t($title) : t('Email'),
     '#length' => 100,
     // @TODO Add validation
+    '#element_validate' => array('oa_portal_email_valid'),
   );
   return $element;
+}
+
+function oa_portal_email_validate($element, &$form_state) {
+  if (!valid_email_address($element['#value'])) {
+    form_error($element, t('The email address appears to be invalid.'));
+  }
 }
 
 function textfield_sin() {
