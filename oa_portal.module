@@ -256,8 +256,8 @@ function oa_portal_api() {
 
 function oa_portal_soap($method, $params) {
   ini_set('display_errors', 1);
-  require_once('/var/aegir/drupal-6.22/sites/oahealth.resonancedev.ca/modules/soapclient/modules/soapclient/nusoap/nusoap.php');
-  $wsdl = './sites/oahealth.resonancedev.ca/modules/oahealthportal/ping.wsdl';
+  require_once dirname(__FILE__) . '../soapclient/modules/soapclient/nusoap/nusoap.php');
+  $wsdl = dirname(__FILE__) .'/wsdl/ping.wsdl';
   $client = new nusoap_client($wsdl, 'wsdl');
   $client->decode_utf8 = false;
   $client->xml_encoding = 'UTF-8';
