@@ -1,0 +1,371 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:s="http://www.w3.org/2001/XMLSchema"
+	xmlns:s0="http://www.stellent.com/CheckIn/"
+	targetNamespace="http://www.stellent.com/CheckIn/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
+	<types>
+		<s:schema elementFormDefault="qualified" targetNamespace="http://www.stellent.com/CheckIn/">
+			<s:element name="CheckInUniversal">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="dDocName" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocTitle" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocType" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocAuthor" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dSecurityGroup" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocAccount" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="CustomDocMetaData" type="s0:IdcPropertyList" />
+						<s:element minOccurs="0" maxOccurs="1" name="primaryFile" type="s0:IdcFile" />
+						<s:element minOccurs="0" maxOccurs="1" name="alternateFile" type="s0:IdcFile" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="CheckInUniversalResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="CheckInUniversalResult" type="s0:CheckInUniversalResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="CheckInUniversalResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="dID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevisionID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevClassID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevLabel" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="CheckOut">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="dID" type="s:int" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="CheckOutResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="CheckOutResult" type="s0:CheckOutResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="CheckOutResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="CheckOutByName">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="dDocName" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="CheckOutByNameResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="CheckOutByNameResult" type="s0:CheckOutByNameResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="CheckOutByNameResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="UndoCheckOut">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="dID" type="s:int" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="UndoCheckOutResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="UndoCheckOutResult" type="s0:UndoCheckOutResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="UndoCheckOutResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="UndoCheckOutByName">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="dDocName" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="UndoCheckOutByNameResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="UndoCheckOutByNameResult" type="s0:UndoCheckOutByNameResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="UndoCheckOutByNameResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="UpdateDocInfo">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="dID" type="s:int" />
+						<s:element minOccurs="0" maxOccurs="1" name="dRevLabel" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocName" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocTitle" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocType" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocAuthor" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dSecurityGroup" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocAccount" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="CustomDocMetaData" type="s0:IdcPropertyList" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="UpdateDocInfoResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="UpdateDocInfoResult" type="s0:UpdateDocInfoResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="UpdateDocInfoResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="CheckInList">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="userOnly" type="s:boolean" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="CheckInListResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="CheckInListResult" type="s0:CheckInListResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="CheckInListResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="unbounded" name="CheckInList" type="s0:CheckInList" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="CheckInList">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="dDocName" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocTitle" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocType" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocAuthor" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dSecurityGroup" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocAccount" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevClassID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevisionID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevLabel" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dIsCheckedOut" type="s:boolean" />
+					<s:element minOccurs="0" maxOccurs="1" name="dCheckoutUser" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dCreateDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dInDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dOutDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dStatus" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dReleaseState" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dFlag1" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dWebExtension" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dProcessingState" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dMessage" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dReleaseDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRendition1" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRendition2" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dIndexerState" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dPublishType" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dPublishState" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="CustomDocMetaData" type="s0:IdcPropertyList" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="StatusInfo">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="statusCode" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="statusMessage" type="s:string" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="IdcPropertyList">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="unbounded" name="property" type="s0:IdcProperty" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="IdcProperty">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="value" type="s:string" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="IdcFile">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="fileName" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="fileContent" type="s:base64Binary" />
+				</s:sequence>
+			</s:complexType>
+		</s:schema>
+	</types>
+	<message name="CheckInUniversalSoapIn">
+		<part name="parameters" element="s0:CheckInUniversal" />
+	</message>
+	<message name="CheckInUniversalSoapOut">
+		<part name="parameters" element="s0:CheckInUniversalResponse" />
+	</message>
+	<message name="CheckOutSoapIn">
+		<part name="parameters" element="s0:CheckOut" />
+	</message>
+	<message name="CheckOutSoapOut">
+		<part name="parameters" element="s0:CheckOutResponse" />
+	</message>
+	<message name="CheckOutByNameSoapIn">
+		<part name="parameters" element="s0:CheckOutByName" />
+	</message>
+	<message name="CheckOutByNameSoapOut">
+		<part name="parameters" element="s0:CheckOutByNameResponse" />
+	</message>
+	<message name="UndoCheckOutSoapIn">
+		<part name="parameters" element="s0:UndoCheckOut" />
+	</message>
+	<message name="UndoCheckOutSoapOut">
+		<part name="parameters" element="s0:UndoCheckOutResponse" />
+	</message>
+	<message name="UndoCheckOutByNameSoapIn">
+		<part name="parameters" element="s0:UndoCheckOutByName" />
+	</message>
+	<message name="UndoCheckOutByNameSoapOut">
+		<part name="parameters" element="s0:UndoCheckOutByNameResponse" />
+	</message>
+	<message name="UpdateDocInfoSoapIn">
+		<part name="parameters" element="s0:UpdateDocInfo" />
+	</message>
+	<message name="UpdateDocInfoSoapOut">
+		<part name="parameters" element="s0:UpdateDocInfoResponse" />
+	</message>
+	<message name="CheckInListSoapIn">
+		<part name="parameters" element="s0:CheckInList" />
+	</message>
+	<message name="CheckInListSoapOut">
+		<part name="parameters" element="s0:CheckInListResponse" />
+	</message>
+	<portType name="CheckInSoap">
+		<operation name="CheckInUniversal">
+			<input message="s0:CheckInUniversalSoapIn" />
+			<output message="s0:CheckInUniversalSoapOut" />
+		</operation>
+		<operation name="CheckOut">
+			<input message="s0:CheckOutSoapIn" />
+			<output message="s0:CheckOutSoapOut" />
+		</operation>
+		<operation name="CheckOutByName">
+			<input message="s0:CheckOutByNameSoapIn" />
+			<output message="s0:CheckOutByNameSoapOut" />
+		</operation>
+		<operation name="UndoCheckOut">
+			<input message="s0:UndoCheckOutSoapIn" />
+			<output message="s0:UndoCheckOutSoapOut" />
+		</operation>
+		<operation name="UndoCheckOutByName">
+			<input message="s0:UndoCheckOutByNameSoapIn" />
+			<output message="s0:UndoCheckOutByNameSoapOut" />
+		</operation>
+		<operation name="UpdateDocInfo">
+			<input message="s0:UpdateDocInfoSoapIn" />
+			<output message="s0:UpdateDocInfoSoapOut" />
+		</operation>
+		<operation name="CheckInList">
+			<input message="s0:CheckInListSoapIn" />
+			<output message="s0:CheckInListSoapOut" />
+		</operation>
+	</portType>
+	<binding name="CheckInSoap" type="s0:CheckInSoap">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+		<operation name="CheckInUniversal">
+			<soap:operation soapAction="http://www.stellent.com/CheckIn/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="CheckOut">
+			<soap:operation soapAction="http://www.stellent.com/CheckIn/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="CheckOutByName">
+			<soap:operation soapAction="http://www.stellent.com/CheckIn/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="UndoCheckOut">
+			<soap:operation soapAction="http://www.stellent.com/CheckIn/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="UndoCheckOutByName">
+			<soap:operation soapAction="http://www.stellent.com/CheckIn/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="UpdateDocInfo">
+			<soap:operation soapAction="http://www.stellent.com/CheckIn/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="CheckInList">
+			<soap:operation soapAction="http://www.stellent.com/CheckIn/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="CheckIn">
+		<port name="CheckInSoap" binding="s0:CheckInSoap">
+			<soap:address location="http://sena-demo.net:480/_dav/cs/idcplg" />
+		</port>
+	</service>
+</definitions>
