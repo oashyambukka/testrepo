@@ -164,7 +164,7 @@
 	</binding>
 	<service name="GetFile">
 		<port name="GetFileSoap" binding="s0:GetFileSoap">
-			<soap:address location="http://sena-demo.net:480/_dav/cs/idcplg" />
+			<soap:address location="https://sena-demo.net:46201/_dav/cs/idcplg" />
 		</port>
 	</service>
 </definitions>

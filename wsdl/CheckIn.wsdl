@@ -365,7 +365,7 @@
 	</binding>
 	<service name="CheckIn">
 		<port name="CheckInSoap" binding="s0:CheckInSoap">
-			<soap:address location="http://sena-demo.net:480/_dav/cs/idcplg" />
+			<soap:address location="https://sena-demo.net:46201/_dav/cs/idcplg" />
 		</port>
 	</service>
 </definitions>
