@@ -5,7 +5,6 @@
  */
 function oa_portal_admin() {
   $output = drupal_get_form('oa_portal_soap_file_form');
-  dsm(oa_portal_get_file(10552), 'oa_portal_get_file');
   
   $p = oa_portal_api();
   foreach ($p AS $pk => $phase) {

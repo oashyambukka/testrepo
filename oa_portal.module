@@ -22,6 +22,12 @@ function oa_portal_menu() {
     'access arguments' => array('administer site configuration'),
     'file' => 'oa_portal.admin.inc'
   );
+  $items['portal/file/%'] = array(
+    'title' => 'OA Portal Download File', 
+    'page callback' => 'oa_portal_download_file',
+    'page arguments' => array(2),
+    'access arguments' => array('administer site configuration'),
+  );
   
   $p = oa_portal_api();
   foreach ($p AS $pk => $phase) {
@@ -195,6 +201,7 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
   $wsdl = array(
     'pingServer' => 'ping.wsdl',
     'CheckInUniversal' => 'CheckIn.wsdl',
+    'GetFileByID' => 'GetFile.wsdl',
   );
   ini_set('display_errors', 1);
   $wsdl = dirname(__FILE__) .'/wsdl/'. $wsdl[$method];
@@ -257,7 +264,7 @@ function oa_portal_soap_file_form_submit($form, &$form_state) {
       'dDocTitle' => 'Test from RP',
       'dDocName' => 'RP' . time(),
       'primaryFile' =>array(
-        'fileName'=> 'RP01' . time(),
+        'fileName'=> $_FILES['files']['name']['upload'],
         'fileContent' => $encoded_content),
     );
 
@@ -266,7 +273,17 @@ function oa_portal_soap_file_form_submit($form, &$form_state) {
   }
 }
 
-function oa_portal_get_file($dID) {
-  $results = oa_portal_soap('GetFileByID', array('dID' => $dID), TRUE);
-  return $results;
+function oa_portal_download_file($dID) {
+  $result = oa_portal_soap('GetFileByID', array('dID' => $dID), TRUE);
+  $headers = array(
+    'Content-Type: ' . $result->GetFileByIDResult->FileInfo->dFormat,
+    'Content-Length: ' . $result->GetFileByIDResult->FileInfo->dFileSize,
+    'Content-Disposition: attachment; filename="' . $result->GetFileByIDResult->FileInfo->dOriginalName .'"',
+  );
+  foreach ($headers as $header) {
+    $header = preg_replace('/\r?\n(?!\t| )/', '', $header);
+    drupal_set_header($header);
+  }
+  print base64_decode($result->GetFileByIDResult->downloadFile->fileContent);
+  exit();
 }
