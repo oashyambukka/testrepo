@@ -1,13 +1,14 @@
 <?php
 
-include_once('oa_portal.forms.inc');
+//include_once('oa_portal.forms.inc');
 
-/* MS: Added to apply CSS & JS */
+/**
+ * Implements hook_init().
+ */
 function oa_portal_init() {
-	drupal_add_css(drupal_get_path('module', 'oa_portal') . '/css/forms.css');
-	//drupal_add_js(drupal_get_path('module', 'oa_portal') . '/js/forms.js');
+  drupal_add_css(drupal_get_path('module', 'oa_portal') . '/css/forms.css');
+//  drupal_add_js(drupal_get_path('module', 'oa_portal') . '/js/forms.js');
 }
-
 
 /**
  * Implements hook_menu().
@@ -18,7 +19,8 @@ function oa_portal_menu() {
   $items['admin/portal'] = array(
     'title' => 'OA Portal Admin', 
     'page callback' => 'oa_portal_admin', 
-    'access arguments' => array('administer site configuration'), 
+    'access arguments' => array('administer site configuration'),
+    'file' => 'oa_portal.admin.inc'
   );
   
   $p = oa_portal_api();
@@ -32,6 +34,7 @@ function oa_portal_menu() {
           'page arguments' => array('oa_portal_'. $pk .'_'. $sk .'_form'),
           'access callback' => 'oa_portal_access',
           'access arguments' => array($pk, $sk),
+          'file' => 'oa_portal.forms.inc',
         );
       }
     }
@@ -41,6 +44,7 @@ function oa_portal_menu() {
 }
 
 /**
+ * Implements hook_access().
  * Access callback for menu items
  */
 function oa_portal_access($phase, $section) {
@@ -58,76 +62,6 @@ return TRUE;
     }
   }
   return FALSE;
-}
-
-/**
- * Menu callback for admin page
- */
-function oa_portal_admin() {
-  $output = drupal_get_form('oa_portal_soap_file_form');
-  
-  $p = oa_portal_api();
-  foreach ($p AS $pk => $phase) {
-    $output .= '<h3>'. $phase['#title'] .'</h3>';
-    $rows = array();
-    foreach ($phase AS $sk => $section) {
-      if (substr($sk, 0, 1) !== '#') {
-        $rows[] = array(l($section['#title'], $pk .'/'. $sk), 'oa_portal_'. $pk .'_'. $sk .'_form', function_exists('oa_portal_'. $pk .'_'. $sk .'_form'), function_exists('oa_portal_'. $pk .'_'. $sk .'_form_validate'), function_exists('oa_portal_'. $pk .'_'. $sk .'_form_submit'));
-       if (!function_exists('oa_portal_'. $pk .'_'. $sk .'_form')) {
-         $code .= '/**
- * Form callback for '. $section['#title'] .'
- */
-/*
-function oa_portal_'. $pk .'_'. $sk .'_form($form_state) {
-  $form = array();
-  $form[\'#description\'] = t(\'\');
-  
-  // 
-  $form[\'\'] = fieldset(\'\');
-  $form[\'\'][\'\'] = textfield(\'\');
-  $form[\'\'][\'\'] = textarea(\'\');
-  $form[\'\'][\'\'] = array(
-    \'#type\' => \'\',
-    \'#title\' => t(\'\'),
-    \'#options\' => array(\'opt1\' => \'Opt 1\'),
-    \'#required\' => TRUE,
-  );
-
-  oa_portal_submit(&$form);
-  return $form;
-}
-*/';
-         $code .= '/**
- * Form validation callback for '. $section['#title'] .'
- */
-/*
-function oa_portal_'. $pk .'_'. $sk .'_form_validate($form, &$form_state) {
-  if ($form_state[\'values\'][\'name\'] == \'\') {
-    form_set_error(\'\', t(\'You must select a name for this group of settings.\'));
-  }
-}
-*/
-
-';
-
-         $code .= '/**
- * Form submission callback for '. $section['#title'] .'
- */
-/*
-function oa_portal_'. $pk .'_'. $sk .'_form_submit($form, &$form_state) {
-
-}
-*/
-';
-        }
-
-      }
-    }
-    $output .= theme('table', array('Section', 'Form callback', 'form', 'validation', 'submission'), $rows);
-  }
-
-  $output .= '<pre>'. $code .'</pre>';
-  return $output;
 }
 
 /**
@@ -330,4 +264,9 @@ function oa_portal_soap_file_form_submit($form, &$form_state) {
     $results = oa_portal_soap('CheckInUniversal', $params);
     dsm($results, 'SOAP $results for file upload');
   }
+}
+
+function oa_portal_get_file($dID) {
+  $results = oa_portal_soap('GetFileByID', array('dID' => $dID), TRUE);
+  return $results;
 }
