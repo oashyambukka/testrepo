@@ -64,7 +64,6 @@ return TRUE;
  * Menu callback for admin page
  */
 function oa_portal_admin() {
-//  oa_portal_soap_ping_server();
   $output = drupal_get_form('oa_portal_soap_file_form');
   
   $p = oa_portal_api();
@@ -258,26 +257,29 @@ function oa_portal_api() {
 /**
  * SOAP interface
  */
-function oa_portal_soap($method, $params) {
+function oa_portal_soap($method, $params, $debug = FALSE) {
+  $wsdl = array(
+    'pingServer' => 'ping.wsdl',
+    'CheckInUniversal' => 'CheckIn.wsdl',
+  );
   ini_set('display_errors', 1);
-  require_once dirname(__FILE__) . '../soapclient/modules/soapclient/nusoap/nusoap.php');
-  $wsdl = dirname(__FILE__) .'/wsdl/ping.wsdl';
-  $client = new nusoap_client($wsdl, 'wsdl');
-  $client->decode_utf8 = false;
-  $client->xml_encoding = 'UTF-8';
-  $client->soap_defencoding = 'UTF-8';
-  $client->setCredentials('weblogic', '0ATraining');
-  $err = $client->getError();
-  if ($err) {
-    dsm($err, 'SOAP Client Error');
+  $wsdl = dirname(__FILE__) .'/wsdl/'. $wsdl[$method];
+
+  $soap_params = array(
+    'login' => 'weblogic',
+    'password' => '0ATraining',
+    'trace' => 1,
+    'exceptions' => 0
+  );
+
+  $client = new SoapClient($wsdl, $soap_params);
+  $result = $client->{$method}($params);
+
+  if ($debug) {
+    dsm($params, $method . ' $params');
+    dsm($client, $method . ' $client');
+    dsm($result, $method . ' $result');
   }
-
-  $result = $client->call($method, $params);
-  // if ($client->error_str) {
-  //   dsm($client->error_str, 'SOAP Error');
-  // }
-
-  dsm($result, 'Results');
   return $result;
 }
 
@@ -286,12 +288,7 @@ function oa_portal_soap($method, $params) {
  */
 function oa_portal_soap_ping_server() {
   $results = oa_portal_soap('pingServer', array());
-  
-  if (is_array($results)) {
-    dsm($results, 'SOAP $results');
-    return $results;
-  }
-  return array();
+  dsm($results, 'SOAP $results');
 }
 
 function oa_portal_soap_file_form($form_state) {
@@ -309,18 +306,28 @@ function oa_portal_soap_file_form($form_state) {
 }
 
 function oa_portal_soap_file_form_submit($form, &$form_state) {
-  $file = file_check_upload('upload');
-  dsm($file, '$file');
-/*
-  $handle = fopen($file->path, "r");
-  $contents = fread($handle, filesize($file->path));
-  fclose($handle);
-  $encoded_content = base64_encode($contents);
+  if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['upload'])) {
+    $filepath = $_FILES['files']['tmp_name']['upload'];
+    $filesize = $_FILES['files']['size']['upload'];
+    $filename = $_FILES['files']['name']['upload'];
+    $handle = fopen($filepath, "r");
+    $contents = fread($handle, $filesize);
+    fclose($handle);
+    $encoded_content = base64_encode($contents);
 
-  $results = oa_portal_soap('CheckInUniversal', array($file->filename, $encoded_content));
-  
-  if (is_array($results)) {
+    $params = array(
+      'dDocType' => 'Rmax',
+      'dDocAuthor' => 'weblogic',
+      'dDocAccount' => 'Recruit/QA',
+      'dSecurityGroup' => 'Form',
+      'dDocTitle' => 'Test from RP',
+      'dDocName' => 'RP' . time(),
+      'primaryFile' =>array(
+        'fileName'=> 'RP01' . time(),
+        'fileContent' => $encoded_content),
+    );
+
+    $results = oa_portal_soap('CheckInUniversal', $params);
     dsm($results, 'SOAP $results for file upload');
   }
-  */
 }
