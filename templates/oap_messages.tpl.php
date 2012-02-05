@@ -1,0 +1,6 @@
+<div id="oap-messages">
+  <div id="oap-messages-tip"><?php print $tip; ?></div>
+  <div id="oap-message-count"><?php print $count; ?></div>
+  <div id="oap-message-notice">You have unread messages that require your attention:</div>
+  <div id="oap-message-rows"><?php print $messages; ?></div>
+</div>

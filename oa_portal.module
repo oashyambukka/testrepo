@@ -16,6 +16,12 @@ function oa_portal_init() {
 function oa_portal_menu() {
   $items = array();
   
+  $items['portal'] = array(
+    'title' => 'My OA Healthcare Documents', 
+    'page callback' => 'oa_portal_page', 
+    'access arguments' => array('access portal'),
+    'file' => 'oa_portal.pages.inc'
+  );
   $items['admin/portal'] = array(
     'title' => 'OA Portal Admin', 
     'page callback' => 'oa_portal_admin', 
@@ -68,6 +74,65 @@ return TRUE;
     }
   }
   return FALSE;
+}
+
+/**
+ * Implements hook_block().
+ */
+function oa_portal_block($op = 'list', $delta = 0, $edit = array()) {
+  switch ($op) {
+    case 'list':
+      $blocks['oap_messages'] = array('info' => t('OA Portal: Messages'), 'cache' => BLOCK_CACHE_PER_USER);
+      return $blocks;
+    break;
+    case 'view':
+      return array('content' => oa_portal_block_view($delta));
+    break;
+  }
+}
+
+/**
+ * Invokes the theme associated with a block.
+ *
+ * @param string $delta
+ *    The key identifier for a block.
+ */
+function oa_portal_block_view($delta) {
+  global $user;
+  switch ($delta) {
+    case 'oap_messages':
+      return theme($delta);
+    break;
+  }
+}
+
+/**
+ ** Implementation of hook_theme();
+ */
+function oa_portal_theme($existing, $type, $theme, $path) {
+  $path = drupal_get_path('module', 'oa_portal');
+  return array(
+    'oap_phase' => array(
+      'template' => 'oap_phase',
+      'path' => $path . '/templates',
+      'arguments' => array('id' => NULL, 'title' => NULL, 'status' => NULL, 'phases' => NULL),
+    ),
+    'oap_phase_row' => array(
+      'template' => 'oap_phase_row',
+      'path' => $path . '/templates',
+      'arguments' => array('link' => NULL, 'status' => NULL),
+    ),
+    'oap_messages' => array(
+      'template' => 'oap_messages',
+      'path' => $path . '/templates',
+      'arguments' => array('tip' => NULL, 'count' => NULL, 'messages' => NULL),
+    ),
+    'oap_message_row' => array(
+      'template' => 'oap_message_row',
+      'path' => $path . '/templates',
+      'arguments' => array('date' => NULL, 'teaser' => NULL, 'link' => NULL),
+    ),
+  );
 }
 
 /**
