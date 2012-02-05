@@ -39,7 +39,7 @@ function oa_portal_menu() {
   foreach ($p AS $pk => $phase) {
     foreach ($phase AS $sk => $section) {
       if (substr($sk, 0, 1) !== '#') {
-        $items[$pk .'/'. $sk] = array(
+        $items['portal/'. $pk .'/'. $sk] = array(
           'type' => MENU_CALLBACK,
           'title' => $section['#title'],
           'page callback' => 'drupal_get_form',
@@ -99,6 +99,7 @@ function oa_portal_block($op = 'list', $delta = 0, $edit = array()) {
  */
 function oa_portal_block_view($delta) {
   global $user;
+  include_once('oa_portal.blocks.inc');
   switch ($delta) {
     case 'oap_messages':
       return theme($delta);
