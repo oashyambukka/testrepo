@@ -1,6 +1,6 @@
 <?php
 
-//include_once('oa_portal.forms.inc');
+include_once('oa_portal.theme.inc');
 
 /**
  * Implements hook_init().

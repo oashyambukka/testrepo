@@ -3,7 +3,7 @@
     <h3><?php print $title; ?></h3>
     <div class="oap-status-icon oap-status-<?php print $status; ?>"><?php print $status_tip; ?></div>
   </div>
-  <div class="oa-phase-rows">
-    <?php print $rows; ?>
+  <div class="oa-phase-phases">
+    <?php print $phases; ?>
   </div>
 </div>
