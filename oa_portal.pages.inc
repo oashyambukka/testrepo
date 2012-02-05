@@ -15,7 +15,7 @@ function oa_portal_page() {
     $rows = array();
     foreach ($phase AS $sk => $section) {
       if (substr($sk, 0, 1) !== '#') {
-        $rows[] = theme('oap_phase_row', l($section['#title'], $pk .'/'. $sk), 'some-status');
+        $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), 'some-status');
       }
     }
     $output .= theme('oap_phase', $pk, $phase['#title'], 'some-status', implode("\n", $rows));
