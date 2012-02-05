@@ -34,3 +34,24 @@ function oa_portal_preprocess_oap_phase_row(&$vars) {
       $vars['status_tip'] = 'Tooltip message goes here. We may want to generalize tooltip markup generation.';
   }
 }
+
+
+/**
+ * Preprocess function for Phase Status block
+ */
+function oa_portal_preprocess_oap_phase_status(&$vars) {
+  $p = oa_portal_api();
+  $phase = $p[arg(1)];
+  
+  $vars['id'] = arg(1);
+  $vars['status'] = 'some-status';
+  $vars['title'] = $phase['#title'];
+  
+  $items = array();
+  foreach ($phase AS $sk => $section) {
+    if (substr($sk, 0, 1) !== '#') {
+      $items[] = theme('oap_phase_row', $section['#title'], 'some-status');
+    }
+  }
+  $vars['phases'] = implode("\n", $items);
+}

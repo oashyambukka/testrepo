@@ -90,6 +90,7 @@ function oa_portal_block($op = 'list', $delta = 0, $edit = array()) {
   switch ($op) {
     case 'list':
       $blocks['oap_messages'] = array('info' => t('OA Portal: Messages'), 'cache' => BLOCK_CACHE_PER_USER);
+      $blocks['oap_phase_status'] = array('info' => t('OA Portal: Phase status'), 'cache' => BLOCK_CACHE_PER_USER);
       return $blocks;
     break;
     case 'view':
@@ -109,6 +110,7 @@ function oa_portal_block_view($delta) {
   include_once('oa_portal.blocks.inc');
   switch ($delta) {
     case 'oap_messages':
+    case 'oap_phase_status':
       return theme($delta);
     break;
   }
@@ -139,6 +141,10 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'template' => 'oap_message_row',
       'path' => $path . '/templates',
       'arguments' => array('date' => NULL, 'teaser' => NULL, 'link' => NULL),
+    ),
+    'oap_phase_status' => array(
+      'template' => 'oap_phase_status',
+      'path' => $path . '/templates',
     ),
   );
 }
