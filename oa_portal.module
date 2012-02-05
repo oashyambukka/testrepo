@@ -15,7 +15,7 @@ function oa_portal_init() {
  */
 function oa_portal_menu() {
   $items = array();
-  
+
   $items['portal'] = array(
     'title' => 'My OA Healthcare Documents', 
     'page callback' => 'oa_portal_page', 
@@ -33,8 +33,15 @@ function oa_portal_menu() {
     'page callback' => 'oa_portal_download_file',
     'page arguments' => array(2),
     'access arguments' => array('administer site configuration'),
+    'file' => 'oa_portal.pages.inc'
   );
-  
+  $items['portal/autosave'] = array(
+    'title' => 'OA Portal Autosave', 
+    'page callback' => 'oa_portal_autosave',
+    'access arguments' => array('access portal'),
+    'file' => 'oa_portal.pages.inc'
+  );
+
   $p = oa_portal_api();
   foreach ($p AS $pk => $phase) {
     foreach ($phase AS $sk => $section) {
@@ -337,19 +344,4 @@ function oa_portal_soap_file_form_submit($form, &$form_state) {
     $results = oa_portal_soap('CheckInUniversal', $params);
     dsm($results, 'SOAP $results for file upload');
   }
-}
-
-function oa_portal_download_file($dID) {
-  $result = oa_portal_soap('GetFileByID', array('dID' => $dID), TRUE);
-  $headers = array(
-    'Content-Type: ' . $result->GetFileByIDResult->FileInfo->dFormat,
-    'Content-Length: ' . $result->GetFileByIDResult->FileInfo->dFileSize,
-    'Content-Disposition: attachment; filename="' . $result->GetFileByIDResult->FileInfo->dOriginalName .'"',
-  );
-  foreach ($headers as $header) {
-    $header = preg_replace('/\r?\n(?!\t| )/', '', $header);
-    drupal_set_header($header);
-  }
-  print base64_decode($result->GetFileByIDResult->downloadFile->fileContent);
-  exit();
 }

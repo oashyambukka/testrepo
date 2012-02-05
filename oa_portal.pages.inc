@@ -23,3 +23,39 @@ function oa_portal_page() {
   $output .= '<div id="oap-complete">(1 of 3 complete)</div>';
   return $output;
 }
+
+/**
+ * Page callback for file downloading per dID
+ */
+function oa_portal_download_file($dID) {
+  $result = oa_portal_soap('GetFileByID', array('dID' => $dID), TRUE);
+  $headers = array(
+    'Content-Type: ' . $result->GetFileByIDResult->FileInfo->dFormat,
+    'Content-Length: ' . $result->GetFileByIDResult->FileInfo->dFileSize,
+    'Content-Disposition: attachment; filename="' . $result->GetFileByIDResult->FileInfo->dOriginalName .'"',
+  );
+  foreach ($headers as $header) {
+    $header = preg_replace('/\r?\n(?!\t| )/', '', $header);
+    drupal_set_header($header);
+  }
+  print base64_decode($result->GetFileByIDResult->downloadFile->fileContent);
+  exit();
+}
+
+/**
+ * Page callback for forms autosaving
+ */
+function oa_portal_autosave() {
+  global $user;
+  dsm($_POST, 'autosave $_POST');
+  // Bad request
+  // return drupal_json(array('status' => 400));
+
+  // Unauthorized
+  // return drupal_json(array('status' => 401));
+
+  // Server error
+  // return drupal_json(array('status' => 500));
+
+  return drupal_json(array('status' => 200));
+}
