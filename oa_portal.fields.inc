@@ -19,12 +19,13 @@ function fieldset($title, $description = NULL) {
   return $element;
 }
 
-function textfield($title, $length = null) {
+function textfield($title, $size = 60, $maxlength = null) {
   $element = array(
     '#type' => 'textfield',
     '#required' => TRUE,
     '#title' => t($title),
-    '#length' => $length,
+	'#size' => $size,
+    '#maxlength' => $maxlength,
   );
   return $element;
 }
@@ -34,7 +35,7 @@ function email($title = null) {
     '#type' => 'textfield',
     '#required' => TRUE,
     '#title' => ($title) ? t($title) : t('Email'),
-    '#length' => 100,
+    '#maxlength' => 100,
     // @TODO Add validation
     '#element_validate' => array('oa_portal_email_valid'),
   );
@@ -125,7 +126,7 @@ function state($title = null) {
     '#type' => 'select',
     '#required' => TRUE,
     '#title' => ($title) ? t($title) : t('State'),
-    '#options' => drupal_map_assoc(array('AB', 'AL')),
+    '#options' => drupal_map_assoc(array('AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY')),
   );
   return $element;
 }
@@ -156,10 +157,14 @@ function terms($desc) {
 function address() {
   $elements = array();
   $elements['address1'] = textfield('Address');
+  $elements['address1']['#size'] = 30;
   $elements['address2'] = textfield('');
+  $elements['address2']['#size'] = 30;
   $elements['address2']['#required'] = FALSE;
   $elements['city'] = textfield('City');
   $elements['state'] = textfield('State');
+  $elements['state']['#size'] = 25;
   $elements['zip'] = textfield('Zip Code');
+  $elements['zip']['#size'] = 10;
   return $elements;
 }

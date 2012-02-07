@@ -7,7 +7,8 @@ include_once('oa_portal.theme.inc');
  */
 function oa_portal_init() {
   drupal_add_css(drupal_get_path('module', 'oa_portal') . '/css/forms.css');
-//  drupal_add_js(drupal_get_path('module', 'oa_portal') . '/js/forms.js');
+  drupal_add_css(drupal_get_path('module', 'oa_portal') . '/css/phases.css');
+  drupal_add_js(drupal_get_path('module', 'oa_portal') . '/js/main.js');
 }
 
 /**
