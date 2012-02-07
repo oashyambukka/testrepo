@@ -38,7 +38,7 @@ function oa_portal_download_file($dID) {
     $header = preg_replace('/\r?\n(?!\t| )/', '', $header);
     drupal_set_header($header);
   }
-  print base64_decode($result->GetFileByIDResult->downloadFile->fileContent);
+  print $result->GetFileByIDResult->downloadFile->fileContent;
   exit();
 }
 
