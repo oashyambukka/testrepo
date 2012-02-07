@@ -1,24 +1,24 @@
 /* Stylesheet for OA Portal forms */
 
-form {
-	color:#333;
-	font-family:Helvetica, sans-serif;
-	font-size:12px;
-	font-weight:bold;
-}
 
-form fieldset {
+/***** GENERAL STYLES FOR ALL FORMS ****************************************************************/
+.oaportal fieldset {
 	clear:both;
 	background:#fff;
-	width:100%;
+	width:95%;
 	min-width:600px;
 	margin-top:10px;
 	margin-bottom:7px;
 	padding:0;
 	border:none;
 }
-form fieldset legend a:link,visited,hover,focus {color:#fff;text-decoration:none}
-form fieldset legend {
+.oaportal fieldset h1 {
+	text-decoration:underline;
+	font-weight:bold;
+	font-size:100%;
+}
+.oaportal fieldset legend a:link,visited,hover,focus {color:#fff;text-decoration:none}
+.oaportal fieldset legend {
 	-moz-box-shadow: -2px -2px 2px rgba(0,0,0,.25) inset, 2px 2px 2px rgba(255,255,255,.5) inset;
 	-webkit-box-shadow: -2px -2px 2px rgba(0,0,0,.25) inset, 2px 2px 2px rgba(255,255,255,.5) inset;
 	box-shadow: -2px -2px 2px rgba(0,0,0,.25) inset, 2px 2px 2px rgba(255,255,255,.5) inset;
@@ -26,60 +26,125 @@ form fieldset legend {
 	font-size:150%;
 	font-weight:normal;
 	width:100%;
-	padding:6px 0 3px 10px;
+	padding:3px 10px;
 }
-.form-item {
+.oaportal .fieldset-wrapper {
+	padding:20px;
+}
+.oaportal .form-item {
 	float:left;
 	clear:both;
 	width:100%;
 	padding:0;
 }
-.form-item label {
+.oaportal .form-item label {
 	float:left;
 	display:inline;
 	padding-right:5px;
+	width:auto;
 }
 
 /* Displays checkboxes,radio-buttons horizontally */
-.form-checkboxes .form-item,
-.form-radios .form-item {
+.oaportal .form-checkboxes .form-item,
+.oaportal .form-radios .form-item {
 	width:auto;
 	clear:none;
 	display:inline;
 	float:left;
 	padding-right:10px;
 }
-.form-checkboxes .form-item label.option,
-.form-radios .form-item label.option {
+.oaportal .form-checkboxes,
+.oaportal .form-radios {
+	width:auto;
+	clear:none;
+	display:inline;
+	margin:0;
+	float:left;
+	padding-right:10px;
+}
+.oaportal .form-checkboxes .form-item label.option,
+.oaportal .form-radios .form-item label.option {
 	font-weight:bold;
 }
-div.resizable-textarea {
+.oaportal div.resizable-textarea {
 	width:85%;
 	display:inline;
 	float:left;
 }
-form input#edit-submit.form-submit {
-	background:#5b97b1;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px; 
-	border:none;
+.oaportal .form-submit {
 	text-transform:uppercase;
-	padding:2px 6px;
+	margin:20px 40px;
 	font-size:150%;
-	color:white;
 	clear:both;
 	float:right;
 }
 
+/***** CONTACT FORM ********************************************************************/
+
+#oa-portal-p1-contact-form legend {
+	display:none;
+}
+#oa-portal-p1-contact-form .form-item label {
+	display:block;
+	float:none;
+	clear:both;
+}
+
+/***** APPLICATION FORM ****************************************************************/
+
+#edit-contact-emerg1-name-wrapper,
+#edit-contact-emerg1-phone-wrapper {padding-bottom:20px}
 
 
-/* Application form *************************/
+#edit-contact-emerg1-name-wrapper,
+#edit-contact-emerg1-phone-wrapper,
+#edit-contact-emerg2-name-wrapper,
+#edit-contact-emerg2-phone-wrapper,
+#edit-education-edu-0-city-wrapper,
+#edit-education-edu-1-city-wrapper,
+#edit-education-edu-0-major-wrapper,
+#edit-education-edu-0-minor-wrapper,
+#edit-education-edu-1-major-wrapper,
+#edit-education-edu-1-minor-wrapper {
+	width:50%;
+	clear:none;
+}
+#edit-education-edu-0-coursework1-wrapper,
+#edit-education-edu-0-coursework2-wrapper,
+#edit-education-edu-1-coursework1-wrapper,
+#edit-education-edu-1-coursework2-wrapper,
+#edit-experience-exp-0-city-wrapper,
+#edit-experience-exp-0-state-wrapper {
+	width:auto;
+	padding-right:20px;
+	clear:none;
+}
+#edit-education-edu-0-coursework3-wrapper {margin-left:172px}
+#edit-education-edu-1-coursework3-wrapper {margin-left:172px}
+#edit-education-edu-0-coursework3-wrapper,
+#edit-education-edu-0-coursework4-wrapper,
+#edit-education-edu-1-coursework3-wrapper,
+#edit-education-edu-1-coursework4-wrapper {
+	width:auto;
+	padding-right:20px;
+	clear:none;
+	float:left;
+}
+
+div #edit-education-edu-0-state-wrapper,
+div #edit-education-edu-0-year-wrapper,
+div #edit-education-edu-1-state-wrapper,
+div #edit-education-edu-1-year-wrapper {
+	width:25%;
+	clear:none;
+}
+
 .oa-terms-field {
 	background:#EEEEEE;
 	overflow:hidden;
 	padding:5px 25px;
-	margin-left:20%;
+	margin-right:5%;
+	width:500px;
 	float:right;
 	outline: 2px solid #666;
 }

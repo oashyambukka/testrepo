@@ -10,12 +10,13 @@ function oa_portal_p1_application_form($form_state) {
   $form['#description'] = 'If you are ready to begin working.....';
   
   // Contact Information
-  $form['contact'] = fieldset('Contact Information');
-
-  $form['contact']['emerg1_name'] = textfield('Name', array('#prefix' => 'Emergency Contact 1'));
-  $form['contact']['emerg1_phone'] = textfield('Phone');
-  $form['contact']['emerg2_name'] = textfield('Name', array('#prefix' => 'Emergency Contact 2'));
-  $form['contact']['emerg2_phone'] = textfield('Phone');
+   $form['contact'] = fieldset('Contact Information');
+  $form['contact']['emerg1_name'] = textfield('Name', 30, 50);
+  $form['contact']['emerg1_name']['#prefix'] = t('<h1>Emergency Contact 1</h1>');
+  $form['contact']['emerg1_phone'] = textfield('Phone', 15, 15);
+  $form['contact']['emerg2_name'] = textfield('Name', 30, 50);
+  $form['contact']['emerg2_name']['#prefix'] = t('<h1>Emergency Contact 2</h1>');
+  $form['contact']['emerg2_phone'] = textfield('Phone', 15, 15);
 
   // Education
   $form['education'] = fieldset('Education', 'Please do not note the year high school diploma was received');
@@ -24,13 +25,15 @@ function oa_portal_p1_application_form($form_state) {
   $edu_fields['school'] = textfield('School', array('#options' => array('opt1' => 'Opt 1')));
   $edu_fields['grad_status'] = radios('Did you graduate', array(1 => 'Yes', 0 => 'No'));
   $edu_fields['degree'] = select('Degree Earned', array('Associates'));
-  $edu_fields['city'] = textfield('City');
+  $edu_fields['city'] = textfield('City',30);
   $edu_fields['state'] = state();
-  $edu_fields['year'] = textfield('Year');
-  $edu_fields['major'] = textfield('Major');
-  $edu_fields['minor'] = textfield('Minor');
-  $edu_fields['coursework1'] = textfield('Relevant Course Work');
-  $edu_fields['coursework2'] = textfield('');
+  $edu_fields['year'] = textfield('Year',10,4);
+  $edu_fields['major'] = textfield('Major',30);
+  $edu_fields['minor'] = textfield('Minor',30);
+  $edu_fields['coursework1'] = textfield('Relevant Course Work',25);
+  $edu_fields['coursework2'] = textfield('',25);
+  $edu_fields['coursework3'] = textfield('',25);
+  $edu_fields['coursework4'] = textfield('',25);
 
   // @TODO Enable multiple entry
   $form['education']['edu'][] = $edu_fields;
@@ -40,10 +43,10 @@ function oa_portal_p1_application_form($form_state) {
   $form['experience'] = fieldset('Experience');
 
   $form['experience']['recent_grad'] = checkbox('Check box if you are a recent college graduate');  
-  $exp_fields['employer'] = textfield('Employer');
+  $exp_fields['employer'] = textfield('Employer',75);
   $exp_fields['city'] = textfield('City');
   $exp_fields['state'] = state('State');
-  $exp_fields['start_date'] = date_popup('Start Date');
+  //$exp_fields['start_date'] = date_popup('Start Date');
   $exp_fields['end_date'] = date_popup('End Date');
   $exp_fields['present'] = checkbox('Present');
   $exp_fields['title'] = textfield('Title');
@@ -137,12 +140,13 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
 
 function oa_portal_p1_contact_form() {
   $form['contact'] = fieldset('Contact Information');
-  $form['contact']['first_name'] = textfield('First Name');
-  $form['contact']['middle'] = textfield('Middle Initial');
+  $form['contact']['first_name'] = textfield('First Name', 15, 20);
+  $form['contact']['middle'] = textfield('Middle Initial', 3, 1);
   $form['contact']['middle']['#required'] = FALSE;
+  $form['contact']['last_name'] = textfield('Last Name', 20, 30);
   $form['contact']['address'] = address();
-  $form['contact']['primary_phone'] = textfield('Primary Phone');
-  $form['contact']['mobile_phone'] = textfield('Cell Phone');
+  $form['contact']['primary_phone'] = textfield('Primary Phone', 15, 10);
+  $form['contact']['mobile_phone'] = textfield('Cell Phone', 15, 10);
   $form['contact']['email'] = textfield('Email');
   oa_portal_submit($form);
   return $form;
