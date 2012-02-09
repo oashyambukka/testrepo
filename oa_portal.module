@@ -16,17 +16,24 @@ function oa_portal_init() {
 function oa_portal_menu() {
   $items = array();
 
+  $items['admin/portal'] = array(
+    'title' => 'OA Portal Admin', 
+    'page callback' => 'oa_portal_admin', 
+    'access arguments' => array('administer site configuration'),
+    'file' => 'oa_portal.admin.inc'
+  );
   $items['portal'] = array(
     'title' => 'My OA Healthcare Documents', 
     'page callback' => 'oa_portal_page', 
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
-  $items['admin/portal'] = array(
-    'title' => 'OA Portal Admin', 
-    'page callback' => 'oa_portal_admin', 
-    'access arguments' => array('administer site configuration'),
-    'file' => 'oa_portal.admin.inc'
+  $items['update-password'] = array(
+    'title' => 'My OA Healthcare Documents', 
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('oa_portal_change_password_form'),
+    'access arguments' => array('access portal'),
+    'file' => 'oa_portal.forms.inc'
   );
   $items['portal/file/%'] = array(
     'title' => 'OA Portal Download File', 

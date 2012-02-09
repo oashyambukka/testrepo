@@ -3,9 +3,41 @@
 include_once('oa_portal.fields.inc');
 
 /**
+ * Form callback for Password change form
+ */
+function oa_portal_change_password_form($form_state) {
+  $form = array();
+  $form['pass'] = array(
+    '#type' => 'password',
+    '#description' => t('For your account security, please change your password. This password requires a minimum of 7 characters, is case sensitive, and supports special characters.'),
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update'),
+  );
+  return $form;
+}
+
+/**
+ * Form submission callback for Password change form
+ */
+function oa_portal_p1_contact_form_submit($form, &$form_state) {
+  global $user;
+  $account = user_load($user);
+  dsm($form_state['values'], 'Password change $values');
+
+  // @TODO Change user password
+  $account->pass = $form_state['values']['pass'];
+  user_save($account, array('pass' => $form_state['values']['pass']));
+  drupal_set_message(t('Your password has been updated.'));
+  $form['#redirect'] = 'portal';
+}
+
+
+/**
  * Form callback for Contact
  */
-function oa_portal_p1_contact_form() {
+function oa_portal_p1_contact_form($form_state) {
   $form['contact'] = fieldset('Contact Information');
   $form['contact']['first_name'] = textfield('First Name');
   $form['contact']['middle'] = textfield('Middle Initial');
