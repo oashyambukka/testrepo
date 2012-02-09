@@ -140,6 +140,26 @@ function checkboxes_yesno($title) {
   return $element;
 }
 
+function radios_yesno($title) {
+  $element = array(
+    '#type' => 'radios',
+    '#title' => t($title),
+    '#options' => array(1 => t('Yes'), 0 => t('No')),
+    '#required' => TRUE,
+  );
+  return $element;
+}
+
+function radios_123($title) {
+  $element = array(
+    '#type' => 'radios',
+    '#title' => t($title),
+    '#options' => drupal_map_assoc(1, 2, 3),
+    '#required' => TRUE,
+  );
+  return $element;
+}
+
 function terms($desc) {
   $element = array(
     '#type' => 'radios',
@@ -162,4 +182,17 @@ function address() {
   $elements['state'] = textfield('State');
   $elements['zip'] = textfield('Zip Code');
   return $elements;
+}
+
+function cap_yne($title, $yn_title = 'If no, explain') {
+  $elements = array('#tree' => TRUE);
+  $elements['yn'] = radios_yesno($title);
+  $elements['explain'] = textfield($yn_title);
+  return $elements;
+}
+
+function acknowledgement($description) {
+  $element = checkbox('I acknowledge, understand , and accept this Agreement/Statement.');
+  $element['#prefix'] = '<div class="acknowledgement-description">'. $description .'</div>';
+  return $element;
 }

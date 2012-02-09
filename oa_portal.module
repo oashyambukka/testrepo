@@ -172,7 +172,7 @@ function oa_portal_api() {
       '#docs' => array(),
     ),
     'checklist' => array(
-      '#title' => t('Checklist'),
+      '#title' => t('Skills Checklist'),
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),

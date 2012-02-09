@@ -3,6 +3,39 @@
 include_once('oa_portal.fields.inc');
 
 /**
+ * Form callback for Contact
+ */
+function oa_portal_p1_contact_form() {
+  $form['contact'] = fieldset('Contact Information');
+  $form['contact']['first_name'] = textfield('First Name');
+  $form['contact']['middle'] = textfield('Middle Initial');
+  $form['contact']['middle']['#required'] = FALSE;
+  $form['contact']['address'] = address();
+  $form['contact']['primary_phone'] = textfield('Primary Phone');
+  $form['contact']['mobile_phone'] = textfield('Cell Phone');
+  $form['contact']['email'] = textfield('Email');
+  oa_portal_submit($form);
+  return $form;
+}
+
+/**
+ * Form validation callback for Contact
+ */
+/*
+function oa_portal_p1_contact_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for Background/Reference Check
+ */
+/*
+function oa_portal_p1_contact_form_submit($form, &$form_state) {
+}
+*/
+
+
+/**
  * Form callback for Application form
  */
 function oa_portal_p1_application_form($form_state) {
@@ -122,47 +155,132 @@ function oa_portal_p1_application_form($form_state) {
 /**
  * Form validation callback for Application
  */
-/*
 function oa_portal_p1_application_form_validate($form, &$form_state) {
 }
-*/
 
 /**
  * Form submission callback for Application
  */
-/*
 function oa_portal_p1_application_form_submit($form, &$form_state) {
 }
-*/
 
-function oa_portal_p1_contact_form() {
-  $form['contact'] = fieldset('Contact Information');
-  $form['contact']['first_name'] = textfield('First Name');
-  $form['contact']['middle'] = textfield('Middle Initial');
-  $form['contact']['middle']['#required'] = FALSE;
-  $form['contact']['address'] = address();
-  $form['contact']['primary_phone'] = textfield('Primary Phone');
-  $form['contact']['mobile_phone'] = textfield('Cell Phone');
-  $form['contact']['email'] = textfield('Email');
-  oa_portal_submit($form);
+
+/**
+ * Form callback for Checklist
+ */
+function oa_portal_p1_checklist_form($form_state) {
+  $form = array();
+  $form['#description'] = t('This profile is for use...');
+
+  // @TODO Get items per modality
+  $form['skills'] = fieldset('Essential/Practical Skills Checklist');
+  $form['skills']['core'] = fieldset('Core Skills');
+  $form['skills']['core']['item1'] = radios_123('Admission of a Patient');
+  $form['skills']['core']['item2'] = radios_123('Transfer of a Patient');
+  $form['skills']['core']['item3'] = radios_123('Discharge of a Patient');
+  $form['skills']['cardio'] = fieldset('Cardiovascular');
+  $form['skills']['cardio']['item1'] = radios_123('Doppler');
+  $form['skills']['cardio']['item2'] = radios_123('Lead placement');
+
+  oa_portal_submit(&$form);
   return $form;
 }
 
 /**
- * Form validation callback for Contact
+ * Form validation callback for Checklist
  */
 /*
-function oa_portal_p1_contact_form_validate($form, &$form_state) {
+function oa_portal_p1_checklist_form_validate($form, &$form_state) {
 }
 */
 
 /**
- * Form submission callback for Background/Reference Check
+ * Form submission callback for Checklist
+ */
+function oa_portal_p1_checklist_form_submit($form, &$form_state) {
+  // @TODO Post to UCM
+}
+
+
+/**
+ * Form callback for Professional Organizations
+ */
+function oa_portal_p2_professional_orgs_form($form_state) {
+  $form['prof_orgs'] = fieldset('Professional Organizations');
+  $form['prof_orgs']['no_orgs'] = checkbox('I am not a member of any organizations');
+  $org['org_name'] = textfield('Organization');
+  $org['org_role'] = textfield('Role');
+  $org['org_date_from'] = date_popup('From');
+  $org['org_date_to'] = date_popup('To');
+  $form['prof_orgs']['org1']['#tree'] = TRUE;
+  $form['prof_orgs']['org1'] = $org;
+  $form['prof_orgs']['org2']['#tree'] = TRUE;
+  $form['prof_orgs']['org2'] = $org;
+
+  oa_portal_submit(&$form);
+  return $form;
+}
+
+/**
+ * Form validation callback for Professional Organizations
  */
 /*
-function oa_portal_p1_contact_form_submit($form, &$form_state) {
+function oa_portal_p2_professional_orgs_form_validate($form, &$form_state) {
 }
 */
+
+/**
+ * Form submission callback for Professional Organizations
+ */
+/*
+function oa_portal_p2_professional_orgs_form_submit($form, &$form_state) {
+  // @TODO Post to UCM
+}
+*/
+
+/**
+ * Form callback for Licensure Certifications
+ */
+function oa_portal_p2_licensure_certs_form($form_state) {
+  $form = array();
+  $form['#attributes'] = array('enctype' => "multipart/form-data");
+
+  $form['lc'] = fieldset('Licensure/Certification');
+  $form['lc']['description'] = t('Upload a copy of your licensure/certification. .pdf, .jpg and .doc are acceptable formats.');
+  // @TODO Get list of Licensures
+  $form['lc']['lc_licensure'] = select('Select which certificate you are uploading', array('item1', 'item2'));
+  $form['lc']['lc_file'] = array(
+    '#type' => 'file',
+    '#title' => t('Upload file'),
+    '#required' => TRUE,
+    '#size' => 80,
+  );
+  $form['lc']['uploaded'] = markup('<h3>Upload files</h3>');
+  $form['lc']['fax_preference'] = checkbox('Check this box if you prefer to fax copies of your licensures/certifications');
+
+  // @TODO Get cover page doc ID
+  $form['lc']['fax'] = markup('<PDF ICON> Please include this cover letter and fax it to (818) 555-5555. <cover page link here>')
+
+  // @TODO Slightly different Finalize mechanism. Form to be submitted potentially more than once.
+  oa_portal_submit(&$form);
+  return $form;
+}
+
+/**
+ * Form validation callback for Licensure Certifications
+ */
+/*
+function oa_portal_p2_licensure_certs_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for Licensure Certifications
+ */
+function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
+  // @TODO Post individual files to UCM, mark as finalized either after checkbox has been checked, or 
+}
+
 
 /**
  * Form callback for Background/Reference Check
@@ -212,42 +330,79 @@ function oa_portal_p2_background_reference_form($form, &$form_state) {
 }
 */
 
-
 /**
- * Form callback for Professional Organizations
+ * Form callback for Capabilities Questionnaire
  */
-function oa_portal_p2_professional_orgs_form($form_state) {
-  $form['prof_orgs'] = fieldset('Professional Organizations');
-  $form['prof_orgs']['no_orgs'] = checkbox('I am not a member of any organizations');
-  $org['org_name'] = textfield('Organization');
-  $org['org_role'] = textfield('Role');
-  $org['org_date_from'] = date_popup('From');
-  $org['org_date_to'] = date_popup('To');
-  $form['prof_orgs']['org1']['#tree'] = TRUE;
-  $form['prof_orgs']['org1'] = $org;
-  $form['prof_orgs']['org2']['#tree'] = TRUE;
-  $form['prof_orgs']['org2'] = $org;
-
+function oa_portal_p2_capabilities_form($form_state) {
+  $form = array();
+  
+  $form['jcq'] = fieldset('Job Capabilities Questionnaire');
+  $form['jcq']['#description'] = t('As a candidate for employment...');
+  $form['jcq']['performance'] = cap_yne('Can you perform all of these and similar tasks with reasonable accommodation?');
+  $form['jcq']['health'] = cap_yne('Do you have any health reasons that would prohibit you from performing these or similar tasks?');
+  $form['jcq']['restrictions'] = cap_yne('Do you have any restrictions preventing you from performing these tasks?');
+  $form['jcq']['allergies'] = cap_yne('Do you have any known allergies?', 'If yes, list');
+  $form['jcq']['allergies']['dermatitis'] = radios_yesno('Do you have dermatitis?');
+  $form['jcq']['allergies']['latex'] = radios_yesno('Are you allergic to latex gloves?');
+  $form['jcq']['preference'] = cap_yne('Are there any assignments that you cannot or prefer not to do?');
+  $form['jcq']['certify'] = checkbox('I certify this information is correct, and understand that withholding or giving false information will result in refusal to hire or disciplinary action up to, and including, termination.');
   oa_portal_submit(&$form);
   return $form;
 }
 
 /**
- * Form validation callback for Professional Organizations
+ * Form validation callback for Capabilities Questionnaire
  */
 /*
-function oa_portal_p2_professional_orgs_form_validate($form, &$form_state) {
+function oa_portal_p2_capabilities_form_validate($form, &$form_state) {
 }
 */
 
 /**
- * Form submission callback for Professional Organizations
+ * Form submission callback for Capabilities Questionnaire
+ */
+function oa_portal_p2_capabilities_form_submit($form, &$form_state) {
+  // @TODO Post to UCM
+}
+
+/**
+ * Form callback for Policies & Agreements
+ */
+function oa_portal_p2_policies_form($form_state) {
+  $form = array();
+  $form['substance_abuse'] = fieldset('Substance Abuse Testing Consent');
+  $form['substance_abuse']['testing'] = acknowledgement('I understand that I may be offered a position with On Assignment...');
+  $form['substance_abuse']['sample'] = acknowledgement('I agree to provide an appropriate sample...');
+
+  $form['employment'] = fieldset('Employment Agreement');
+  $form['employment']['personelle'] = acknowledgement('On Assignment Staffing Services, Inc.....');
+  $form['employment']['ca_addendum'] = acknowledgement('Addendum for CA...');
+  
+  $form['direct_hire'] = fieldset('Direct Hire Candidate Agreement');
+  $form['direct_hire']['relationship'] = acknowledgement('On Assignment Staffing Services...');
+  $form['questions'] = markup('If you have any questions..');
+  
+  oa_portal_submit(&$form);
+  return $form;
+}
+
+/**
+ * Form validation callback for Policies & Agreements
  */
 /*
-function oa_portal_p2_professional_orgs_form_submit($form, &$form_state) {
-
+function oa_portal_p2_policies_form_validate($form, &$form_state) {
 }
 */
+
+/**
+ * Form submission callback for Policies & Agreements
+ */
+function oa_portal_p2_policies_form_submit($form, &$form_state) {
+  // @TODO Post to UCM
+}
+
+
+
 
 
 function oa_portal_submit(&$form) {
