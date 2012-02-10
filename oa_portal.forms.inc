@@ -116,7 +116,7 @@ function oa_portal_p1_application_form($form_state) {
   $exp_fields['salary_period'] = radios('Salary', array('annual' => t('Annual'), 'hourly' => t('Hourly')));
   $exp_fields['description'] = textarea('Description', 5);
   $exp_fields['supervisor'] = textfield('Immediate Supervisor');
-  $exp_fields['may_contact'] = checkboxes_yesno('May we contact?');
+  $exp_fields['may_contact'] = radios_yesno('May we contact?');
   $exp_fields['reason'] = textfield('Reason for leaving');
   $form['experience']['exp'][] = $exp_fields;
   
@@ -131,10 +131,10 @@ function oa_portal_p1_application_form($form_state) {
   $form['preferences']['work_days'] = checkboxes('Check the days you are willing to work', array('Any', 'M', 'T', 'W', 'Th', 'F', 'S', 'Su'), TRUE);
   $form['preferences']['shifts'] = checkboxes('Check the shifts you are willing to work', array('Any', 'Days', 'Nights', 'Evenings', 'Weekends'), TRUE);
   $form['preferences']['ptft'] = checkboxes('Would you prefer to work', array('Either', 'Part-time', 'Full-time'));
-  $form['preferences']['legal_right'] = checkboxes_yesno('Can you, after employment, submit verification of your legal right to work in the U.S.?');
-  $form['preferences']['felony'] = checkboxes_yesno('Have you been convicted of a felony within the last seven years?');
+  $form['preferences']['legal_right'] = radios_yesno('Can you, after employment, submit verification of your legal right to work in the U.S.?');
+  $form['preferences']['felony'] = radios_yesno('Have you been convicted of a felony within the last seven years?');
   $form['preferences']['felony']['#suffix'] = t('(An affirmative response to this question will not necessarily disqualify you from employment)<br \>MA residents should not answer this question');
-  $form['preferences']['drug_alcohol_screen'] = checkboxes_yesno('As a condition of employment, you may be required to take and pass a drug and/or alcohol screen. Testing will be done at the company\'s expense and administered by a testing facility designated by the company. Results of any testing will be kept strictly confidential. If requested, are you willing to take the drug and/or alcohol screen?');
+  $form['preferences']['drug_alcohol_screen'] = radios_yesno('As a condition of employment, you may be required to take and pass a drug and/or alcohol screen. Testing will be done at the company\'s expense and administered by a testing facility designated by the company. Results of any testing will be kept strictly confidential. If requested, are you willing to take the drug and/or alcohol screen?');
   $form['preferences']['referral'] = select('How did you hear about On Assignment Healthcare Staffing?',
     array('onassignment.com', 'other'));
   

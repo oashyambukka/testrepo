@@ -130,16 +130,6 @@ function state($title = null) {
   return $element;
 }
 
-function checkboxes_yesno($title) {
-  $element = array(
-    '#type' => 'checkboxes',
-    '#title' => t($title),
-    '#options' => array(1 => t('Yes'), 0 => t('No')),
-    '#required' => TRUE,
-  );
-  return $element;
-}
-
 function radios_yesno($title) {
   $element = array(
     '#type' => 'radios',
