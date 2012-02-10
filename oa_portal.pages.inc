@@ -13,14 +13,16 @@ function oa_portal_page() {
   foreach ($p AS $pk => $phase) {
     $name = $phase['#title'];
     $rows = array();
+    $completed = 0;
+    $ct = 0;
     foreach ($phase AS $sk => $section) {
       if (substr($sk, 0, 1) !== '#') {
+        $ct++;
         $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), 'some-status');
       }
     }
-    $output .= theme('oap_phase', $pk, $phase['#title'], 'some-status', implode("\n", $rows));
+    $output .= theme('oap_phase', $pk, $phase['#title'], 'some-status', implode("\n", $rows), "$completed of $ct");
   }
-  $output .= '<div id="oap-complete">(1 of 3 complete)</div>';
   return $output;
 }
 

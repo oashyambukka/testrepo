@@ -6,4 +6,5 @@
   <div class="oa-phase-phases">
     <?php print $phases; ?>
   </div>
+  <div class="oa-phase-complete">(<?php print $completed; ?> complete)</div>
 </div>

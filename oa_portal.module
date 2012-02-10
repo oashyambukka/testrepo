@@ -132,7 +132,7 @@ function oa_portal_theme($existing, $type, $theme, $path) {
     'oap_phase' => array(
       'template' => 'oap_phase',
       'path' => $path . '/templates',
-      'arguments' => array('id' => NULL, 'title' => NULL, 'status' => NULL, 'phases' => NULL),
+      'arguments' => array('id' => NULL, 'title' => NULL, 'status' => NULL, 'phases' => NULL, 'completed' => NULL),
     ),
     'oap_phase_row' => array(
       'template' => 'oap_phase_row',
