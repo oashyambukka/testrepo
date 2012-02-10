@@ -40,7 +40,7 @@ function oa_portal_download_file($dID) {
     $header = preg_replace('/\r?\n(?!\t| )/', '', $header);
     drupal_set_header($header);
   }
-  print base64_decode($result->GetFileByIDResult->downloadFile->fileContent);
+  print $result->GetFileByIDResult->downloadFile->fileContent;
   exit();
 }
 
@@ -59,5 +59,6 @@ function oa_portal_autosave() {
   // Server error
   // return drupal_json(array('status' => 500));
 
-  return drupal_json(array('status' => 200));
+  return drupal_set_message(t('The form has been submitted. name="@first @last", year of birth=@year_of_birth', 
+    array('@first' => $form_state['values']['first'], '@last' => $form_state['values']['last'], '@year_of_birth' => $form_state['values']['year_of_birth'])));
 }

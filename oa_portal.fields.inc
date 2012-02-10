@@ -19,12 +19,13 @@ function fieldset($title, $description = NULL) {
   return $element;
 }
 
-function textfield($title, $length = null) {
+function textfield($title, $size = 60, $maxlength = null) {
   $element = array(
     '#type' => 'textfield',
     '#required' => TRUE,
     '#title' => t($title),
-    '#length' => $length,
+    '#size' => $size,
+    '#maxlength' => $maxlength,
   );
   return $element;
 }
@@ -34,8 +35,7 @@ function email($title = null) {
     '#type' => 'textfield',
     '#required' => TRUE,
     '#title' => ($title) ? t($title) : t('Email'),
-    '#length' => 100,
-    // @TODO Add validation
+    '#maxlength' => 100,
     '#element_validate' => array('oa_portal_email_valid'),
   );
   return $element;
@@ -91,11 +91,11 @@ function checkboxes($title, $choices, $map = FALSE) {
   return $element;
 }
 
-function radios($title, $choices) {
+function radios($title, $choices, $map = FALSE) {
   $element = array(
     '#type' => 'radios',
     '#title' => t($title),
-    '#options' => $choices, //drupal_map_assoc($choices),
+    '#options' => ($map) ? drupal_map_assoc($choices) : $choices,
     '#required' => TRUE,
   );
   return $element;
@@ -120,12 +120,12 @@ function select($title, $choices) {
   return $element;
 }
 
-function state($title = null) {
+function state($title = t('State')) {
   $element = array(
     '#type' => 'select',
     '#required' => TRUE,
-    '#title' => ($title) ? t($title) : t('State'),
-    '#options' => drupal_map_assoc(array('AB', 'AL')),
+    '#title' => $title,
+    '#options' => drupal_map_assoc(array('AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY')),
   );
   return $element;
 }
@@ -165,12 +165,12 @@ function terms($desc) {
 
 function address() {
   $elements = array();
-  $elements['address1'] = textfield('Address');
-  $elements['address2'] = textfield('');
+  $elements['address1'] = textfield('Address', 30);
+  $elements['address2'] = textfield('', 30);
   $elements['address2']['#required'] = FALSE;
   $elements['city'] = textfield('City');
-  $elements['state'] = textfield('State');
-  $elements['zip'] = textfield('Zip Code');
+  $elements['state'] = state();
+  $elements['zip'] = textfield('Zip Code', 10);
   return $elements;
 }
 

@@ -1,0 +1,24 @@
+/* Styles for OA Healthcare Documents & Phases *******************/
+
+.oap-phase-title-status h3 {
+	font-size:150%;
+	color:white;
+}
+.oap-phase-form-link a {
+	color:black;
+	text-decoration:none;
+}
+
+#oa-phase-1,
+#oa-phase-2,
+#oa-phase-3 {
+	display:inline;
+	padding:10px;
+	margin:1px;
+	float:left;
+	height:350px;
+	width:30%;
+}
+#oa-phase-1 {background:#B77D7C}
+#oa-phase-2 {background:#AEA85C}
+#oa-phase-3 {background:#619650}

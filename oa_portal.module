@@ -7,7 +7,8 @@ include_once('oa_portal.theme.inc');
  */
 function oa_portal_init() {
   drupal_add_css(drupal_get_path('module', 'oa_portal') . '/css/forms.css');
-//  drupal_add_js(drupal_get_path('module', 'oa_portal') . '/js/forms.js');
+  drupal_add_css(drupal_get_path('module', 'oa_portal') . '/css/phases.css');
+  drupal_add_js(drupal_get_path('module', 'oa_portal') . '/js/main.js');
 }
 
 /**
@@ -340,7 +341,6 @@ function oa_portal_soap_file_form_submit($form, &$form_state) {
     $handle = fopen($filepath, "r");
     $contents = fread($handle, $filesize);
     fclose($handle);
-    $encoded_content = base64_encode($contents);
 
     $params = array(
       'dDocType' => 'Rmax',
@@ -351,7 +351,7 @@ function oa_portal_soap_file_form_submit($form, &$form_state) {
       'dDocName' => 'RP' . time(),
       'primaryFile' =>array(
         'fileName'=> $_FILES['files']['name']['upload'],
-        'fileContent' => $encoded_content),
+        'fileContent' => $contents),
     );
 
     $results = oa_portal_soap('CheckInUniversal', $params);
