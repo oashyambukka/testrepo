@@ -215,7 +215,6 @@ function oa_portal_p1_checklist_form($form_state) {
   $form['skills']['cardio'] = fieldset('Cardiovascular');
   $form['skills']['cardio']['item1'] = radios_123('Doppler');
   $form['skills']['cardio']['item2'] = radios_123('Lead placement');
-
   oa_portal_submit(&$form);
   return $form;
 }
@@ -281,7 +280,7 @@ function oa_portal_p2_licensure_certs_form($form_state) {
   $form['#attributes'] = array('enctype' => "multipart/form-data");
 
   $form['lc'] = fieldset('Licensure/Certification');
-  $form['lc']['description'] = t('Upload a copy of your licensure/certification. .pdf, .jpg and .doc are acceptable formats.');
+  $form['lc']['#description'] = t('Upload a copy of your licensure/certification. .pdf, .jpg and .doc are acceptable formats.');
   // @TODO Get list of Licensures
   $form['lc']['lc_licensure'] = select('Select which certificate you are uploading', array('item1', 'item2'));
   $form['lc']['lc_file'] = array(
@@ -294,7 +293,7 @@ function oa_portal_p2_licensure_certs_form($form_state) {
   $form['lc']['fax_preference'] = checkbox('Check this box if you prefer to fax copies of your licensures/certifications');
 
   // @TODO Get cover page doc ID
-  $form['lc']['fax'] = markup('<PDF ICON> Please include this cover letter and fax it to (818) 555-5555. <cover page link here>')
+  $form['lc']['fax'] = markup('<PDF ICON> Please include this cover letter and fax it to (818) 555-5555. <cover page link here>');
 
   // @TODO Slightly different Finalize mechanism. Form to be submitted potentially more than once.
   oa_portal_submit(&$form);
@@ -344,7 +343,8 @@ function oa_portal_p2_background_reference_form($form_state) {
   $ref['phone'] = textfield('Phone');
   $ref['email'] = email();
   $ref['certification'] = checkbox('I hereby give permission to the above named employer to release information to On Assignment regarding my performance while employed at that facility');
-  
+  $form['reference1']['ref'] = $ref;
+ 
   oa_portal_submit(&$form);
   return $form;
 }

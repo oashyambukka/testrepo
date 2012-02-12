@@ -1,11 +1,7 @@
 <?php
 
 function markup($value) {
-  $element = array(
-    '#type' => 'markup',
-    '#value' => t($value),
-  );
-  return $element;
+  return array('#value' => t($value));
 }
 
 function fieldset($title, $description = NULL) {
@@ -37,6 +33,7 @@ function email($title = null) {
     '#title' => ($title) ? t($title) : t('Email'),
     '#maxlength' => 100,
     '#element_validate' => array('oa_portal_email_valid'),
+    '#attributes' => array('class' => 'textfield-email'),
   );
   return $element;
 }
@@ -120,12 +117,13 @@ function select($title, $choices) {
   return $element;
 }
 
-function state($title = t('State')) {
+function state($title = 'State') {
   $element = array(
     '#type' => 'select',
     '#required' => TRUE,
-    '#title' => $title,
+    '#title' => t($title),
     '#options' => drupal_map_assoc(array('AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY')),
+    '#attributes' => array('class' => 'select-state'),
   );
   return $element;
 }
@@ -136,6 +134,7 @@ function radios_yesno($title) {
     '#title' => t($title),
     '#options' => array(1 => t('Yes'), 0 => t('No')),
     '#required' => TRUE,
+    '#attributes' => array('class' => 'radios-yes-no'),
   );
   return $element;
 }
@@ -144,8 +143,9 @@ function radios_123($title) {
   $element = array(
     '#type' => 'radios',
     '#title' => t($title),
-    '#options' => drupal_map_assoc(1, 2, 3),
+    '#options' => array(1, 2, 3),
     '#required' => TRUE,
+    '#attributes' => array('class' => 'radios-123'),
   );
   return $element;
 }
@@ -166,23 +166,28 @@ function terms($desc) {
 function address() {
   $elements = array();
   $elements['address1'] = textfield('Address', 30);
+  $elements['address1']['#prefix'] = '<div class="field-address">';
   $elements['address2'] = textfield('', 30);
   $elements['address2']['#required'] = FALSE;
   $elements['city'] = textfield('City');
   $elements['state'] = state();
   $elements['zip'] = textfield('Zip Code', 10);
+  $elements['zip']['#suffix'] = '</div>';
   return $elements;
 }
 
 function cap_yne($title, $yn_title = 'If no, explain') {
   $elements = array('#tree' => TRUE);
   $elements['yn'] = radios_yesno($title);
+  $elements['yn']['#prefix'] = '<div class="field-yes-no-explain">';
   $elements['explain'] = textfield($yn_title);
+  $elements['explain']['#suffix'] = '</div>';
   return $elements;
 }
 
 function acknowledgement($description) {
   $element = checkbox('I acknowledge, understand , and accept this Agreement/Statement.');
-  $element['#prefix'] = '<div class="acknowledgement-description">'. $description .'</div>';
+  $element['#prefix'] = '<div class="field-acknowledgement"><div class="acknowledgement-description">'. $description .'</div>';
+  $element['#suffix'] = '</div>';
   return $element;
 }
