@@ -560,10 +560,12 @@ function oa_portal_p3_paycheck_form($form_state) {
   $form['cp']['cc_number']['#tree'] = TREE;
   $cc_num = textfield('', 4);
   $form['cp']['cc_number'][] = $cc_num;
+  $form['cp']['cc_number'][0]['#prefix'] = '<div class="field-cc">';
   $form['cp']['cc_number'][] = $cc_num;
   $form['cp']['cc_number'][] = $cc_num;
   $form['cp']['cc_number'][] = $cc_num;
-  
+  $form['cp']['cc_number'][3]['#suffix'] = '</div>';
+
   oa_portal_submit($form);
   return $form;
 }
