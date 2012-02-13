@@ -6,3 +6,4 @@ package = "On Assignment"
 
 dependencies[] = devel
 dependencies[] = soapclient
+dependencies[] = fapi_validation

@@ -30,7 +30,7 @@ function oa_portal_menu() {
     'file' => 'oa_portal.pages.inc'
   );
   $items['update-password'] = array(
-    'title' => 'My OA Healthcare Documents', 
+    'title' => 'Update Password', 
     'page callback' => 'drupal_get_form',
     'page arguments' => array('oa_portal_change_password_form'),
     'access arguments' => array('access portal'),

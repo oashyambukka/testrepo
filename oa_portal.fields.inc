@@ -22,6 +22,7 @@ function textfield($title, $size = 60, $maxlength = null) {
     '#title' => t($title),
     '#size' => $size,
     '#maxlength' => $maxlength,
+    '#filters' => array('trim'),
   );
   return $element;
 }
@@ -32,16 +33,11 @@ function email($title = null) {
     '#required' => TRUE,
     '#title' => ($title) ? t($title) : t('Email'),
     '#maxlength' => 100,
-    '#element_validate' => array('oa_portal_email_valid'),
     '#attributes' => array('class' => 'textfield-email'),
+    '#rules' => array('email'),
+    '#filters' => array('trim'),
   );
   return $element;
-}
-
-function oa_portal_email_validate($element, &$form_state) {
-  if (!valid_email_address($element['#value'])) {
-    form_error($element, t('The email address appears to be invalid.'));
-  }
 }
 
 function textfield_sin() {
@@ -54,6 +50,8 @@ function textfield_sin() {
   $el = array(
     '#type' => 'textfield',
     '#size' => 3,
+    '#rules' => array('numeric'),
+    '#filters' => array('trim'),
   );
   $element[] = $el;
   $element[] = $el;
