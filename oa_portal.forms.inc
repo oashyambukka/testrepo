@@ -530,13 +530,13 @@ function oa_portal_p2_competency_form($form_state) {
 }
 
 /**
- * Form callback for Paycheque Method
+ * Form callback for Paycheck Method
  */
-function oa_portal_p3_paycheque_form($form_state) {
+function oa_portal_p3_paycheck_form($form_state) {
   $form = array();
   $form['delivery'] = fieldset('Paycheck Delivery');
   $form['delivery']['delivery_option'] = radios('', array(
-    'yes' => '<strong>I do</strong> wish to sign up for Direct Deposit or CashPay at this time and will complete a paycheque delivery method below.',
+    'yes' => '<strong>I do</strong> wish to sign up for Direct Deposit or CashPay at this time and will complete a paycheck delivery method below.',
     'no' => '<strong>I do</strong> wish to sign up for Direct Deposit or CashPay at this time. I would prefer to have my pay check mailed to me. I understand that there may be a delay to my paycheck delivery via the US Postal Service which is beyond the control of On Assignment.',
   ));
   $form['delivery']['policy'] = markup('Check Replacement Policy<br/>On Assignment requires that you wait 5 business days from the date the check was mailed before requesting a replacement check. Additionally, if a check replacement is needed, you will be rquired to sign up for Direct Deposit or CashPay.');
@@ -565,17 +565,17 @@ function oa_portal_p3_paycheque_form($form_state) {
 }
 
 /**
- * Form validation callback for Paycheque Method
+ * Form validation callback for Paycheck Method
  */
 /*
-function oa_portal_p3_paycheque_form_validate($form, &$form_state) {
+function oa_portal_p3_paycheck_form_validate($form, &$form_state) {
 }
 */
 
 /**
- * Form submission callback for Paycheque Method
+ * Form submission callback for Paycheck Method
  */
-function oa_portal_p3_paycheque_form_submit($form, &$form_state) {
+function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
   // @TODO Post to UCM
 }
 

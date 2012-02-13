@@ -240,8 +240,8 @@ function oa_portal_api() {
   $p['p3'] = array(
     '#title' => t('Phase 3'),
     '#status' => '',
-    'paycheque' => array(
-      '#title' => t('Paycheque Method'),
+    'paycheck' => array(
+      '#title' => t('Paycheck Method'),
       '#phase' => 3,
       '#dependencies' => array(),
       '#status' => '',
