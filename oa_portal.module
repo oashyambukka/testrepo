@@ -48,7 +48,7 @@ function oa_portal_menu() {
     'title' => 'OA Portal Autosave', 
     'page callback' => 'oa_portal_autosave',
     'access arguments' => array('access portal'),
-    'file' => 'oa_portal.pages.inc'
+    'file' => 'oa_portal.pages.inc',
     'type' => MENU_CALLBACK,
   );
 
