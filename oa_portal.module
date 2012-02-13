@@ -156,6 +156,11 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'template' => 'oap_phase_status',
       'path' => $path . '/templates',
     ),
+    'oap_tooltip' => array(
+      'template' => 'oap_tooltip',
+      'path' => $path . '/templates',
+      'arguments' => array('status' => NULL, 'string' => NULL),
+    ),
   );
 }
 

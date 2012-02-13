@@ -99,11 +99,11 @@ function radios($title, $choices, $map = FALSE) {
 function date_popup($title, $size = 13) {
   $element = array(
     '#type' => 'date_popup',
-	'#date_format' => 'd-m-Y',
-	'#prefix' => '<div class="date-popup">',
+    '#date_format' => 'd-m-Y',
+    '#prefix' => '<div class="date-popup">',
     '#title' => t($title),
-	'#suffix' => '</div>',
-	'#size' => $size,
+    '#suffix' => '</div>',
+    '#size' => $size,
     '#required' => TRUE,
   );
   return $element;
