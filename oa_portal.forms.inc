@@ -214,7 +214,7 @@ function oa_portal_p1_checklist_form($form_state) {
   $form['skills']['cardio'] = fieldset('Cardiovascular');
   $form['skills']['cardio']['item1'] = radios_123('Doppler');
   $form['skills']['cardio']['item2'] = radios_123('Lead placement');
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
@@ -250,7 +250,7 @@ function oa_portal_p2_professional_orgs_form($form_state) {
   $form['prof_orgs']['org2']['#tree'] = TRUE;
   $form['prof_orgs']['org2'] = $org;
 
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
@@ -293,7 +293,7 @@ function oa_portal_p2_licensure_certs_form($form_state) {
   $form['lc']['fax'] = markup('<PDF ICON> Please include this cover letter and fax it to (818) 555-5555. <cover page link here>');
 
   // @TODO Slightly different Finalize mechanism. Form to be submitted potentially more than once.
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
@@ -342,7 +342,7 @@ function oa_portal_p2_background_reference_form($form_state) {
   $ref['certification'] = checkbox('I hereby give permission to the above named employer to release information to On Assignment regarding my performance while employed at that facility');
   $form['reference1']['ref'] = $ref;
  
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
@@ -377,7 +377,7 @@ function oa_portal_p2_capabilities_form($form_state) {
   $form['jcq']['allergies']['latex'] = radios_yesno('Are you allergic to latex gloves?');
   $form['jcq']['preference'] = cap_yne('Are there any assignments that you cannot or prefer not to do?');
   $form['jcq']['certify'] = checkbox('I certify this information is correct, and understand that withholding or giving false information will result in refusal to hire or disciplinary action up to, and including, termination.');
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
@@ -413,7 +413,7 @@ function oa_portal_p2_policies_form($form_state) {
   $form['direct_hire']['relationship'] = acknowledgement('On Assignment Staffing Services...');
   $form['questions'] = markup('If you have any questions..');
   
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
@@ -495,7 +495,7 @@ function oa_portal_p2_medical_form($form_state) {
     'I acknowledge, understand, and accept this Agreement/Statement. *This is a reg..'
   );
   
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
@@ -557,7 +557,7 @@ function oa_portal_p3_paycheck_form($form_state) {
   $form['cp']['cc_number'][] = $cc_num;
   $form['cp']['cc_number'][] = $cc_num;
   
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
@@ -588,7 +588,7 @@ function oa_portal_p3_w4_form($form_state) {
     'Single', 'Married', 'Married, but withhold at higher Single rate'
   ), TRUE);
 
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
@@ -614,7 +614,7 @@ function oa_portal_p3_i9_form($form_state) {
   $form = array();
   $form['#description'] = t('');
 
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
@@ -640,7 +640,7 @@ function oa_portal_p3_eeo_form($form_state) {
   $form = array();
   $form['#description'] = t('');
 
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
@@ -666,7 +666,7 @@ function oa_portal_p3_work_policy_form($form_state) {
   $form = array();
   $form['#description'] = t('');
 
-  oa_portal_submit(&$form);
+  oa_portal_submit($form);
   return $form;
 }
 
