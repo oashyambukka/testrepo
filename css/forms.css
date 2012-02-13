@@ -67,7 +67,7 @@
 	font-weight:bold;
 }
 .oaportal div.resizable-textarea {
-	width:85%;
+	width:80%;
 	display:inline;
 	float:left;
 }
@@ -77,6 +77,15 @@
 	font-size:150%;
 	clear:both;
 	float:right;
+}
+
+/* Date popup */
+.date-popup,
+.date-popup .form-item .form-item {
+	width:auto;
+	display:inline;
+	clear:none;
+	float:left;
 }
 
 /***** CONTACT FORM ********************************************************************/
@@ -109,6 +118,7 @@
 	width:50%;
 	clear:none;
 }
+
 #edit-education-edu-0-coursework1-wrapper,
 #edit-education-edu-0-coursework2-wrapper,
 #edit-education-edu-1-coursework1-wrapper,
@@ -131,12 +141,10 @@
 	float:left;
 }
 
-div #edit-education-edu-0-state-wrapper,
-div #edit-education-edu-0-year-wrapper,
-div #edit-education-edu-1-state-wrapper,
-div #edit-education-edu-1-year-wrapper {
-	width:25%;
-	clear:none;
+
+#felony-suffix {
+	padding:0;
+	margin:0;
 }
 
 .oa-terms-field {
@@ -153,3 +161,5 @@ div #edit-education-edu-1-year-wrapper {
 	font-weight:normal;
 	color:#003300;
 }
+
+
