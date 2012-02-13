@@ -4,7 +4,7 @@
  * Preprocess function for Messages block
  */
 function oa_portal_preprocess_oap_messages(&$vars) {
-  $vars['tip'] = theme('oa_portal_tooltip', 'some-status', 'Tooltip message goes here. We may want to generalize tooltip markup generation.');
+  $vars['tip'] = theme('oap_tooltip', 'some-status', 'Tooltip message goes here. We may want to generalize tooltip markup generation.');
   $vars['count'] = '2';
   $vars['messages'] = '';
   foreach (array(
@@ -21,7 +21,7 @@ function oa_portal_preprocess_oap_messages(&$vars) {
 function oa_portal_preprocess_oap_phase(&$vars) {
   switch ($vars['status']) {
     default:
-      $vars['status_tip'] = theme('oa_portal_tooltip', 'some-status', 'Tooltip message goes here. We may want to generalize tooltip markup generation.');
+      $vars['status_tip'] = theme('oap_tooltip', 'some-status', 'Tooltip message goes here. We may want to generalize tooltip markup generation.');
   }
 }
 
@@ -31,7 +31,7 @@ function oa_portal_preprocess_oap_phase(&$vars) {
 function oa_portal_preprocess_oap_phase_row(&$vars) {
   switch ($vars['status']) {
     default:
-      $vars['status_tip'] = theme('oa_portal_tooltip', 'some-status', 'Tooltip message goes here. We may want to generalize tooltip markup generation.');
+      $vars['status_tip'] = theme('oap_tooltip', 'some-status', 'Tooltip message goes here. We may want to generalize tooltip markup generation.');
   }
 }
 
