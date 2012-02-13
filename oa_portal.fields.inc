@@ -109,8 +109,9 @@ function select($title, $choices) {
   $element = array(
     '#type' => 'select',
     '#title' => t($title),
-    '#options' => drupal_map_assoc($choices),
+    '#options' => $options = array('none' => t('- Select -')) + drupal_map_assoc($choices),
     '#required' => TRUE,
+    '#rules' = array('not_none'),
   );
   return $element;
 }
@@ -120,8 +121,9 @@ function state($title = 'State') {
     '#type' => 'select',
     '#required' => TRUE,
     '#title' => t($title),
-    '#options' => drupal_map_assoc(array('AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY')),
+    '#options' => array('none' => t('- Select -')) + drupal_map_assoc(array('AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY')),
     '#attributes' => array('class' => 'select-state'),
+    '#rules' = array('not_none'),
   );
   return $element;
 }
@@ -171,6 +173,7 @@ function address() {
   $elements['state'] = state();
   $elements['zip'] = textfield('Zip Code', 10);
   $elements['zip']['#suffix'] = '</div>';
+  $elements['zip']['#rules'][] = 'numeric';
   return $elements;
 }
 
