@@ -360,7 +360,7 @@ function oa_portal_p2_background_reference_form_validate($form, &$form_state) {
 /**
  * Form submission callback for Background/Reference Check
  */
-function oa_portal_p2_background_reference_form($form, &$form_state) {
+function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
   // @TODO Post to UCM
 }
 
