@@ -9,7 +9,7 @@ function oa_portal_change_password_form($form_state) {
   $form = array();
   $form['pass'] = array(
     '#type' => 'password_confirm',
-    '#description' => t('For your account security, please change your password. This password requires a minimum of 7 characters, is case sensitive, and supports special characters.'),
+    '#prefix' => '<div class="description">For your account security, please change your password. This password requires a minimum of 7 characters, is case sensitive, and supports special characters.</div>',
   );
   $form['submit'] = array(
     '#type' => 'submit',
@@ -23,14 +23,11 @@ function oa_portal_change_password_form($form_state) {
  */
 function oa_portal_change_password_form_submit($form, &$form_state) {
   global $user;
-  $account = user_load($user);
-  dsm($form_state['values'], 'Password change $values');
-
-  // @TODO Change user password
+  $account = user_load(array('uid' => $user->uid));
   $account->pass = $form_state['values']['pass'];
   user_save($account, array('pass' => $form_state['values']['pass']));
   drupal_set_message(t('Your password has been updated.'));
-  $form['#redirect'] = 'portal';
+  $form_state['redirect'] = 'portal';
 }
 
 /**

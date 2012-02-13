@@ -34,7 +34,8 @@ function oa_portal_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('oa_portal_change_password_form'),
     'access arguments' => array('access portal'),
-    'file' => 'oa_portal.forms.inc'
+    'file' => 'oa_portal.forms.inc',
+    'type' => MENU_SUGGESTED_ITEM,
   );
   $items['portal/file/%'] = array(
     'title' => 'OA Portal Download File', 
@@ -48,6 +49,7 @@ function oa_portal_menu() {
     'page callback' => 'oa_portal_autosave',
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
+    'type' => MENU_CALLBACK,
   );
 
   $p = oa_portal_api();
