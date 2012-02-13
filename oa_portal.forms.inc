@@ -8,7 +8,7 @@ include_once('oa_portal.fields.inc');
 function oa_portal_change_password_form($form_state) {
   $form = array();
   $form['pass'] = array(
-    '#type' => 'password',
+    '#type' => 'password_confirm',
     '#description' => t('For your account security, please change your password. This password requires a minimum of 7 characters, is case sensitive, and supports special characters.'),
   );
   $form['submit'] = array(
@@ -21,7 +21,7 @@ function oa_portal_change_password_form($form_state) {
 /**
  * Form submission callback for Password change form
  */
-function oa_portal_p1_contact_form_submit($form, &$form_state) {
+function oa_portal_change_password_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user);
   dsm($form_state['values'], 'Password change $values');
@@ -61,10 +61,9 @@ function oa_portal_p1_contact_form_validate($form, &$form_state) {
 /**
  * Form submission callback for Background/Reference Check
  */
-/*
 function oa_portal_p1_contact_form_submit($form, &$form_state) {
+  // @TODO Post to RMax/UCM
 }
-*/
 
 
 /**
@@ -190,13 +189,16 @@ function oa_portal_p1_application_form($form_state) {
 /**
  * Form validation callback for Application
  */
+/*
 function oa_portal_p1_application_form_validate($form, &$form_state) {
 }
+*/
 
 /**
  * Form submission callback for Application
  */
 function oa_portal_p1_application_form_submit($form, &$form_state) {
+  // @TODO Post to RMax/UCM
 }
 
 /**
@@ -266,11 +268,9 @@ function oa_portal_p2_professional_orgs_form_validate($form, &$form_state) {
 /**
  * Form submission callback for Professional Organizations
  */
-/*
 function oa_portal_p2_professional_orgs_form_submit($form, &$form_state) {
   // @TODO Post to UCM
 }
-*/
 
 /**
  * Form callback for Licensure Certifications
@@ -360,10 +360,9 @@ function oa_portal_p2_background_reference_form_validate($form, &$form_state) {
 /**
  * Form submission callback for Background/Reference Check
  */
-/*
 function oa_portal_p2_background_reference_form($form, &$form_state) {
+  // @TODO Post to UCM
 }
-*/
 
 /**
  * Form callback for Capabilities Questionnaire
@@ -437,7 +436,187 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
 }
 
 
+/**
+ * Form callback for Medical Authorization and Disclosures
+ */
+function oa_portal_p2_medical_form($form_state) {
+  $form = array();
+  $form['#description'] = t('');
+  
+  oa_portal_submit(&$form);
+  return $form;
+}
 
+/**
+ * Form validation callback for Medical Authorization and Disclosures
+ */
+/*
+function oa_portal_p2_medical_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for Medical Authorization and Disclosures
+ */
+function oa_portal_p2_medical_form_submit($form, &$form_state) {
+  // @TODO Post to UCM
+}
+
+/**
+ * Form callback for Competency Test
+ */
+function oa_portal_p2_competency_form($form_state) {
+  $form = array();
+  $form['#description'] = t('');
+
+  oa_portal_submit(&$form);
+  return $form;
+}
+
+/**
+ * Form validation callback for Competency Test
+ */
+/*
+function oa_portal_p2_competency_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for Competency Test
+ */
+function oa_portal_p2_competency_form_submit($form, &$form_state) {
+  // @TODO Post to UCM
+}
+
+/**
+ * Form callback for Paycheque Method
+ */
+function oa_portal_p3_paycheque_form($form_state) {
+  $form = array();
+  $form['#description'] = t('');
+
+  oa_portal_submit(&$form);
+  return $form;
+}
+
+/**
+ * Form validation callback for Paycheque Method
+ */
+/*
+function oa_portal_p3_paycheque_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for Paycheque Method
+ */
+function oa_portal_p3_paycheque_form_submit($form, &$form_state) {
+  // @TODO Post to UCM
+}
+
+/**
+ * Form callback for W4
+ */
+function oa_portal_p3_w4_form($form_state) {
+  $form = array();
+  $form['#description'] = t('');
+
+  oa_portal_submit(&$form);
+  return $form;
+}
+
+/**
+ * Form validation callback for W4
+ */
+/*
+function oa_portal_p3_w4_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for W4
+ */
+function oa_portal_p3_w4_form_submit($form, &$form_state) {
+  // @TODO Post to UCM
+}
+
+/**
+ * Form callback for I-9
+ */
+function oa_portal_p3_i9_form($form_state) {
+  $form = array();
+  $form['#description'] = t('');
+
+  oa_portal_submit(&$form);
+  return $form;
+}
+
+/**
+ * Form validation callback for I-9
+ */
+/*
+function oa_portal_p3_i9_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for I-9
+ */
+function oa_portal_p3_i9_form_submit($form, &$form_state) {
+  // @TODO Post to UCM
+}
+
+/**
+ * Form callback for EEO Form
+ */
+function oa_portal_p3_eeo_form($form_state) {
+  $form = array();
+  $form['#description'] = t('');
+
+  oa_portal_submit(&$form);
+  return $form;
+}
+
+/**
+ * Form validation callback for EEO Form
+ */
+/*
+function oa_portal_p3_eeo_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for EEO Form
+ */
+function oa_portal_p3_eeo_form_submit($form, &$form_state) {
+  // @TODO Post to UCM/RMax
+}
+
+/**
+ * Form callback for Work Policy
+ */
+function oa_portal_p3_work_policy_form($form_state) {
+  $form = array();
+  $form['#description'] = t('');
+
+  oa_portal_submit(&$form);
+  return $form;
+}
+
+/**
+ * Form validation callback for Work Policy
+ */
+/*
+function oa_portal_p3_work_policy_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for Work Policy
+ */
+function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
+  // @TODO Post to UCM
+}
 
 
 function oa_portal_submit(&$form) {
@@ -447,7 +626,7 @@ function oa_portal_submit(&$form) {
     '#type' => 'submit',
     '#value' => t('Finalize'),
   );
-  // DO something else to enable the fancy inline form submission
+  // @TODO DO something else to enable the fancy inline form submission
+  
+  // @TODO Query UCM for existing submitted document
 }
-
-
