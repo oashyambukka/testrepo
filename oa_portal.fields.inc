@@ -115,7 +115,7 @@ function select($title, $choices) {
     '#title' => t($title),
     '#options' => $options = array('none' => t('- Select -')) + drupal_map_assoc($choices),
     '#required' => TRUE,
-    '#rules' = array('not_none'),
+    '#rules' => array('not_none'),
   );
   return $element;
 }
@@ -127,7 +127,7 @@ function state($title = 'State') {
     '#title' => t($title),
     '#options' => array('none' => t('- Select -')) + drupal_map_assoc(array('AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY')),
     '#attributes' => array('class' => 'select-state'),
-    '#rules' = array('not_none'),
+    '#rules' => array('not_none'),
   );
   return $element;
 }
@@ -168,7 +168,7 @@ function terms($desc) {
 }
 
 function address() {
-  $elements = array();
+  $elements = array('#tree' => TRUE);
   $elements['address1'] = textfield('Address', 30);
   $elements['address1']['#prefix'] = '<div class="field-address">';
   $elements['address2'] = textfield('', 30);
@@ -178,6 +178,7 @@ function address() {
   $elements['zip'] = textfield('Zip Code', 10);
   $elements['zip']['#suffix'] = '</div>';
   $elements['zip']['#rules'][] = 'numeric';
+  $elements['zip']['#rules'][] = 'length[5]';
   return $elements;
 }
 

@@ -43,6 +43,7 @@ function oa_portal_p1_contact_form() {
   $form['contact']['primary_phone'] = textfield('Primary Phone', 15, 10);
   $form['contact']['mobile_phone'] = textfield('Cell Phone', 15, 10);
   $form['contact']['email'] = textfield('Email');
+  $form['contact']['email']['#rules'][] = 'email';
   oa_portal_submit($form);
   return $form;
 }
@@ -71,7 +72,7 @@ function oa_portal_p1_application_form($form_state) {
   $form['#description'] = 'If you are ready to begin working.....';
   
   // Contact Information
-   $form['contact'] = fieldset('Contact Information');
+  $form['contact'] = fieldset('Contact Information');
   $form['contact']['emerg1_name'] = textfield('Name', 30, 50);
   $form['contact']['emerg1_name']['#prefix'] = t('<h1>Emergency Contact 1</h1>');
   $form['contact']['emerg1_phone'] = textfield('Phone', 15, 15);
@@ -82,7 +83,7 @@ function oa_portal_p1_application_form($form_state) {
   // Education
   $form['education'] = fieldset('Education', 'Please do not note the year high school diploma was received');
 
-  $edu_fields = array();
+  $edu_fields = array('#tree' => TRUE);
   $edu_fields['school'] = textfield('School', array('#options' => array('opt1' => 'Opt 1')));
   $edu_fields['grad_status'] = radios('Did you graduate', array(1 => 'Yes', 0 => 'No'));
   $edu_fields['degree'] = select('Degree Earned', array('Associates'));
@@ -104,6 +105,8 @@ function oa_portal_p1_application_form($form_state) {
   $form['experience'] = fieldset('Experience');
 
   $form['experience']['recent_grad'] = checkbox('Check box if you are a recent college graduate');  
+
+  $exp_fields = array('#tree' => TRUE);
   $exp_fields['employer'] = textfield('Employer',75);
   $exp_fields['city'] = textfield('City');
   $exp_fields['state'] = state('State');
@@ -143,6 +146,7 @@ function oa_portal_p1_application_form($form_state) {
   // Licensures & Certifications
   $form['licecerts'] = fieldset('Licensures/Certifications');
 
+  $lc_fields = array('#tree' => TRUE);
   $lc_fields['name'] = textfield('Licensure/Certification');
   $lc_fields['state'] = state();
   $lc_fields['number'] = textfield('License Number', 12);
@@ -178,7 +182,6 @@ function oa_portal_p1_application_form($form_state) {
   to On Assignment to any customer of On Assignment for consideration of employment at customer facility.</p>';
   
   $form['terms'] = terms($terms_desc);
-
   oa_portal_submit($form);
   return $form;
 }
@@ -196,6 +199,8 @@ function oa_portal_p1_application_form_validate($form, &$form_state) {
  */
 function oa_portal_p1_application_form_submit($form, &$form_state) {
   // @TODO Post to RMax/UCM
+//  $values = $form_state['values'];
+//  dsm($values);
 }
 
 /**
@@ -241,6 +246,8 @@ function oa_portal_p1_checklist_form_submit($form, &$form_state) {
 function oa_portal_p2_professional_orgs_form($form_state) {
   $form['prof_orgs'] = fieldset('Professional Organizations');
   $form['prof_orgs']['no_orgs'] = checkbox('I am not a member of any organizations');
+
+  $org = array('#tree' => TRUE);
   $org['org_name'] = textfield('Organization');
   $org['org_role'] = textfield('Role');
   $org['org_date_from'] = date_popup('From');
@@ -333,7 +340,7 @@ function oa_portal_p2_background_reference_form($form_state) {
   
   $form['reference1'] = fieldset('Reference Check 1');
   
-  $ref = array();
+  $ref = array('#tree' => TRUE);
   $ref['company'] = select('Company', array('Company A', 'Company B'));
   $ref['supervisor'] = textfield('Supervisor');
   $ref['address'] = address();

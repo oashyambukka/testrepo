@@ -367,12 +367,12 @@ function oa_portal_soap_file_form_submit($form, &$form_state) {
 function oa_portal_fapi_validation_rules() {
   return array(
     'not_none' => array(
-      'callback' => 'oa_portal_validation_not_none',
+      'callback' => 'oa_portal_rule_not_none',
       'error_msg' => 'You must select a value for %field'
     ),
   );
 }
 
 function oa_portal_rule_not_none($value) {
-  return !((string) $value == 'none'));
+  return !((string) $value == 'none');
 }
