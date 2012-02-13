@@ -441,7 +441,62 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
  */
 function oa_portal_p2_medical_form($form_state) {
   $form = array();
-  $form['#description'] = t('');
+  $form['#attributes'] = array('enctype' => "multipart/form-data");
+
+  $form['auth'] = fieldset('Authorization For Use Or Disclosure Of Health Information');
+  $form['auth']['disclosure'] = acknowledgement('I authorize the use or disclosure of my health information...');
+  $form['auth']['providers'] = textfield('As described in section 1, list specific providers of information if applicable');
+  $form['auth']['info'] = textfield('As described in section 3, list specific information that may be used or disclosed if applicable');
+  $form['auth']['dates'] = textfield('As described in section 7, list date or event per 3) if applicable');
+  
+  // @TODO Add help tooltip
+  $form['tb'] = fieldset('TB');
+  $form['tb']['state_12_negative_chest'] = radios('', array(
+    'stage_12' => 'TB Vaccine Stage 1 & Stage 2',
+    'negative_chest' => 'Negative Chest X-ray (every 3 years)',
+    ));
+
+  // @TODO Add help tooltip
+  $form['mmr'] = fieldset('MMR');
+  $form['mmr']['mmr_12_rubella_titer'] = radios('', array(
+    'mmr_12' => 'MMR #1 / #2 if born after 1957',
+    'rubella_titer' => 'Rubela Titer / Rubeola Titer / Mumps Titer',
+    ));
+
+  $form['mmr']['certificate'] = array(
+    '#type' => 'file',
+    '#title' => t('Certificate'),
+    '#required' => TRUE,
+    '#size' => 80,
+  );
+  $form['mmr']['fax_preference'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
+
+  $form['cardiac'] = fieldset('Cardiac Life Support');
+  $form['cardiac']['#tree'] = TRUE;
+  $form['cardiac'][''] = radios('', array('BLS', 'CPR', 'ACLS'), TRUE);
+  $form['cardiac']['certificate'] = array(
+    '#type' => 'file',
+    '#title' => t('Certificate'),
+    '#required' => TRUE,
+    '#size' => 80,
+  );
+
+  $form['vari'] = fieldset('Varivax/Varicella');
+  $form['vari']['vari'] = radios('', array(
+    'vari_vaccine' => 'Varivax Vaccine #1',
+    'stmt' => 'Varicella Immunity Stmt/Hist. of Disease',
+    'titer' => 'Varicella Titer'));
+  
+  $form['hepb'] = fieldset('Hepatitis B Vaccination');
+  $form['hepb']['#tree'] = TRUE;
+  $form['hepb']['vaccination'] = radios('', array(
+    'hep123' => 'Hep B Series 1, 2 & 3',
+    'titer' => 'Hep B Titer',
+    'declination' => 'Hep B Declination'));
+  $form['hepb']['acknowledgement'] = acknowledgement(
+    'Hepatitis B Vaccination Declination - Please complete Bloodborne Training before...',
+    'I acknowledge, understand, and accept this Agreement/Statement. *This is a reg..'
+  );
   
   oa_portal_submit(&$form);
   return $form;
@@ -467,25 +522,11 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
  */
 function oa_portal_p2_competency_form($form_state) {
   $form = array();
-  $form['#description'] = t('');
+  $form['#description'] = t('You are required to complete....');
 
-  oa_portal_submit(&$form);
+  // @TODO Get a test link from ___?
+  $form['take_the_test'] = markup('TAKE THE TEST');
   return $form;
-}
-
-/**
- * Form validation callback for Competency Test
- */
-/*
-function oa_portal_p2_competency_form_validate($form, &$form_state) {
-}
-*/
-
-/**
- * Form submission callback for Competency Test
- */
-function oa_portal_p2_competency_form_submit($form, &$form_state) {
-  // @TODO Post to UCM
 }
 
 /**
@@ -493,8 +534,32 @@ function oa_portal_p2_competency_form_submit($form, &$form_state) {
  */
 function oa_portal_p3_paycheque_form($form_state) {
   $form = array();
-  $form['#description'] = t('');
+  $form['delivery'] = fieldset('Paycheck Delivery');
+  $form['delivery']['delivery_option'] = radios('', array(
+    'yes' => '<strong>I do</strong> wish to sign up for Direct Deposit or CashPay at this time and will complete a paycheque delivery method below.',
+    'no' => '<strong>I do</strong> wish to sign up for Direct Deposit or CashPay at this time. I would prefer to have my pay check mailed to me. I understand that there may be a delay to my paycheck delivery via the US Postal Service which is beyond the control of On Assignment.',
+  ));
+  $form['delivery']['policy'] = markup('Check Replacement Policy<br/>On Assignment requires that you wait 5 business days from the date the check was mailed before requesting a replacement check. Additionally, if a check replacement is needed, you will be rquired to sign up for Direct Deposit or CashPay.');
 
+  $form['dd'] = fieldset('Direct Deposit');
+  $form['dd']['bank_name'] = textfield('Bank Name');
+  $form['dd']['bank_city'] = textfield('Bank City');
+  $form['dd']['bank_state'] = state('');
+  $form['dd']['bank_phone'] = textfield('Bank Phone');
+  $form['dd']['bank_account'] = textfield('Bank Account');
+  $form['dd']['bank_route'] = textfield('Routing #');
+  $form['dd']['account_type'] = radios('', array('Checking', 'Savings'), TRUE);
+  
+  $form['cp'] = fieldset('CashPay Enrollment');
+  $form['cp']['cc_type'] = radios('', array('Visa', 'Instant Issue (Issue at Employment Location)'), TRUE);
+  $form['cp']['cc_lang'] = radios('', array('English', 'Spanish'), TRUE);
+  $form['cp']['cc_number']['#tree'] = TREE;
+  $cc_num = textfield('', 4);
+  $form['cp']['cc_number'][] = $cc_num;
+  $form['cp']['cc_number'][] = $cc_num;
+  $form['cp']['cc_number'][] = $cc_num;
+  $form['cp']['cc_number'][] = $cc_num;
+  
   oa_portal_submit(&$form);
   return $form;
 }
@@ -519,7 +584,12 @@ function oa_portal_p3_paycheque_form_submit($form, &$form_state) {
  */
 function oa_portal_p3_w4_form($form_state) {
   $form = array();
-  $form['#description'] = t('');
+  $form['w4'] = fieldset('W4');
+  $form['w4']['#description'] = 'If you would like to reference the W4 Personal Allowances Worksheet, Deductions and Adjustments Worksheet, and Two-Earners/Multiple Jobs Worksheet please <a href="to-do">click here</a>.';
+  
+  $form['w4']['marital_status'] = radios('', array(
+    'Single', 'Married', 'Married, but withhold at higher Single rate'
+  ), TRUE);
 
   oa_portal_submit(&$form);
   return $form;

@@ -16,6 +16,7 @@ function oa_portal_admin() {
     foreach ($phase AS $sk => $section) {
       if (substr($sk, 0, 1) !== '#') {
         $rows[] = array(l($section['#title'], 'portal/'. $pk .'/'. $sk), 'oa_portal_'. $pk .'_'. $sk .'_form', function_exists('oa_portal_'. $pk .'_'. $sk .'_form'), function_exists('oa_portal_'. $pk .'_'. $sk .'_form_validate'), function_exists('oa_portal_'. $pk .'_'. $sk .'_form_submit'));
+/*
        if (!function_exists('oa_portal_'. $pk .'_'. $sk .'_form')) {
          $code .= '/**
  * Form callback for '. $section['#title'] .'
@@ -63,7 +64,7 @@ function oa_portal_'. $pk .'_'. $sk .'_form_submit($form, &$form_state) {
 */
 ';
         }
-
+*/
       }
     }
     $output .= theme('table', array('Section', 'Form callback', 'form', 'validation', 'submission'), $rows);
