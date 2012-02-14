@@ -390,7 +390,7 @@ function oa_portal_p2_capabilities_form($form_state) {
   $form = array();
   
   $form['jcq'] = fieldset('Job Capabilities Questionnaire');
-  $form['jcq']['#description'] = t('As a candidate for employment at On Assignment, you have met the basic requirements of skills, experience, education and availability needed by our Clients.  Clients request that our employees work at their location for a specific period of time to complete various work duties.  As an On Assignment employee, you will typically be assigned to positions in healthcare, research and development and/or many different types of facilities.  These positions may involve working with various potentially hazardous substances and physical agents, including, but not limited to, the following:<br><br>
+  $form['jcq']['#description'] = t('As a candidate for employment at On Assignment1, you have met the basic requirements of skills, experience, education and availability needed by our Clients.  Clients request that our employees work at their location for a specific period of time to complete various work duties.  As an On Assignment employee, you will typically be assigned to positions in healthcare, research and development and/or many different types of facilities.  These positions may involve working with various potentially hazardous substances and physical agents, including, but not limited to, the following:<br><br>
   <ul>
   	<li>Various organic volatile and non-volatile chemicals, corrosives, potential carcinogens, mutagens and teratogens</li>
 	<li>Biological agents, bloodborne pathogens and radioactive sources and materials</li>
@@ -471,9 +471,9 @@ function oa_portal_p2_medical_form($form_state) {
 
   $form['auth'] = fieldset('Authorization For Use Or Disclosure Of Health Information');
   $form['auth']['disclosure'] = acknowledgement('I authorize the use or disclosure of my health information...');
-  $form['auth']['providers'] = textfield('As described in section 1, list specific providers of information if applicable');
-  $form['auth']['info'] = textfield('As described in section 3, list specific information that may be used or disclosed if applicable');
-  $form['auth']['dates'] = textfield('As described in section 7, list date or event per 3) if applicable');
+  $form['auth']['providers'] = textfield('As described in section 1, list specific providers of information if applicable', 80);
+  $form['auth']['info'] = textfield('As described in section 3, list specific information that may be used or disclosed if applicable', 80);
+  $form['auth']['dates'] = textfield('As described in section 7, list date or event per 3) if applicable', 80);
   
   // @TODO Add help tooltip
   $form['tb'] = fieldset('TB');
@@ -565,22 +565,23 @@ function oa_portal_p3_paycheck_form($form_state) {
     'yes' => '<strong>I do</strong> wish to sign up for Direct Deposit or CashPay at this time and will complete a paycheck delivery method below.',
     'no' => '<strong>I do</strong> wish to sign up for Direct Deposit or CashPay at this time. I would prefer to have my pay check mailed to me. I understand that there may be a delay to my paycheck delivery via the US Postal Service which is beyond the control of On Assignment.',
   ));
-  $form['delivery']['policy'] = markup('Check Replacement Policy<br/>On Assignment requires that you wait 5 business days from the date the check was mailed before requesting a replacement check. Additionally, if a check replacement is needed, you will be rquired to sign up for Direct Deposit or CashPay.');
+  $form['delivery']['policy'] = markup('<p>Check Replacement Policy<br/>On Assignment requires that you wait 5 business days from the date the check was mailed before requesting a replacement check. Additionally, if a check replacement is needed, you will be rquired to sign up for Direct Deposit or CashPay.</p>');
 
   $form['dd'] = fieldset('Direct Deposit');
-  $form['dd']['bank_name'] = textfield('Bank Name');
-  $form['dd']['bank_city'] = textfield('Bank City');
-  $form['dd']['bank_state'] = state('');
+  $form['dd']['bank_name'] = textfield('Bank Name',40);
+  $form['dd']['bank_city'] = textfield('Bank City',40);
+  $form['dd']['bank_state'] = state('State');
   $form['dd']['bank_phone'] = textfield('Bank Phone');
   $form['dd']['bank_account'] = textfield('Bank Account');
   $form['dd']['bank_route'] = textfield('Routing #');
-  $form['dd']['account_type'] = radios('', array('Checking', 'Savings'), TRUE);
+  $form['dd']['account_type'] = radios('Account Type', array('Checking', 'Savings'), TRUE);
   
   $form['cp'] = fieldset('CashPay Enrollment');
+  $form['cp']['#description'] = 'Please select the card type and English or Spanish below:';
   $form['cp']['cc_type'] = radios('', array('Visa', 'Instant Issue (Issue at Employment Location)'), TRUE);
   $form['cp']['cc_lang'] = radios('', array('English', 'Spanish'), TRUE);
   $form['cp']['cc_number']['#tree'] = TREE;
-  $cc_num = textfield('', 4);
+  $cc_num = textfield('', 4, 4);
   $form['cp']['cc_number'][] = $cc_num;
   $form['cp']['cc_number'][0]['#prefix'] = '<div class="field-cc">';
   $form['cp']['cc_number'][] = $cc_num;
@@ -618,7 +619,16 @@ function oa_portal_p3_w4_form($form_state) {
   $form['w4']['marital_status'] = radios('', array(
     'Single', 'Married', 'Married, but withhold at higher Single rate'
   ), TRUE);
-
+  $form['w4']['marital_status']['#description'] = t('<strong>Note:</strong> If married, but legally seperated, or spouse is a nonresident alien, check the "Single" box');
+  $form['w4']['different_name'] = markup('<p><strong>If your last name differs from that shown on your social security card, check here.<br/>You must call 1-800-772-1213 for a replacement.</strong></p>');
+  $form['w4']['allowances'] = textfield('Total number of allowances you are claiming',6);
+  $form['w4']['amount_withheld'] = textfield('Additional amount, if any, you want withheld from each paycheck',6);
+  $form['w4']['exempt_terms'] = markup('<strong>I claim exemption from withholding for 2012, and I certify that I meet both of the following conditions for exemption:</strong><br/>
+  <ul><li>Last year I had a right to a refund of all federal income tax withheld because I had no tax liability, and </li><li>This year I expect a refund of all federal income tax withheld because I expect to have no tax liability</li></ul><strong>');
+  $form['w4']['exempt'] = textfield('If you meet both conditions, write "Exempt" here', 6);
+  $form['w4']['certify'] = checkbox('Under penalties of perjury, I declare that I have examined this certificate and, to the best of my knowledge and belief, it is true, correct, and complete.');
+  
+  
   oa_portal_submit($form);
   return $form;
 }
@@ -645,6 +655,13 @@ function oa_portal_p3_i9_form($form_state) {
   $form = array();
   $form['#description'] = t('');
 
+  $form['i9'] = fieldset('I9');
+  $form['i9']['citizenship'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
+  array('citizen' => t('A citizen of the United States'), 'noncitizen' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
+  $form['i9']['until'] = date_popup('Until (expiration date if applicable)');
+  $form['i9']['certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');								
+								
+			
   oa_portal_submit($form);
   return $form;
 }
@@ -670,7 +687,18 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
 function oa_portal_p3_eeo_form($form_state) {
   $form = array();
   $form['#description'] = t('');
-
+  
+  $form['eeo'] = fieldset('EEO');
+  $form['eeo']['#description'] = t('Please fill out the Affirmative Action date below. To ensure that On Assignment complies with pertinent hiring practices, On Assignment must keep records about our applicants for employment.  This questionnaire will be kept in a confidential file, seperate from the application for employment.  Failure to provide this information will in no way adversely affect your candidacy for this position.  However, we would greatly appreciate your willingness to submit this information for our commitment to equal opportunity.<br/><br/><small><em>Note that all definitions as listed below were provuded by the U.S. Federal Government Equal Employment Opportunity Commission (EEOC)</em></small>');
+  $form['eeo']['ethnicity'] = radios('Ethnicity Code', array('hispanic' => t('Hispanic or Latino'),'asian' => t('Asian'),'white' => t('White'),'american_indian' => t('American Indian or Alaskan Native'),'black' => t('Black'),'two_more' => t('Two or more races'),'hawaiian' => t('Native Hawaiian or Pacific Islander') ) );
+  $form['eeo']['gender'] = radios('Gender', array('male' => t('Male'), 'female' => t('Female')));
+  $form['eeo']['handicap'] = radios_yesno('Handicap Status');
+  $form['eeo']['handicap']['#suffix'] = t('<em><small>(Any person who has a physical or mental impairment that substantially limits one or more major life activities, has a record of such impairments or is regarded as having such impairments)</small></em>');
+  $form['eeo']['veteran'] = checkboxes('Veteran Status', array('armed_forces' => t('Armed Forces Service Medal Veteran'), 'disabled' => t('Disabled Veteran'), 'protected' => t('Other Protected Veteran'), 'seperated' => t('Recently Seperated Veteran')) );
+  $form['eeo']['veteran']['#description'] = t('<small><em>If you are unsure of your Veteran status under these definitions, contact your recruiter.</em></small>');
+  $form['eeo']['age'] = radios_yesno('Age');
+  $form['eeo']['age']['#description'] = t('<small><em>Are you over age 40 but under age 70?</em></small>');
+  
   oa_portal_submit($form);
   return $form;
 }
@@ -696,7 +724,12 @@ function oa_portal_p3_eeo_form_submit($form, &$form_state) {
 function oa_portal_p3_work_policy_form($form_state) {
   $form = array();
   $form['#description'] = t('');
-
+  
+  $form['harassment'] = fieldset('Harassment Policy Acknowledgement');
+  $form['safety'] = fieldset('Safety Policy Acknowledgement');
+  $form['stock_plan'] = fieldset('On Assignment, Inc.\'s Employee Stock Purchase Plan');
+  
+  
   oa_portal_submit($form);
   return $form;
 }

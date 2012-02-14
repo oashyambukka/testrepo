@@ -79,6 +79,9 @@
 	float:right;
 }
 
+.oaportal .form-item label,
+.oaportal .form-item label .option {font-weight:bold}
+
 /* Date popup */
 .date-popup,
 .date-popup .form-item .form-item {
@@ -261,3 +264,72 @@
 	list-style-type:disc;
 }
 #edit-jcq-certify-wrapper label {font-weight:bold}
+
+
+/***** POLICIES & AGREEMENTS ****************************************************************/
+#oa-portal-p2-policies-form .field-acknowledgement label {font-weight:bold}
+
+
+
+
+/***** MEDICAL AUTHORIZATIONS & DISCLOSURES ********************************************************/
+
+#edit-tb-state-12-negative-chest-stage-12-wrapper {padding-right:70px}
+#edit-mmr-mmr-12-rubella-titer-mmr-12-wrapper {padding-right:40px}
+
+#edit-cardiac--BLS-wrapper,
+#edit-cardiac--CPR-wrapper,
+#edit-cardiac--ACLS-wrapper {
+	padding-left:10px;
+	padding-right:70px;
+}
+#edit-vari-vari-vari-vaccine-wrapper {padding-left:10px}
+
+#edit-hepb-vaccination-hep123-wrapper,
+#edit-hepb-vaccination-titer-wrapper,
+#edit-hepb-vaccination-declination-wrapper {
+	padding-left:10px;
+	padding-right:50px;
+}
+#edit-hepb-acknowledgement-wrapper {padding-left:30px}
+
+
+
+/***** PAYCHECK METHOD ********************************************************/
+#edit-delivery-delivery-option-no-wrapper label,
+#edit-delivery-delivery-option-yes-wrapper label {font-weight:normal}
+
+#oa-portal-p3-paycheck-form .form-radios {clear:both}
+#edit-dd-account-type-wrapper .form-radios {clear:none}
+
+#edit-cp-cc-type-Visa-wrapper {padding-right:31px;}
+
+#oa-portal-p3-paycheck-form .field-cc {clear:both}
+#oa-portal-p3-paycheck-form .field-cc .form-item {
+	width:auto;
+	clear:none;
+	padding-right:20px;
+}
+#oa-portal-p3-paycheck-form p {padding-top:120px}
+
+
+/***** W4 ********************************************************/
+#oa-portal-p3-w4-form .form-radios {width:100%}
+#oa-portal-p3-w4-form .form-radios .form-item {clear:both}
+#oa-portal-p3-w4-form li {list-style-type:disc;margin:0 100px 0 30px}
+#edit-w4-certify-wrapper label {font-weight:normal}
+
+/***** I9 ********************************************************/
+#oa-portal-p3-i9-form .form-radios {width:100%}
+#oa-portal-p3-i9-form .form-radios .form-item {clear:both}
+#edit-i9-certify-wrapper label {font-weight:normal}
+
+/***** EEO ********************************************************/
+#oa-portal-p3-eeo-form .form-radios,
+#oa-portal-p3-eeo-form .form-checkboxes,
+#oa-portal-p3-eeo-form .form-radios .form-item label,
+#oa-portal-p3-eeo-form .form-checkboxes .form-item label {width:100%;clear:both}
+
+#oa-portal-p3-eeo-form .form-radios .form-item {width:45%}
+#oa-portal-p3-eeo-form .form-checkboxes .form-item {width:100%}
+
