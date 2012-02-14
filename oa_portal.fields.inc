@@ -43,7 +43,7 @@ function email($title = null) {
 function textfield_sin() {
   $element = array(
     '#type' => 'fieldset',
-    '#title' => t('Social Security Number'),
+    '#title' => t('Social Security Number:'),
     '#attributes' => array('class' => 'sin-field'),
     '#tree' => TRUE,
   );

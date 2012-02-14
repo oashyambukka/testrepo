@@ -69,10 +69,11 @@ function oa_portal_p1_contact_form_submit($form, &$form_state) {
  */
 function oa_portal_p1_application_form($form_state) {
   $form = array();
-  $form['#description'] = 'If you are ready to begin working.....';
   
   // Contact Information
   $form['contact'] = fieldset('Contact Information');
+  $form['contact']['#prefix'] = '<p><br>If you are ready to begin working with On Assignment Healthcare Staffing, we\'re ready to start working with you.  Please complete the application and one of our experienced recruiters will contact you soon.</p><br>
+  <p>Please be assured that On Assignment maintains a strict privacy policy.  We will not share your information with any third party without your authorization and will only contact you for the specific purpose of serving your request.</p><br><br>';
   $form['contact']['emerg1_name'] = textfield('Name', 30, 50);
   $form['contact']['emerg1_name']['#prefix'] = t('<h1>Emergency Contact 1</h1>');
   $form['contact']['emerg1_phone'] = textfield('Phone', 15, 15);
@@ -208,10 +209,14 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
  */
 function oa_portal_p1_checklist_form($form_state) {
   $form = array();
-  $form['#description'] = t('This profile is for use...');
 
   // @TODO Get items per modality
   $form['skills'] = fieldset('Essential/Practical Skills Checklist');
+  $form['skills']['#prefix'] = t('<br><p>This profile is for use by ALL Nurses with more than one year\'s experience in his/her discipline and specialty.</p><br>
+  <p>Directions: Indicate your level of experience by circling the numbers below as follows<br>
+  		1 = Can Function Independently<br>
+		2 = Experienced, but May Need Review<br>
+		3 = Limited Experience<br><br></p>');
   $form['skills']['core'] = fieldset('Core Skills');
   $form['skills']['core']['item1'] = radios_123('Admission of a Patient');
   $form['skills']['core']['item2'] = radios_123('Transfer of a Patient');
@@ -293,7 +298,7 @@ function oa_portal_p2_licensure_certs_form($form_state) {
     '#required' => TRUE,
     '#size' => 80,
   );
-  $form['lc']['uploaded'] = markup('<h3>Upload files</h3>');
+  $form['lc']['uploaded'] = markup('<h3>Uploaded files</h3>');
   $form['lc']['fax_preference'] = checkbox('Check this box if you prefer to fax copies of your licensures/certifications');
 
   // @TODO Get cover page doc ID
@@ -326,16 +331,25 @@ function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
 function oa_portal_p2_background_reference_form($form_state) {
   $form = array();
   $form['#description'] = t('');
-
+  $terms_desc = '<p>I hereby authorize On Assignment, and/or its agents to make an independent investigation of my background, references, character, past employment, education, credit history, motor vehicle operation history, criminal or police records, including those maintained by both public and private organizations and all public records for the purpose of confirming the information contained on my Application and/or obtaining other information which may be material to my qualifications for employment.  I release On Assignment and/or its agents and any person or entity, which provides information pursuant to this authorization, from any and all liabilities, claims or law suits in regards to the information obtained from any and all above referenced sources used.  I understand that all or part of this information, including my social security number may be released to clients as part of the hiring process, and agree to the release of any part or all of this information including my social security number.</p>
+<br>
+<p>This is a consumer notification that a Background Report will be requested and obtained, and that the report will be used for the purpose of evaluating me for employment, promotion, reassignment or retention as an employee.</p>
+<br>
+<p>As a resident of Minnesota and Oklahoma only, I have a right to obtain a copy of this report by checking this box.</p>
+<br>
+<p>NOTICE TO CALIFORNIA CANDIDATES</p><p><span style="font-size:90%">You have a right to obtain a copy of any consumer report or investigative consumer report obtained by On Assignment, Inc. by checking the box provided below. The report will be provided to you within three (3) business days after we receive the requested reports related to the matter investigated.  I request to receive a free copy of this report by checking this box.  Under section 1786.22 of the California Civil Code, you may view the file maintained on you by GIS (the search company) during normal business hours.  You may also obtain a copy of this file upon submitting proper identification and paying the costs of duplication services, by appearing at GIS in person or by mail.  You may also receive a summary of the file by telephone.  The agency is required to have personnel available to explain your file to you and the agency must explain to you any coded information appearing in your file.  If you appear in person, a person of your choice may accompany you, provided that this person furnishes proper identification.</span></p>
+<br><br>
+<p><strong>The following is my true and complete legal name and all information is true and correct to the best of my knowledge:</strong></p>';
   // 
   $form['consent'] = fieldset('Background Investigation Consent');
+  $form['consent']['#description'] = $terms_desc;
   $form['consent']['maiden_name'] = textfield('Maiden/other names used');
   $form['consent']['dob'] = date_popup('Date of birth');
   $form['consent']['sin'] = textfield_sin();
-  $form['consent']['dl_number'] = textfield('Driver License Number');
+  $form['consent']['dl_number'] = textfield('Driver License Number', 20);
   $form['consent']['dl_state'] = state('Driver License State');
-  $form['consent']['residence_state'] = textfield('Lived at your current address since');
-  $form['consent']['disclaimer'] = markup('Note: We need 7 years of address history. Please add all addresses for the past 7 years.');
+  $form['consent']['residence_state'] = date_popup('Lived at your current address since');
+  $form['consent']['residence_state']['#suffix'] = '<strong>Note: We need 7 years of address history. Please add all addresses for the past 7 years.</strong>';
   $form['consent']['certification'] = checkbox('I certify...');
   
   $form['reference1'] = fieldset('Reference Check 1');
@@ -344,8 +358,9 @@ function oa_portal_p2_background_reference_form($form_state) {
   $ref['company'] = select('Company', array('Company A', 'Company B'));
   $ref['supervisor'] = textfield('Supervisor');
   $ref['address'] = address();
-  $ref['phone'] = textfield('Phone');
+  $ref['phone'] = textfield('Phone', 12);
   $ref['email'] = email();
+  $ref['email']['#size'] = 40;
   $ref['certification'] = checkbox('I hereby give permission to the above named employer to release information to On Assignment regarding my performance while employed at that facility');
   $form['reference1']['ref'] = $ref;
  
@@ -375,7 +390,14 @@ function oa_portal_p2_capabilities_form($form_state) {
   $form = array();
   
   $form['jcq'] = fieldset('Job Capabilities Questionnaire');
-  $form['jcq']['#description'] = t('As a candidate for employment...');
+  $form['jcq']['#description'] = t('As a candidate for employment at On Assignment, you have met the basic requirements of skills, experience, education and availability needed by our Clients.  Clients request that our employees work at their location for a specific period of time to complete various work duties.  As an On Assignment employee, you will typically be assigned to positions in healthcare, research and development and/or many different types of facilities.  These positions may involve working with various potentially hazardous substances and physical agents, including, but not limited to, the following:<br><br>
+  <ul>
+  	<li>Various organic volatile and non-volatile chemicals, corrosives, potential carcinogens, mutagens and teratogens</li>
+	<li>Biological agents, bloodborne pathogens and radioactive sources and materials</li>
+	<li>Heat, cold, pressure (including compressed gasses), and noise</li>
+	<li>Working with glassware, pipetting, repetitive tasks</li>
+  </ul><br>
+  These assignments may also include physical requirements that involve sitting/standing/walking for extended periods, bending and stooping, lifting or moving heavy objects and lifting up to 50 lbs. above the shoulders.  They may also involve repetitive tasks such as using a keyboard, operating equipment or manipulating small objects.  A safe working environment is important not only to you, but also to On Assignment and our Clients.  You are expected to take all reasonable safety precautions, and to follow all On Assignment and client safety policies and procedures.  This may include, but is not limited to Standard Operating Procedures, appropriate use of personal protective equipment and devices, and personal hygiene.  To assist us in assuring that we select the best possible assignment for you, please complete the following Job Capabilities Questionnaire.<br><br>');
   $form['jcq']['performance'] = cap_yne('Can you perform all of these and similar tasks with reasonable accommodation?');
   $form['jcq']['health'] = cap_yne('Do you have any health reasons that would prohibit you from performing these or similar tasks?');
   $form['jcq']['restrictions'] = cap_yne('Do you have any restrictions preventing you from performing these tasks?');

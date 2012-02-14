@@ -162,4 +162,102 @@
 	color:#003300;
 }
 
+/***** SKILLS CHECKLIST ****************************************************************/
+#oa-portal-p1-checklist-form .fieldset-wrapper,
+#oa-portal-p1-checklist-form .form-item {
+	padding:0;
+	font-size:10px;
+}
+#oa-portal-p1-checklist-form .fieldset-wrapper legend a {color:#000;font-weight:bold}
+#oa-portal-p1-checklist-form .fieldset-wrapper legend {
+	border-bottom:solid 2px;
+	border-bottom-color:black;
+	box-shadow:none;
+	background:none;
+	width:40%;
+}
 
+
+/***** PROFESSINAL ORGANIZATIONS ****************************************************************/
+#oa-portal-p2-professional-orgs-form .fieldset-wrapper {
+	padding-top:0;
+}
+
+#edit-prof-orgs-no-orgs-wrapper {padding-left:30px}
+
+#edit-prof-orgs-org1-org-role-wrapper,
+#edit-prof-orgs-org2-org-role-wrapper {
+	padding-right:20px;
+	width:auto;
+	clear:none;
+}
+
+/***** LICENSURE CERTIFICATIONS ****************************************************************/
+#oa-portal-p2-licensure-certs-form .description,
+#oa-portal-p2-licensure-certs-form label {font-weight:bold}
+	
+#edit-lc-fax-preference-wrapper,
+#oa-portal-p2-licensure-certs-form pdf {padding-left:30px}
+
+
+/***** BACKGROUND/REFERENCE CHECK ****************************************************************/
+#oa-portal-p2-background-reference-form fieldset .sin-field legend {
+	padding-left:0;
+	padding-top:10px;
+	box-shadow:none;
+	background:none;
+	color:#666;
+	font-size:100%;
+	font-weight:bold;
+	width:auto;
+	display:inline;
+	clear:none;
+	float:left;
+}
+#oa-portal-p2-background-reference-form fieldset .sin-field {width:auto}
+
+#oa-portal-p2-background-reference-form fieldset .sin-field .form-item {
+	padding-right:10px;
+	width:auto;
+	display:inline;
+	float:left;
+	clear:none;
+}
+#edit-consent-dl-number-wrapper,
+#edit-consent-dl-state-wrapper {
+	width:auto;
+	clear:none;
+	padding-right:30px;
+}
+#edit-consent-certification-wrapper {padding-left:30px}
+
+#edit-reference1-ref-address-address1-wrapper,
+#edit-reference1-ref-address-address2-wrapper {
+	padding-right:30px;
+	width:auto;
+	clear:none;
+}
+
+#edit-reference1-ref-address-city-wrapper,
+#edit-reference1-ref-address-state-wrapper,
+#edit-reference1-ref-address-zip-wrapper,
+#edit-reference1-ref-phone-wrapper,
+#edit-reference1-ref-email-wrapper {
+	padding-right:30px;
+	width:auto;
+	clear:none;
+}
+#edit-reference1-ref-address-city-wrapper input {
+	width:150px;
+}
+#edit-reference1-ref-certification-wrapper label {
+	font-weight:bold;
+}
+
+
+/***** CAPABILITIES QUESTIONNAIRE ****************************************************************/
+#oa-portal-p2-capabilities-form .description li {
+	margin-left:15px;
+	list-style-type:disc;
+}
+#edit-jcq-certify-wrapper label {font-weight:bold}
