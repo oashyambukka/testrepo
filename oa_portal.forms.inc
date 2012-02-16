@@ -236,7 +236,9 @@ function oa_portal_p1_checklist_form($form_state) {
   $map[489] = array();
   $map[490] = array();
   $map[491] = array();
-  $map[492] = array();
+*/
+  $map[492] = array(49);
+/*
   $map[493] = array();
   $map[494] = array();
   $map[495] = array();
@@ -248,6 +250,8 @@ function oa_portal_p1_checklist_form($form_state) {
   $map[501] = array();
   */
 
+
+  $modality = ($_GET['modality']) ? $_GET['modality'] : 49;
   foreach ($map AS $formtype => $modlist) {
     if (in_array($modality, $modlist)) {
       $fn = 'oa_portal_p1_checklist_form_'. $formtype;
@@ -258,6 +262,22 @@ function oa_portal_p1_checklist_form($form_state) {
   oa_portal_submit($form);
   dsm($form, 'Skills Checklist $form');
   return $form;
+}
+
+/**
+ * Form validation callback for Checklist
+ */
+/*
+function oa_portal_p1_checklist_form_validate($form, &$form_state) {
+}
+*/
+
+/**
+ * Form submission callback for Checklist
+ */
+function oa_portal_p1_checklist_form_submit($form, &$form_state) {
+  // @TODO Post to UCM
+  dsm($form_state['values'], '$form_state values');
 }
 
 function oa_portal_p1_checklist_form_480() {
@@ -652,22 +672,6 @@ function oa_portal_p1_checklist_form_547() {
  * - L&D Skills
  */
  
-/**
- * Form validation callback for Checklist
- */
-/*
-function oa_portal_p1_checklist_form_validate($form, &$form_state) {
-}
-*/
-
-
-/**
- * Form submission callback for Checklist
- */
-function oa_portal_p1_checklist_form_submit($form, &$form_state) {
-  // @TODO Post to UCM
-}
-
 
 /**
  * Form callback for Professional Organizations
