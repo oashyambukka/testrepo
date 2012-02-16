@@ -35,10 +35,10 @@ function oa_portal_change_password_form_submit($form, &$form_state) {
  */
 function oa_portal_p1_contact_form() {
   $form['contact'] = fieldset('Contact Information');
-  $form['contact']['first_name'] = textfield('First Name', 15, 20);
-  $form['contact']['middle'] = textfield('Middle Initial', 3, 1);
-  $form['contact']['middle']['#required'] = FALSE;
-  $form['contact']['last_name'] = textfield('Last Name', 20, 30);
+  $form['contact']['firstname'] = textfield('First Name', 15, 20);
+  $form['contact']['initial'] = textfield('Middle Initial', 3, 1);
+  $form['contact']['initial']['#required'] = FALSE;
+  $form['contact']['lastname'] = textfield('Last Name', 20, 30);
   $form['contact']['address'] = address();
   $form['contact']['primary_phone'] = textfield('Primary Phone', 15, 10);
   $form['contact']['mobile_phone'] = textfield('Cell Phone', 15, 10);
@@ -656,12 +656,11 @@ function oa_portal_p3_i9_form($form_state) {
   $form['#description'] = t('');
 
   $form['i9'] = fieldset('I9');
-  $form['i9']['citizenship'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
-  array('citizen' => t('A citizen of the United States'), 'noncitizen' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
+  $form['i9']['citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
+    array('citizen' => t('A citizen of the United States'), 'national' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
   $form['i9']['until'] = date_popup('Until (expiration date if applicable)');
   $form['i9']['certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');								
-								
-			
+
   oa_portal_submit($form);
   return $form;
 }
