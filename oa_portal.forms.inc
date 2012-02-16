@@ -354,14 +354,6 @@ function oa_portal_p1_checklist_form_radiology_cnmt() {
   return $elements;
 }
 
-
-function oa_portal_p1_checklist_form_nurse_practicioner() {
-  $elements = fieldset('Nurse Practicioner');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
 function oa_portal_p1_checklist_form_occupational_therapy() {
   $elements = fieldset('Occupational Therapy');
   
@@ -439,13 +431,6 @@ function oa_portal_p1_checklist_form_surgical() {
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_cath_lab() {
-  $elements = fieldset('Cath Lab Skills');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
 function oa_portal_p1_checklist_form_er() {
   $elements = fieldset('ER Skills');
   
@@ -455,13 +440,6 @@ function oa_portal_p1_checklist_form_er() {
 
 function oa_portal_p1_checklist_form_medical_surgical() {
   $elements = fieldset('Medical Surgical Skills');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_cath_lab() {
-  $elements = fieldset('Cath Lab Skills');
   
   oa_portal_checklist($elements);
   return $elements;
