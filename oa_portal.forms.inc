@@ -209,12 +209,54 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
  */
 function oa_portal_p1_checklist_form($form_state) {
   $form = array();
+  $map = array();
+  // Essential Practical Skills
+  $map[493] = array(
+    4, 30, 41, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
+    68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
+  );
+  // Acute care - no modalities
+  $map[480] = array();
+  // Adult Pediatric Psych
+  $map[481] = array(83);
+  // Cardiac Cath Lab
+  $map[482] = array(5, 48, 51);
+  // Case Manager Skills
+  $map[483] = array(52);
+  // Certified Nursing Assistant
+  $map[484] = array(7);
+  // Clerical
+  $map[485] = array(2, 9, 10, 13, 18, 19, 26, 38, 47);
+  // Critical Care
+  $map[486] = array(54, 55, 61, 65, 66);
 
-  // @TODO Get items per modality
-  
-  $form['essential'] = oa_portal_p1_checklist_form_essential_practical();
+/*
+  $map[487] = array();
+  $map[488] = array();
+  $map[489] = array();
+  $map[490] = array();
+  $map[491] = array();
+  $map[492] = array();
+  $map[493] = array();
+  $map[494] = array();
+  $map[495] = array();
+  $map[496] = array();
+  $map[497] = array();
+  $map[498] = array();
+  $map[499] = array();
+  $map[500] = array();
+  $map[501] = array();
+  */
+
+  foreach ($map AS $formtype => $modlist) {
+    if (in_array($modality, $modlist)) {
+      $fn = 'oa_portal_p1_checklist_form_'. $formtype;
+      $form[$formtype] = $fn();
+    }
+  }
 
   oa_portal_submit($form);
+  dsm($form, 'Skills Checklist $form');
   return $form;
 }
 
@@ -600,7 +642,6 @@ function oa_portal_p1_checklist_form_547() {
 
 /**
  * Missing forms on UCM
- * - C.N.A.
  * - CT
  * - LPN
  * - Radiology/MRI
