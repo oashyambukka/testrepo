@@ -86,7 +86,7 @@ function oa_portal_p1_application_form($form_state) {
 
   $edu_fields = array('#tree' => TRUE);
   $edu_fields['school'] = textfield('School', array('#options' => array('opt1' => 'Opt 1')));
-  $edu_fields['grad_status'] = radios('Did you graduate', array(1 => 'Yes', 0 => 'No'));
+  $edu_fields['rdo_grad_status'] = radios('Did you graduate', array(1 => 'Yes', 0 => 'No'));
   $edu_fields['degree'] = select('Degree Earned', array('Associates'));
   $edu_fields['city'] = textfield('City',30);
   $edu_fields['state'] = state();
@@ -116,10 +116,10 @@ function oa_portal_p1_application_form($form_state) {
   $exp_fields['present'] = checkbox('Present');
   $exp_fields['title'] = textfield('Title');
   $exp_fields['salary'] = textfield('Salary');
-  $exp_fields['salary_period'] = radios('Salary', array('annual' => t('Annual'), 'hourly' => t('Hourly')));
+  $exp_fields['rdo_salary_period'] = radios('Salary', array('annual' => t('Annual'), 'hourly' => t('Hourly')));
   $exp_fields['description'] = textarea('Description', 5);
   $exp_fields['supervisor'] = textfield('Immediate Supervisor');
-  $exp_fields['may_contact'] = radios_yesno('May we contact?');
+  $exp_fields['rdo_may_contact'] = radios_yesno('May we contact?');
   $exp_fields['reason'] = textfield('Reason for leaving');
   $form['experience']['exp'][] = $exp_fields;
   
@@ -134,10 +134,10 @@ function oa_portal_p1_application_form($form_state) {
   $form['preferences']['work_days'] = checkboxes('Check the days you are willing to work', array('Any', 'M', 'T', 'W', 'Th', 'F', 'S', 'Su'), TRUE);
   $form['preferences']['shifts'] = checkboxes('Check the shifts you are willing to work', array('Any', 'Days', 'Nights', 'Evenings', 'Weekends'), TRUE);
   $form['preferences']['ptft'] = checkboxes('Would you prefer to work', array('Either', 'Part-time', 'Full-time'));
-  $form['preferences']['legal_right'] = radios_yesno('Can you, after employment, submit verification of your legal right to work in the U.S.?');
-  $form['preferences']['felony'] = radios_yesno('Have you been convicted of a felony within the last seven years?');
+  $form['preferences']['rdo_legal_right'] = radios_yesno('Can you, after employment, submit verification of your legal right to work in the U.S.?');
+  $form['preferences']['rdo_felony'] = radios_yesno('Have you been convicted of a felony within the last seven years?');
   $form['preferences']['felony']['#suffix'] = t('(An affirmative response to this question will not necessarily disqualify you from employment)<br \>MA residents should not answer this question');
-  $form['preferences']['drug_alcohol_screen'] = radios_yesno('As a condition of employment, you may be required to take and pass a drug and/or alcohol screen. Testing will be done at the company\'s expense and administered by a testing facility designated by the company. Results of any testing will be kept strictly confidential. If requested, are you willing to take the drug and/or alcohol screen?');
+  $form['preferences']['rdo_drug_alcohol_screen'] = radios_yesno('As a condition of employment, you may be required to take and pass a drug and/or alcohol screen. Testing will be done at the company\'s expense and administered by a testing facility designated by the company. Results of any testing will be kept strictly confidential. If requested, are you willing to take the drug and/or alcohol screen?');
   $form['preferences']['referral'] = select('How did you hear about On Assignment Healthcare Staffing?',
     array('onassignment.com', 'other'));
   
@@ -218,12 +218,12 @@ function oa_portal_p1_checklist_form($form_state) {
 		2 = Experienced, but May Need Review<br>
 		3 = Limited Experience<br><br></p>');
   $form['skills']['core'] = fieldset('Core Skills');
-  $form['skills']['core']['item1'] = radios_123('Admission of a Patient');
-  $form['skills']['core']['item2'] = radios_123('Transfer of a Patient');
-  $form['skills']['core']['item3'] = radios_123('Discharge of a Patient');
+  $form['skills']['core']['rdo_item1'] = radios_123('Admission of a Patient');
+  $form['skills']['core']['rdo_item2'] = radios_123('Transfer of a Patient');
+  $form['skills']['core']['rdo_item3'] = radios_123('Discharge of a Patient');
   $form['skills']['cardio'] = fieldset('Cardiovascular');
-  $form['skills']['cardio']['item1'] = radios_123('Doppler');
-  $form['skills']['cardio']['item2'] = radios_123('Lead placement');
+  $form['skills']['cardio']['rdo_item1'] = radios_123('Doppler');
+  $form['skills']['cardio']['rdo_item2'] = radios_123('Lead placement');
   oa_portal_submit($form);
   return $form;
 }
@@ -402,8 +402,8 @@ function oa_portal_p2_capabilities_form($form_state) {
   $form['jcq']['health'] = cap_yne('Do you have any health reasons that would prohibit you from performing these or similar tasks?');
   $form['jcq']['restrictions'] = cap_yne('Do you have any restrictions preventing you from performing these tasks?');
   $form['jcq']['allergies'] = cap_yne('Do you have any known allergies?', 'If yes, list');
-  $form['jcq']['allergies']['dermatitis'] = radios_yesno('Do you have dermatitis?');
-  $form['jcq']['allergies']['latex'] = radios_yesno('Are you allergic to latex gloves?');
+  $form['jcq']['allergies']['rdo_dermatitis'] = radios_yesno('Do you have dermatitis?');
+  $form['jcq']['allergies']['rdo_latex'] = radios_yesno('Are you allergic to latex gloves?');
   $form['jcq']['preference'] = cap_yne('Are there any assignments that you cannot or prefer not to do?');
   $form['jcq']['certify'] = checkbox('I certify this information is correct, and understand that withholding or giving false information will result in refusal to hire or disciplinary action up to, and including, termination.');
   oa_portal_submit($form);
@@ -477,14 +477,14 @@ function oa_portal_p2_medical_form($form_state) {
   
   // @TODO Add help tooltip
   $form['tb'] = fieldset('TB');
-  $form['tb']['state_12_negative_chest'] = radios('', array(
+  $form['tb']['rdo_state_12_negative_chest'] = radios('', array(
     'stage_12' => 'TB Vaccine Stage 1 & Stage 2',
     'negative_chest' => 'Negative Chest X-ray (every 3 years)',
     ));
 
   // @TODO Add help tooltip
   $form['mmr'] = fieldset('MMR');
-  $form['mmr']['mmr_12_rubella_titer'] = radios('', array(
+  $form['mmr']['rdo_mmr_12_rubella_titer'] = radios('', array(
     'mmr_12' => 'MMR #1 / #2 if born after 1957',
     'rubella_titer' => 'Rubela Titer / Rubeola Titer / Mumps Titer',
     ));
@@ -499,7 +499,7 @@ function oa_portal_p2_medical_form($form_state) {
 
   $form['cardiac'] = fieldset('Cardiac Life Support');
   $form['cardiac']['#tree'] = TRUE;
-  $form['cardiac'][''] = radios('', array('BLS', 'CPR', 'ACLS'), TRUE);
+  $form['cardiac']['rdo_cardiac'] = radios('', array('BLS', 'CPR', 'ACLS'), TRUE);
   $form['cardiac']['certificate'] = array(
     '#type' => 'file',
     '#title' => t('Certificate'),
@@ -508,14 +508,14 @@ function oa_portal_p2_medical_form($form_state) {
   );
 
   $form['vari'] = fieldset('Varivax/Varicella');
-  $form['vari']['vari'] = radios('', array(
+  $form['vari']['rdo_vari'] = radios('', array(
     'vari_vaccine' => 'Varivax Vaccine #1',
     'stmt' => 'Varicella Immunity Stmt/Hist. of Disease',
     'titer' => 'Varicella Titer'));
   
   $form['hepb'] = fieldset('Hepatitis B Vaccination');
   $form['hepb']['#tree'] = TRUE;
-  $form['hepb']['vaccination'] = radios('', array(
+  $form['hepb']['rdo_vaccination'] = radios('', array(
     'hep123' => 'Hep B Series 1, 2 & 3',
     'titer' => 'Hep B Titer',
     'declination' => 'Hep B Declination'));
@@ -561,7 +561,7 @@ function oa_portal_p2_competency_form($form_state) {
 function oa_portal_p3_paycheck_form($form_state) {
   $form = array();
   $form['delivery'] = fieldset('Paycheck Delivery');
-  $form['delivery']['delivery_option'] = radios('', array(
+  $form['delivery']['rdo_delivery_option'] = radios('', array(
     'yes' => '<strong>I do</strong> wish to sign up for Direct Deposit or CashPay at this time and will complete a paycheck delivery method below.',
     'no' => '<strong>I do</strong> wish to sign up for Direct Deposit or CashPay at this time. I would prefer to have my pay check mailed to me. I understand that there may be a delay to my paycheck delivery via the US Postal Service which is beyond the control of On Assignment.',
   ));
@@ -574,12 +574,12 @@ function oa_portal_p3_paycheck_form($form_state) {
   $form['dd']['bank_phone'] = textfield('Bank Phone');
   $form['dd']['bank_account'] = textfield('Bank Account');
   $form['dd']['bank_route'] = textfield('Routing #');
-  $form['dd']['account_type'] = radios('Account Type', array('Checking', 'Savings'), TRUE);
+  $form['dd']['rdo_account_type'] = radios('Account Type', array('Checking', 'Savings'), TRUE);
   
   $form['cp'] = fieldset('CashPay Enrollment');
   $form['cp']['#description'] = 'Please select the card type and English or Spanish below:';
-  $form['cp']['cc_type'] = radios('', array('Visa', 'Instant Issue (Issue at Employment Location)'), TRUE);
-  $form['cp']['cc_lang'] = radios('', array('English', 'Spanish'), TRUE);
+  $form['cp']['rdo_cc_type'] = radios('', array('Visa', 'Instant Issue (Issue at Employment Location)'), TRUE);
+  $form['cp']['rdo_cc_lang'] = radios('', array('English', 'Spanish'), TRUE);
   $form['cp']['cc_number']['#tree'] = TREE;
   $cc_num = textfield('', 4, 4);
   $form['cp']['cc_number'][] = $cc_num;
@@ -616,7 +616,7 @@ function oa_portal_p3_w4_form($form_state) {
   $form['w4'] = fieldset('W4');
   $form['w4']['#description'] = 'If you would like to reference the W4 Personal Allowances Worksheet, Deductions and Adjustments Worksheet, and Two-Earners/Multiple Jobs Worksheet please <a href="to-do">click here</a>.';
   
-  $form['w4']['marital_status'] = radios('', array(
+  $form['w4']['rdo_marital_status'] = radios('', array(
     'Single', 'Married', 'Married, but withhold at higher Single rate'
   ), TRUE);
   $form['w4']['marital_status']['#description'] = t('<strong>Note:</strong> If married, but legally seperated, or spouse is a nonresident alien, check the "Single" box');
@@ -656,7 +656,7 @@ function oa_portal_p3_i9_form($form_state) {
   $form['#description'] = t('');
 
   $form['i9'] = fieldset('I9');
-  $form['i9']['citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
+  $form['i9']['rdo_citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
     array('citizen' => t('A citizen of the United States'), 'national' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
   $form['i9']['until'] = date_popup('Until (expiration date if applicable)');
   $form['i9']['certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');								
@@ -689,13 +689,13 @@ function oa_portal_p3_eeo_form($form_state) {
   
   $form['eeo'] = fieldset('EEO');
   $form['eeo']['#description'] = t('Please fill out the Affirmative Action date below. To ensure that On Assignment complies with pertinent hiring practices, On Assignment must keep records about our applicants for employment.  This questionnaire will be kept in a confidential file, seperate from the application for employment.  Failure to provide this information will in no way adversely affect your candidacy for this position.  However, we would greatly appreciate your willingness to submit this information for our commitment to equal opportunity.<br/><br/><small><em>Note that all definitions as listed below were provuded by the U.S. Federal Government Equal Employment Opportunity Commission (EEOC)</em></small>');
-  $form['eeo']['ethnicity'] = radios('Ethnicity Code', array('hispanic' => t('Hispanic or Latino'),'asian' => t('Asian'),'white' => t('White'),'american_indian' => t('American Indian or Alaskan Native'),'black' => t('Black'),'two_more' => t('Two or more races'),'hawaiian' => t('Native Hawaiian or Pacific Islander') ) );
-  $form['eeo']['gender'] = radios('Gender', array('male' => t('Male'), 'female' => t('Female')));
-  $form['eeo']['handicap'] = radios_yesno('Handicap Status');
+  $form['eeo']['rdo_ethnicity'] = radios('Ethnicity Code', array('hispanic' => t('Hispanic or Latino'),'asian' => t('Asian'),'white' => t('White'),'american_indian' => t('American Indian or Alaskan Native'),'black' => t('Black'),'two_more' => t('Two or more races'),'hawaiian' => t('Native Hawaiian or Pacific Islander') ) );
+  $form['eeo']['rdo_gender'] = radios('Gender', array('male' => t('Male'), 'female' => t('Female')));
+  $form['eeo']['rdo_handicap'] = radios_yesno('Handicap Status');
   $form['eeo']['handicap']['#suffix'] = t('<em><small>(Any person who has a physical or mental impairment that substantially limits one or more major life activities, has a record of such impairments or is regarded as having such impairments)</small></em>');
   $form['eeo']['veteran'] = checkboxes('Veteran Status', array('armed_forces' => t('Armed Forces Service Medal Veteran'), 'disabled' => t('Disabled Veteran'), 'protected' => t('Other Protected Veteran'), 'seperated' => t('Recently Seperated Veteran')) );
   $form['eeo']['veteran']['#description'] = t('<small><em>If you are unsure of your Veteran status under these definitions, contact your recruiter.</em></small>');
-  $form['eeo']['age'] = radios_yesno('Age');
+  $form['eeo']['rdo_age'] = radios_yesno('Age');
   $form['eeo']['age']['#description'] = t('<small><em>Are you over age 40 but under age 70?</em></small>');
   
   oa_portal_submit($form);

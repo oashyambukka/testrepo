@@ -184,8 +184,8 @@ function address() {
 
 function cap_yne($title, $yn_title = 'If no, explain') {
   $elements = array('#tree' => TRUE);
-  $elements['yn'] = radios_yesno($title);
-  $elements['yn']['#prefix'] = '<div class="field-yes-no-explain">';
+  $elements['rdo_yn'] = radios_yesno($title);
+  $elements['rdo_yn']['#prefix'] = '<div class="field-yes-no-explain">';
   $elements['explain'] = textfield($yn_title);
   $elements['explain']['#suffix'] = '</div>';
   return $elements;
