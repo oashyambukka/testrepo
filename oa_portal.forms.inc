@@ -105,7 +105,7 @@ function oa_portal_p1_application_form($form_state) {
   // Experience
   $form['experience'] = fieldset('Experience');
 
-  $form['experience']['recent_grad'] = checkbox('Check box if you are a recent college graduate');  
+  $form['experience']['chk_recent_grad'] = checkbox('Check box if you are a recent college graduate');  
 
   $exp_fields = array('#tree' => TRUE);
   $exp_fields['employer'] = textfield('Employer',75);
@@ -113,7 +113,7 @@ function oa_portal_p1_application_form($form_state) {
   $exp_fields['state'] = state('State');
   //$exp_fields['start_date'] = date_popup('Start Date');
   $exp_fields['end_date'] = date_popup('End Date');
-  $exp_fields['present'] = checkbox('Present');
+  $exp_fields['chk_present'] = checkbox('Present');
   $exp_fields['title'] = textfield('Title');
   $exp_fields['salary'] = textfield('Salary');
   $exp_fields['rdo_salary_period'] = radios('Salary', array('annual' => t('Annual'), 'hourly' => t('Hourly')));
@@ -130,10 +130,10 @@ function oa_portal_p1_application_form($form_state) {
     '#field_suffix' => t('Miles'),
   ));
   
-  $form['preferences']['type'] = checkboxes('Check preferred employment type', array('Contract', 'Contract-to-hire', 'Direct Hire'), TRUE);
-  $form['preferences']['work_days'] = checkboxes('Check the days you are willing to work', array('Any', 'M', 'T', 'W', 'Th', 'F', 'S', 'Su'), TRUE);
-  $form['preferences']['shifts'] = checkboxes('Check the shifts you are willing to work', array('Any', 'Days', 'Nights', 'Evenings', 'Weekends'), TRUE);
-  $form['preferences']['ptft'] = checkboxes('Would you prefer to work', array('Either', 'Part-time', 'Full-time'));
+  $form['preferences']['chk_type'] = checkboxes('Check preferred employment type', array('Contract', 'Contract-to-hire', 'Direct Hire'), TRUE);
+  $form['preferences']['chk_work_days'] = checkboxes('Check the days you are willing to work', array('Any', 'M', 'T', 'W', 'Th', 'F', 'S', 'Su'), TRUE);
+  $form['preferences']['chk_shifts'] = checkboxes('Check the shifts you are willing to work', array('Any', 'Days', 'Nights', 'Evenings', 'Weekends'), TRUE);
+  $form['preferences']['chk_ptft'] = checkboxes('Would you prefer to work', array('Either', 'Part-time', 'Full-time'));
   $form['preferences']['rdo_legal_right'] = radios_yesno('Can you, after employment, submit verification of your legal right to work in the U.S.?');
   $form['preferences']['rdo_felony'] = radios_yesno('Have you been convicted of a felony within the last seven years?');
   $form['preferences']['felony']['#suffix'] = t('(An affirmative response to this question will not necessarily disqualify you from employment)<br \>MA residents should not answer this question');
@@ -157,7 +157,7 @@ function oa_portal_p1_application_form($form_state) {
   
   
   $form['proforgs'] = fieldset('Professional Organizations');
-  $proforgs['none'] = checkbox('I am not a member of any organizations');
+  $proforgs['chk_none'] = checkbox('I am not a member of any organizations');
   $proforgs['org_name'] = textfield('Organization');
   $proforgs['org_role'] = textfield('Role');
   $proforgs['org_start'] = date_popup('From');
@@ -250,7 +250,7 @@ function oa_portal_p1_checklist_form_submit($form, &$form_state) {
  */
 function oa_portal_p2_professional_orgs_form($form_state) {
   $form['prof_orgs'] = fieldset('Professional Organizations');
-  $form['prof_orgs']['no_orgs'] = checkbox('I am not a member of any organizations');
+  $form['prof_orgs']['chk_no_orgs'] = checkbox('I am not a member of any organizations');
 
   $org = array('#tree' => TRUE);
   $org['org_name'] = textfield('Organization');
@@ -299,7 +299,7 @@ function oa_portal_p2_licensure_certs_form($form_state) {
     '#size' => 80,
   );
   $form['lc']['uploaded'] = markup('<h3>Uploaded files</h3>');
-  $form['lc']['fax_preference'] = checkbox('Check this box if you prefer to fax copies of your licensures/certifications');
+  $form['lc']['chk_fax_preference'] = checkbox('Check this box if you prefer to fax copies of your licensures/certifications');
 
   // @TODO Get cover page doc ID
   $form['lc']['fax'] = markup('<PDF ICON> Please include this cover letter and fax it to (818) 555-5555. <cover page link here>');
@@ -350,7 +350,7 @@ function oa_portal_p2_background_reference_form($form_state) {
   $form['consent']['dl_state'] = state('Driver License State');
   $form['consent']['residence_state'] = date_popup('Lived at your current address since');
   $form['consent']['residence_state']['#suffix'] = '<strong>Note: We need 7 years of address history. Please add all addresses for the past 7 years.</strong>';
-  $form['consent']['certification'] = checkbox('I certify...');
+  $form['consent']['chk_certification'] = checkbox('I certify...');
   
   $form['reference1'] = fieldset('Reference Check 1');
   
@@ -361,7 +361,7 @@ function oa_portal_p2_background_reference_form($form_state) {
   $ref['phone'] = textfield('Phone', 12);
   $ref['email'] = email();
   $ref['email']['#size'] = 40;
-  $ref['certification'] = checkbox('I hereby give permission to the above named employer to release information to On Assignment regarding my performance while employed at that facility');
+  $ref['chk_certification'] = checkbox('I hereby give permission to the above named employer to release information to On Assignment regarding my performance while employed at that facility');
   $form['reference1']['ref'] = $ref;
  
   oa_portal_submit($form);
@@ -405,7 +405,7 @@ function oa_portal_p2_capabilities_form($form_state) {
   $form['jcq']['allergies']['rdo_dermatitis'] = radios_yesno('Do you have dermatitis?');
   $form['jcq']['allergies']['rdo_latex'] = radios_yesno('Are you allergic to latex gloves?');
   $form['jcq']['preference'] = cap_yne('Are there any assignments that you cannot or prefer not to do?');
-  $form['jcq']['certify'] = checkbox('I certify this information is correct, and understand that withholding or giving false information will result in refusal to hire or disciplinary action up to, and including, termination.');
+  $form['jcq']['chk_certify'] = checkbox('I certify this information is correct, and understand that withholding or giving false information will result in refusal to hire or disciplinary action up to, and including, termination.');
   oa_portal_submit($form);
   return $form;
 }
@@ -495,7 +495,7 @@ function oa_portal_p2_medical_form($form_state) {
     '#required' => TRUE,
     '#size' => 80,
   );
-  $form['mmr']['fax_preference'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
+  $form['mmr']['chk_fax_preference'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
 
   $form['cardiac'] = fieldset('Cardiac Life Support');
   $form['cardiac']['#tree'] = TRUE;
@@ -626,7 +626,7 @@ function oa_portal_p3_w4_form($form_state) {
   $form['w4']['exempt_terms'] = markup('<strong>I claim exemption from withholding for 2012, and I certify that I meet both of the following conditions for exemption:</strong><br/>
   <ul><li>Last year I had a right to a refund of all federal income tax withheld because I had no tax liability, and </li><li>This year I expect a refund of all federal income tax withheld because I expect to have no tax liability</li></ul><strong>');
   $form['w4']['exempt'] = textfield('If you meet both conditions, write "Exempt" here', 6);
-  $form['w4']['certify'] = checkbox('Under penalties of perjury, I declare that I have examined this certificate and, to the best of my knowledge and belief, it is true, correct, and complete.');
+  $form['w4']['chk_certify'] = checkbox('Under penalties of perjury, I declare that I have examined this certificate and, to the best of my knowledge and belief, it is true, correct, and complete.');
   
   
   oa_portal_submit($form);
@@ -659,7 +659,7 @@ function oa_portal_p3_i9_form($form_state) {
   $form['i9']['rdo_citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
     array('citizen' => t('A citizen of the United States'), 'national' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
   $form['i9']['until'] = date_popup('Until (expiration date if applicable)');
-  $form['i9']['certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');								
+  $form['i9']['chk_certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');								
 
   oa_portal_submit($form);
   return $form;
@@ -693,7 +693,7 @@ function oa_portal_p3_eeo_form($form_state) {
   $form['eeo']['rdo_gender'] = radios('Gender', array('male' => t('Male'), 'female' => t('Female')));
   $form['eeo']['rdo_handicap'] = radios_yesno('Handicap Status');
   $form['eeo']['handicap']['#suffix'] = t('<em><small>(Any person who has a physical or mental impairment that substantially limits one or more major life activities, has a record of such impairments or is regarded as having such impairments)</small></em>');
-  $form['eeo']['veteran'] = checkboxes('Veteran Status', array('armed_forces' => t('Armed Forces Service Medal Veteran'), 'disabled' => t('Disabled Veteran'), 'protected' => t('Other Protected Veteran'), 'seperated' => t('Recently Seperated Veteran')) );
+  $form['eeo']['chk_veteran'] = checkboxes('Veteran Status', array('armed_forces' => t('Armed Forces Service Medal Veteran'), 'disabled' => t('Disabled Veteran'), 'protected' => t('Other Protected Veteran'), 'seperated' => t('Recently Seperated Veteran')) );
   $form['eeo']['veteran']['#description'] = t('<small><em>If you are unsure of your Veteran status under these definitions, contact your recruiter.</em></small>');
   $form['eeo']['rdo_age'] = radios_yesno('Age');
   $form['eeo']['age']['#description'] = t('<small><em>Are you over age 40 but under age 70?</em></small>');
