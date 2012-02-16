@@ -211,40 +211,107 @@ function oa_portal_p1_checklist_form($form_state) {
   $form = array();
 
   // @TODO Get items per modality
+  
   $form['essential'] = oa_portal_p1_checklist_form_essential_practical();
 
   oa_portal_submit($form);
   return $form;
 }
 
-function oa_portal_p1_checklist_form_nurse_practicioner() {
-  $elements = fieldset('Nurse Practicioner');
+function oa_portal_p1_checklist_form_480() {
+  $elements = fieldset('Acute Care Self Assessment Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_481() {
+  $elements = fieldset('Adult Pediatric and Psychiatrics Skills');
   
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_clerical() {
-  $elements = fieldset('Clerical');
-  
+function oa_portal_p1_checklist_form_482() {
+  $elements = fieldset('Cardiac Cath Lab Skills');
+
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_operating_room() {
-  $elements = fieldset('Operating Room');
-  
+function oa_portal_p1_checklist_form_483() {
+  $elements = fieldset('Case Manager Skills');
+
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_essential_practical() {
+function oa_portal_p1_checklist_form_484() {
+  $elements = fieldset('Certified Nursing Assistant Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_485() {
+  $elements = fieldset('Clerical Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_486() {
+  $elements = fieldset('Critical Care Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_487() {
+  $elements = fieldset('Cytology');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_488() {
+  $elements = fieldset('Dental Assistant Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_489() {
+  $elements = fieldset('Dental Hygenist Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+// 490 - Echo Tech Skills - likely out of scope
+
+function oa_portal_p1_checklist_form_491() {
+  $elements = fieldset('Endoscopy Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_492() {
+  $elements = fieldset('ER Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_493() {
   $elements = fieldset('Essential/Practical Skills Checklist');
+
   $elements['#prefix'] = t('<br><p>This profile is for use by ALL Nurses with more than one year\'s experience in his/her discipline and specialty.</p><br>
   <p>Directions: Indicate your level of experience by circling the numbers below as follows<br>
-		1 = Can Function Independently<br>
-		2 = Experienced, but May Need Review<br>
-		3 = Limited Experience<br><br></p>');
+    1 = Can Function Independently<br>
+    2 = Experienced, but May Need Review<br>
+    3 = Limited Experience<br><br></p>');
   $elements['core'] = fieldset('Core Skills');
   $elements['core']['rdo_item1'] = radios_123('Admission of a Patient');
   $elements['core']['rdo_item2'] = radios_123('Transfer of a Patient');
@@ -256,287 +323,294 @@ function oa_portal_p1_checklist_form_essential_practical() {
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_cath_lab() {
-  $elements = fieldset('Cath Lab');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_medical_assistant() {
-  $elements = fieldset('Medical Assistant');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_cna() {
-  $elements = fieldset('C.N.A.');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_cota() {
-  $elements = fieldset('COTA');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_ct() {
-  $elements = fieldset('CT');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_cytology() {
-  $elements = fieldset('Cytology');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_dental_assistant() {
-  $elements = fieldset('Dental Assistant');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_dentist_dental_hygenist() {
-  $elements = fieldset('Dentist/Dental Hygenist');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_radiology() {
-  $elements = fieldset('Radiology');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_histology() {
-  $elements = fieldset('Histology');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_lpn() {
-  $elements = fieldset('LPN');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_medical_technology() {
-  $elements = fieldset('Medical Technology');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_radiology_mri() {
-  $elements = fieldset('Radiology/MRI');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_radiology_cnmt() {
-  $elements = fieldset('Radiology CNMT');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_occupational_therapy() {
-  $elements = fieldset('Occupational Therapy');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_pharmacy_tech() {
-  $elements = fieldset('Pharmacy Tech');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_phlebotomist() {
-  $elements = fieldset('Phlebotomist');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_physical_therapist() {
-  $elements = fieldset('Physical Therapist');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_pt_assistant() {
-  $elements = fieldset('PT Assistant');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_radiation() {
-  $elements = fieldset('Radiation');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_respitory_therapist() {
-  $elements = fieldset('Respitory Therapist');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_radiology_sonography() {
-  $elements = fieldset('Radiology Sonography');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_speech_therapist() {
-  $elements = fieldset('Speech Therapist');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_reprocessing_tech() {
-  $elements = fieldset('Reprocessing Tech');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_surgical() {
-  $elements = fieldset('Surgical Skills');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_er() {
-  $elements = fieldset('ER Skills');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_medical_surgical() {
-  $elements = fieldset('Medical Surgical Skills');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_case_management() {
-  $elements = fieldset('Case Management');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_critical_care() {
-  $elements = fieldset('Critical Care Skills');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_hemodialysis() {
+function oa_portal_p1_checklist_form_494() {
   $elements = fieldset('Hemodialysis Skills');
-  
+
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_endoscopy() {
-  $elements = fieldset('Endoscopy Skills');
-  
+function oa_portal_p1_checklist_form_495() {
+  $elements = fieldset('Histology Skills');
+
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_interventional_radiology() {
-  $elements = fieldset('Interventional Radiology');
-  
+function oa_portal_p1_checklist_form_496() {
+  $elements = fieldset('Histotech Skills');
+
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_ld() {
-  $elements = fieldset('L&D Skills');
-  
+function oa_portal_p1_checklist_form_497() {
+  $elements = fieldset('Interventional Radiology Skills');
+
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_nursery() {
-  $elements = fieldset('Nursery Skills');
-  
+function oa_portal_p1_checklist_form_498() {
+  $elements = fieldset('Labor & Delivery Skills');
+
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_nicu() {
+function oa_portal_p1_checklist_form_499() {
+  $elements = fieldset('Laboratory Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_500() {
+  $elements = fieldset('LVN Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_501() {
+  $elements = fieldset('Mammography/Ultrasound Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_502() {
+  $elements = fieldset('Medical Assistant Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_503() {
+  $elements = fieldset('Medical Technology Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_504() {
+  $elements = fieldset('MedSurg Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_505() {
+  $elements = fieldset('MedTech Assistant Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_506() {
   $elements = fieldset('NICU Skills');
   
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_pacu() {
+function oa_portal_p1_checklist_form_507() {
+  $elements = fieldset('Nurse Case Manager Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_508() {
+  $elements = fieldset('Nurse Practicioner');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_509() {
+  $elements = fieldset('Nursery Skills');
+  
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_510() {
+  $elements = fieldset('Occupational Therapy Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_511() {
+  $elements = fieldset('Operating Room Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_512() {
+  $elements = fieldset('Optical Skills Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_513() {
   $elements = fieldset('PACU Skills');
   
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_stepdown_tele() {
-  $elements = fieldset('Stepdown/Tele Skills');
-  
-  oa_portal_checklist($elements);
-  return $elements;
-}
-
-function oa_portal_p1_checklist_form_pediatrics() {
+function oa_portal_p1_checklist_form_514() {
   $elements = fieldset('Pediatrics Skills');
   
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_picu() {
+function oa_portal_p1_checklist_form_515() {
+  $elements = fieldset('Pharmacist Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_516() {
+  $elements = fieldset('Pharmacy Tech Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_517() {
+  $elements = fieldset('Phlebotomy Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_518() {
+  $elements = fieldset('Physical Therapy Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_519() {
   $elements = fieldset('PICU Skills');
   
   oa_portal_checklist($elements);
   return $elements;
 }
 
-function oa_portal_p1_checklist_form_adult_pediatric_psychiatric() {
-  $elements = fieldset('Adult/Pediatric Psychiatric Skills');
+function oa_portal_p1_checklist_form_520() {
+  $elements = fieldset('Post Anesthesia Skills');
   
   oa_portal_checklist($elements);
   return $elements;
 }
 
+// 521 - Psych Skills - likely out of scope
 
+function oa_portal_p1_checklist_form_522() {
+  $elements = fieldset('Radiology Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+// 523 - Rehab Skills - likely out of scope
+
+function oa_portal_p1_checklist_form_524() {
+  $elements = fieldset('Reprocessing Tech Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_525() {
+  $elements = fieldset('Respitory Therapist Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_526() {
+  $elements = fieldset('Respitory Tech Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_527() {
+  $elements = fieldset('RN/LPN Clinical Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_528() {
+  $elements = fieldset('Speech Therapy Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_529() {
+  $elements = fieldset('Speech Therapy Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_530() {
+  $elements = fieldset('Stepdown/PCU/Tele Skills');
+  
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+function oa_portal_p1_checklist_form_531() {
+  $elements = fieldset('Sterile Processing Tech Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+
+function oa_portal_p1_checklist_form_532() {
+  $elements = fieldset('Surgical Processing Tech Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+// 533 - VaxAmerica Orientation Checklist - likely out of scope
+// 540 - Cath Lab Skills - likely out of scope
+
+function oa_portal_p1_checklist_form_547() {
+  $elements = fieldset('Certified Occupational Therapy Assistant Skills');
+
+  oa_portal_checklist($elements);
+  return $elements;
+}
+
+
+/**
+ * Missing forms on UCM
+ * - C.N.A.
+ * - CT
+ * - LPN
+ * - Radiology/MRI
+ * - Radiology CNMT
+ * - PT Assistant
+ * - Radiation
+ * - Radiology Sonography
+ * - L&D Skills
+ */
+ 
 /**
  * Form validation callback for Checklist
  */
@@ -1077,4 +1151,9 @@ function oa_portal_checklist($elements) {
       $elements[$k]['#tree'] = TRUE;
     }
   }
+  
+  $trace = debug_backtrace();
+  $caller = array_shift($trace);
+  dsm($caller['function'], 'Get #ucm_formtype from function name');
+  
 }
