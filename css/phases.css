@@ -1,17 +1,16 @@
 /* Styles for OA Healthcare Documents & Phases *******************/
 
-.oap-phase-title-status h3, .oap-phase-title h3 {
-	font-size:150%;
-	color:white;
-}
-.oap-phase-form-link a {
-	color:black;
-	text-decoration:none;
-}
+/* Phases & Messages blocks */
+#phases-block .content, #messages-block .content {padding:0}
+#phases-block .title, #messages-block .title {display:none}
+/*****************************/
 
-#oa-phase-1, 
-#oa-phase-2,
-#oa-phase-3 {
+.oap-phase-title-status h3 {font-size:200%;color:white}
+.oap-phase-title h3 {font-size:150%;color:white}
+
+.oap-phase-form-link a {color:black;text-decoration:none;}
+
+#oa-phase-1, #oa-phase-2, #oa-phase-3 {
 	display:inline;
 	padding:10px;
 	margin:1px;
@@ -19,14 +18,79 @@
 	height:350px;
 	width:30%;
 }
-#oa-phase-1, #oa-phase-status-p1 {background:#B77D7C}
-#oa-phase-2, #oa-phase-status-p2 {background:#AEA85C}
-#oa-phase-3, #oa-phase-status-p3 {background:#619650}
+#oa-phase-1, #oa-phase-status-p1 {background:#B77D7C;overflow:hidden;padding:0 10px 10px 10px}
+#oa-phase-2, #oa-phase-status-p2 {background:#AEA85C;overflow:hidden;padding:0 10px 10px 10px}
+#oa-phase-3, #oa-phase-status-p3 {background:#619650;overflow:hidden;padding:0 10px 10px 10px}
+
+#oa-phase-status-p1 .oap-phase-form-link,
+#oa-phase-status-p2 .oap-phase-form-link,
+#oa-phase-status-p3 .oap-phase-form-link {width:auto;float:left;padding-right:30px;color:#fff;}
+
+#oa-phase-1 .oap-phase-form-link,
+#oa-phase-2 .oap-phase-form-link,
+#oa-phase-3 .oap-phase-form-link,
+#oa-phase-1 .oap-phase-title-status,
+#oa-phase-2 .oap-phase-title-status,
+#oa-phase-3 .oap-phase-title-status {border-bottom:1px dotted rgba(255,255,255, .2);border-style:none none dotted;}
 
 
 
+#oa-phase-1 .oap-phase-form-link,
+#oa-phase-2 .oap-phase-form-link,
+#oa-phase-3 .oap-phase-form-link {padding-top:3px;padding-bottom:3px;}
 
+#oa-phase-1 .oap-phase-form-link a:hover,
+#oa-phase-2 .oap-phase-form-link a:hover,
+#oa-phase-3 .oap-phase-form-link a:hover {font-weight:bold;}
+
+#oap-status-legend {padding-bottom:10px}
+#oap-status-legend .oap-status-icon {width:50px;display:inline;padding-right:40px;font-style:italic;}
+
+
+	
 /* Styles for messages */
-#oap-messages {
-	background:#F9F6D5;
+#oap-messages {background:#F9F6D5;overflow:hidden;padding:10px}
+#oap-message-count {float:left;padding-right:20px}
+#oap-message-notice {font-weight:bold;padding-bottom:10px;}
+.oap-message-date {float:left;padding-left:30px; padding-right:20px; text-align:right}
+.oap-message-teaser {float:left;font-weight:bold}
+.oap-message-link a {padding-left:20px;color:#666}
+
+/* Tooltips */
+
+/* TEMPORARY trigger button */
+.oap-tooltip-trigger {
+	display:none;  /* Temp hide */
+	padding:1px 4px;
+	width:10px;
+	background:blue;
+	color:white;
+	cursor:pointer;
+	text-align:center;
+	-moz-border-radius:20px;
+	-webkit-border-radius:20px;
+	-o-border-radius:20px;
+	border-radius:20px;
+}
+
+.oap-tooltip {
+	position:absolute;
+	z-index:1000;
+	background:#D2EEEF;
+	padding:10px;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	-o-border-radius:10px;
+	border-radius:10px;
+	width:300px;
+	display:none;
+}
+.oap-tooltip .close a {
+	float:right;
+	text-decoration:none;
+	cursor:pointer;
+}
+.oap-tooltip .string {
+	clear:both;
+	padding:0 10px;
 }
