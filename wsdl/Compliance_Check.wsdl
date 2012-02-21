@@ -80,7 +80,7 @@
 	</binding>
 	<service name="Compliance_Check">
 		<port name="Compliance_CheckSoap" binding="s0:Compliance_CheckSoap">
-			<soap:address location="http://172.23.8.56:16200/_dav/cs/idcplg" />
+			<soap:address location="https://sena-demo.net:46201/_dav/cs/idcplg" />
 		</port>
 	</service>
 </definitions>
