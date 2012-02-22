@@ -292,10 +292,12 @@ function oa_portal_api() {
  * SOAP interface
  */
 function oa_portal_soap($method, $params, $debug = FALSE) {
+  ini_set("soap.wsdl_cache_enabled", "0");
   $wsdl = array(
     'pingServer' => 'ping.wsdl',
     'CheckInUniversal' => 'CheckIn.wsdl',
     'GetFileByID' => 'GetFile.wsdl',
+    'ComplianceCheck' => 'Compliance_Check.wsdl',
   );
   ini_set('display_errors', 1);
   $wsdl = dirname(__FILE__) .'/wsdl/'. $wsdl[$method];
@@ -380,4 +382,13 @@ function oa_portal_fapi_validation_rules() {
 
 function oa_portal_rule_not_none($value) {
   return !((string) $value == 'none');
+}
+
+function oa_portal_get_modality_formtypes($phase, $id) {
+  $params = array(
+    'complianceRecordID' => $id,
+    'doNotUpdate' => 1,
+  );
+  $results = oa_portal_soap('ComplianceCheck', $params);
+  return explode(',', $results->ComplianceCheckResult->{'OAPhase'. $phase .'MissingFormIDs'});
 }
