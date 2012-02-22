@@ -55,3 +55,14 @@ function oa_portal_preprocess_oap_phase_status(&$vars) {
   }
   $vars['phases'] = implode("\n", $items);
 }
+
+/**
+ * Preprocess function for Phase Status block
+ */
+function oa_portal_preprocess_oap_doc_download(&$vars) {
+  $items = array();
+  foreach ($vars['docs'] AS $id => $doc) {
+    $items[] = l($doc, 'portal/file/'. $id);
+  }
+  $vars['items'] = theme('item_list', $items);
+}

@@ -161,6 +161,11 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates',
       'arguments' => array('status' => NULL, 'string' => NULL),
     ),
+    'oap_doc_download' => array(
+      'template' => 'oap_doc_download',
+      'path' => $path . '/templates',
+      'arguments' => array('docs' => NULL),
+    ),
   );
 }
 

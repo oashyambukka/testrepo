@@ -209,6 +209,11 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
  */
 function oa_portal_p1_checklist_form($form_state) {
   $form = array();
+  $form['directions'] = markup('<p>Directions: Indicate your level of experience by selecting the numbers below as follows:<br>
+    1 = Can Function Independently<br>
+    2 = Experienced, but May Need Review<br>
+    3 = Limited Experience<br><br></p>');
+
   $p1_formtypes = oa_portal_get_modality_formtypes(1, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
   $checklist_formtypes = array_intersect(range(480, 532) + array(547), $p1_formtypes);
   foreach ($checklist_formtypes AS $cft) {
@@ -216,7 +221,9 @@ function oa_portal_p1_checklist_form($form_state) {
     $form[$cft] = $fn();
   }
 
-  oa_portal_submit($form);
+  $docs = array('ucmid123' => 'Doc 123', 'ucmid456' => 'Doc 456');
+  
+  oa_portal_submit($form, $docs);
   dsm($form, 'Skills Checklist $form');
   return $form;
 }
@@ -325,12 +332,6 @@ function oa_portal_p1_checklist_form_492() {
 
 function oa_portal_p1_checklist_form_493() {
   $elements = fieldset('Essential/Practical Skills Checklist');
-
-  $elements['#prefix'] = t('<br><p>This profile is for use by ALL Nurses with more than one year\'s experience in his/her discipline and specialty.</p><br>
-  <p>Directions: Indicate your level of experience by circling the numbers below as follows<br>
-    1 = Can Function Independently<br>
-    2 = Experienced, but May Need Review<br>
-    3 = Limited Experience<br><br></p>');
   $elements['core'] = fieldset('Core Skills');
   $elements['core']['rdo_item1'] = radios_123('Admission of a Patient');
   $elements['core']['rdo_item2'] = radios_123('Transfer of a Patient');
@@ -1134,9 +1135,11 @@ function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
 }
 
 
-function oa_portal_submit(&$form) {
+function oa_portal_submit($form, $docs) {
   $form['#attributes'] = array('class' => 'oaportal');
   $form['#ajax'] = array('enabled' => TRUE);
+  $form['docs'] = oa_portal_doc_download($docs);
+  
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Finalize'),
@@ -1153,9 +1156,8 @@ function oa_portal_checklist($elements) {
       $elements[$k]['#tree'] = TRUE;
     }
   }
-  
-  $trace = debug_backtrace();
-  $caller = array_shift($trace);
-  dsm($caller['function'], 'Get #ucm_formtype from function name');
-  
+}
+
+function oa_portal_doc_download($docs) {
+  return (count($docs)) ? array('#value' => theme('oap_doc_download', $docs)) : NULL;
 }
