@@ -209,7 +209,7 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
  */
 function oa_portal_p1_checklist_form($form_state) {
   $form = array();
-  $p1_formtypes = oa_portal_get_modality_formtypes(1, 'T004615');
+  $p1_formtypes = oa_portal_get_modality_formtypes(1, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
   $checklist_formtypes = array_intersect(range(480, 532) + array(547), $p1_formtypes);
   foreach ($checklist_formtypes AS $cft) {
     $fn = 'oa_portal_p1_checklist_form_'. $cft;
