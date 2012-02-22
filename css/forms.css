@@ -1,5 +1,19 @@
 /* Stylesheet for OA Portal forms */
 
+/* Clearfix */
+
+.cf:before,
+.cf:after {
+  content: "";
+  display: table;
+}
+.cf:after {
+  clear: both;
+}
+/* For IE 6/7 (trigger hasLayout) */
+.cf {
+  zoom: 1;
+}
 
 /***** GENERAL STYLES FOR ALL FORMS ****************************************************************/
 .oaportal fieldset {
