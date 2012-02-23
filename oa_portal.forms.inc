@@ -209,6 +209,7 @@ function oa_portal_p1_checklist_form($form_state) {
 
   $p1_formtypes = oa_portal_get_modality_formtypes(1, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
   $checklist_formtypes = array_intersect(range(480, 532) + array(547), $p1_formtypes);
+$checklist_formtypes = array(517);
   foreach ($checklist_formtypes AS $cft) {
     $fn = 'oa_portal_p1_checklist_form_'. $cft;
     $form[$cft] = $fn();
@@ -537,7 +538,7 @@ function oa_portal_p1_checklist_form_517() {
       'mdofficelab' => 'MD Office Lab',
       'bloodbank' => 'Blood Bank',
       'mobileunit' => 'Mobile Unit',
-      'homehealth' => 'Home Health'
+      'homehealth' => 'Home Health',
       'other' => 'Other',
     )
   );
@@ -1190,6 +1191,7 @@ function oa_portal_submit(&$form, $docs = array()) {
 function oa_portal_checklist(&$elements, $skills) {
   foreach ($skills AS $section => $skills) {
     $elements[$section] = fieldset($section);
+    $elements[$section]['#tree'] = FALSE;
     foreach ($skills AS $k => $v) {
       $elements[$section][$k] = radios_123($v);
     }
