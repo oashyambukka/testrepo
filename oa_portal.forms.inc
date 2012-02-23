@@ -84,7 +84,6 @@ function oa_portal_p1_application_form($form_state) {
   // Education
   $form['education'] = fieldset('Education', 'Please do not note the year high school diploma was received');
 
-  $edu_fields = array('#tree' => TRUE);
   $edu_fields['school'] = textfield('School', array('#options' => array('opt1' => 'Opt 1')));
   $edu_fields['rdo_grad_status'] = radios('Did you graduate', array(1 => 'Yes', 0 => 'No'));
   $edu_fields['degree'] = select('Degree Earned', array('Associates'));
@@ -104,7 +103,6 @@ function oa_portal_p1_application_form($form_state) {
 
   $form['experience']['chk_recent_grad'] = checkbox('Check box if you are a recent college graduate');  
 
-  $exp_fields = array('#tree' => TRUE);
   $exp_fields['employer'] = textfield('Employer',75);
   $exp_fields['city'] = textfield('City');
   $exp_fields['state'] = state('State');
@@ -143,7 +141,6 @@ function oa_portal_p1_application_form($form_state) {
   // Licensures & Certifications
   $form['licecerts'] = fieldset('Licensures/Certifications');
 
-  $lc_fields = array('#tree' => TRUE);
   $lc_fields['name'] = textfield('Licensure/Certification');
   $lc_fields['state'] = state();
   $lc_fields['number'] = textfield('License Number', 12);
@@ -180,29 +177,7 @@ function oa_portal_p1_application_form($form_state) {
   $form['terms'] = terms($terms_desc);
   $docs = array('ucmid123' => 'Doc 123', 'ucmid456' => 'Doc 456');
   oa_portal_submit($form, $docs);
-dsm($form);
   return $form;
-}
-
-function oa_portal_set($sub_elements, $text, $ct = 2) {
-  $sub_elements['start'] = array(
-    '#value' => '<div class="add-another-set set-hide cf">',
-    '#weight' => -1000,
-  );
-  $sub_elements['end'] = array(
-    '#value' => '<div class="add-another-link cf">'. t($text) .'</div></div>',
-    '#weight' => 1999,
-  );
-  
-  $elements = array();
-  for ($i = 1; $i <= $ct; $i++) {
-    $elements[] = $sub_elements;
-  }
-
-  $elements[0]['start']['#value'] = '<div class="add-another-set cf">';
-  $elements[($ct - 1)]['end']['#value'] = '</div>';
-  dsm($elements, '$elements');
-  return $elements;
 }
 
 /**
@@ -754,6 +729,10 @@ function oa_portal_p2_background_reference_form($form_state) {
   $form['consent']['dl_state'] = state('Driver License State');
   $form['consent']['residence_state'] = date_popup('Lived at your current address since');
   $form['consent']['residence_state']['#suffix'] = '<strong>Note: We need 7 years of address history. Please add all addresses for the past 7 years.</strong>';
+  
+  $form['consent']['former_addresses'] = oa_portal_set(address(), 'Add another address', 6);
+  dsm($form['consent'['former_addresses']]);
+  
   $form['consent']['chk_certification'] = checkbox('I certify...');
   
   $form['reference1'] = fieldset('Reference Check 1');
@@ -1178,4 +1157,25 @@ function oa_portal_checklist($elements) {
 
 function oa_portal_doc_download($docs) {
   return (count($docs)) ? array('#value' => theme('oap_doc_download', $docs)) : NULL;
+}
+
+function oa_portal_set($sub_elements, $text, $ct = 2) {
+  $sub_elements['#tree'] = TRUE;
+  $sub_elements['start'] = array(
+    '#value' => '<div class="add-another-set set-hide cf">',
+    '#weight' => -1000,
+  );
+  $sub_elements['end'] = array(
+    '#value' => '<div class="add-another-link cf">'. t($text) .'</div></div>',
+    '#weight' => 1999,
+  );
+  
+  $elements = array();
+  for ($i = 1; $i <= $ct; $i++) {
+    $elements[] = $sub_elements;
+  }
+
+  $elements[0]['start']['#value'] = '<div class="add-another-set cf">';
+  $elements[($ct - 1)]['end']['#value'] = '</div>';
+  return $elements;
 }
