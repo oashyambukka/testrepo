@@ -209,8 +209,8 @@ function oa_portal_p1_checklist_form($form_state) {
 
   $p1_formtypes = oa_portal_get_modality_formtypes(1, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
   $checklist_formtypes = array_intersect(range(480, 532) + array(547), $p1_formtypes);
-$checklist_formtypes = array(517);
-  foreach ($checklist_formtypes AS $cft) {
+  $form['#formtypes'] = array(517);
+  foreach ($form['#formtypes'] AS $cft) {
     $fn = 'oa_portal_p1_checklist_form_'. $cft;
     $form[$cft] = $fn();
   }
@@ -234,6 +234,7 @@ function oa_portal_p1_checklist_form_validate($form, &$form_state) {
  * Form submission callback for Checklist
  */
 function oa_portal_p1_checklist_form_submit($form, &$form_state) {
+  dsm($form, '$form in submission');
   // @TODO Post to UCM
   dsm($form_state['values'], '$form_state values');
 }
