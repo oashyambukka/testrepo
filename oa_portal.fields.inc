@@ -154,6 +154,17 @@ function radios_123($title) {
   return $element;
 }
 
+function checklist_skill($title) {
+  $element = array(
+    '#type' => 'radios',
+    '#title' => t($title),
+    '#options' => array('1' => '1', '2' => '2', '3' => '3', '4' => '4'),
+    '#required' => TRUE,
+    '#attributes' => array('class' => 'checklist-skill'),
+  );
+  return $element;
+}
+
 function terms($desc) {
   $element = array(
     '#type' => 'radios',

@@ -326,14 +326,18 @@ function oa_portal_p1_checklist_form_492() {
 
 function oa_portal_p1_checklist_form_493() {
   $elements = fieldset('Essential/Practical Skills Checklist');
-  $elements['core'] = fieldset('Core Skills');
-  $elements['core']['rdo_item1'] = radios_123('Admission of a Patient');
-  $elements['core']['rdo_item2'] = radios_123('Transfer of a Patient');
-  $elements['core']['rdo_item3'] = radios_123('Discharge of a Patient');
-  $elements['cardio'] = fieldset('Cardiovascular');
-  $elements['cardio']['rdo_item1'] = radios_123('Doppler');
-  $elements['cardio']['rdo_item2'] = radios_123('Lead placement');
-  oa_portal_checklist($elements);
+  $skills = array(
+    'Core Skills' => array(
+      'rdo_item1' => 'Admission of a Patient',
+      'rdo_item2' => 'Transfer of a Patient',
+      'rdo_item3' => 'Discharge of a Patient',
+    ),
+    'Cardiovascular' => array(
+      'rdo_item1' => 'Doppler',
+      'rdo_item2' => 'Lead placement',
+    ),
+  );
+  oa_portal_checklist($elements, $skills);
   return $elements;
 }
 
@@ -1193,7 +1197,7 @@ function oa_portal_checklist(&$elements, $skills) {
     $elements[$section] = fieldset($section);
     $elements[$section]['#tree'] = FALSE;
     foreach ($skills AS $k => $v) {
-      $elements[$section][$k] = radios_123($v);
+      $elements[$section][$k] = checklist_skill($v);
     }
   }
 }
