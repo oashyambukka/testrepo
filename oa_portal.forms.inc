@@ -206,16 +206,17 @@ function oa_portal_p1_application_form($form_state) {
   $form['terms'] = terms($terms_desc);
   $docs = array('ucmid123' => 'Doc 123', 'ucmid456' => 'Doc 456');
   oa_portal_submit($form, $docs);
+dsm($form);
   return $form;
 }
 
-function oa_portal_set($elements, $text) {
-  $edu_fields['start'] = array(
+function oa_portal_set(&$elements, $text) {
+  $elements['start'] = array(
     '#value' => '<div class="add-another-set set-hide cf">',
     '#weight' => -1000,
   );
   $elements['end'] = array(
-    '#value' => '<div class="add-another-link cf">'. t('') .'</div></div>';
+    '#value' => '<div class="add-another-link cf">'. t($text) .'</div></div>',
     '#weight' => 1999,
   );
 }
