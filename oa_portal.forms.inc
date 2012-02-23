@@ -85,6 +85,7 @@ function oa_portal_p1_application_form($form_state) {
   $form['education'] = fieldset('Education', 'Please do not note the year high school diploma was received');
 
   $edu_fields = array('#tree' => TRUE);
+  $edu_fields['start'] = markup('<div class="add-another-set set-hide cf">');
   $edu_fields['school'] = textfield('School', array('#options' => array('opt1' => 'Opt 1')));
   $edu_fields['rdo_grad_status'] = radios('Did you graduate', array(1 => 'Yes', 0 => 'No'));
   $edu_fields['degree'] = select('Degree Earned', array('Associates'));
@@ -97,11 +98,15 @@ function oa_portal_p1_application_form($form_state) {
   $edu_fields['coursework2'] = textfield('',25);
   $edu_fields['coursework3'] = textfield('',25);
   $edu_fields['coursework4'] = textfield('',25);
+  $edu_fields['end'] = markup('</div>');
 
   // @TODO Enable multiple entry
   $form['education']['edu'][] = $edu_fields;
+  $form['education']['edu'][0]['start'] = markup('<div class="add-another-set cf">');
+  $form['education']['edu'][0]['end']['#value'] = '<div class="add-another-link cf">Add another school</div></div>';
   $form['education']['edu'][] = $edu_fields;
-  
+  $form['education']['edu'][1]['end']['#value'] = '<div class="add-another-link cf">Add another school</div></div>';
+  $form['education']['edu'][] = $edu_fields;
   // Experience
   $form['experience'] = fieldset('Experience');
 
@@ -183,7 +188,8 @@ function oa_portal_p1_application_form($form_state) {
   to On Assignment to any customer of On Assignment for consideration of employment at customer facility.</p>';
   
   $form['terms'] = terms($terms_desc);
-  oa_portal_submit($form);
+  $docs = array('ucmid123' => 'Doc 123', 'ucmid456' => 'Doc 456');
+  oa_portal_submit($form, $docs);
   return $form;
 }
 
@@ -1135,7 +1141,7 @@ function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
 }
 
 
-function oa_portal_submit($form, $docs) {
+function oa_portal_submit(&$form, $docs = array()) {
   $form['#attributes'] = array('class' => 'oaportal');
   $form['#ajax'] = array('enabled' => TRUE);
   $form['docs'] = oa_portal_doc_download($docs);

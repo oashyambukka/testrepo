@@ -104,6 +104,15 @@
 	float:left;
 }
 
+.set-hide {
+  display: none;
+}
+.add-another-link {
+  clear: both;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 
 /***** CONTACT FORM ********************************************************************/
 
@@ -140,18 +149,23 @@
 #edit-education-edu-0-coursework2-wrapper,
 #edit-education-edu-1-coursework1-wrapper,
 #edit-education-edu-1-coursework2-wrapper,
+#edit-education-edu-2-coursework1-wrapper,
+#edit-education-edu-2-coursework2-wrapper,
 #edit-experience-exp-0-city-wrapper,
 #edit-experience-exp-0-state-wrapper {
 	width:auto;
 	padding-right:20px;
 	clear:none;
 }
-#edit-education-edu-0-coursework3-wrapper {margin-left:172px}
-#edit-education-edu-1-coursework3-wrapper {margin-left:172px}
+#edit-education-edu-0-coursework3-wrapper,
+#edit-education-edu-1-coursework3-wrapper,
+#edit-education-edu-2-coursework3-wrapper {margin-left:172px}
 #edit-education-edu-0-coursework3-wrapper,
 #edit-education-edu-0-coursework4-wrapper,
 #edit-education-edu-1-coursework3-wrapper,
-#edit-education-edu-1-coursework4-wrapper {
+#edit-education-edu-1-coursework4-wrapper,
+#edit-education-edu-2-coursework3-wrapper,
+#edit-education-edu-2-coursework4-wrapper {
 	width:auto;
 	padding-right:20px;
 	clear:none;
