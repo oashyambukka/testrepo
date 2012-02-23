@@ -85,28 +85,26 @@ function oa_portal_p1_application_form($form_state) {
   $form['education'] = fieldset('Education', 'Please do not note the year high school diploma was received');
 
   $edu_fields = array('#tree' => TRUE);
-  $edu_fields['start'] = markup('<div class="add-another-set set-hide cf">');
   $edu_fields['school'] = textfield('School', array('#options' => array('opt1' => 'Opt 1')));
   $edu_fields['rdo_grad_status'] = radios('Did you graduate', array(1 => 'Yes', 0 => 'No'));
   $edu_fields['degree'] = select('Degree Earned', array('Associates'));
-  $edu_fields['city'] = textfield('City',30);
+  $edu_fields['city'] = textfield('City', 30);
   $edu_fields['state'] = state();
-  $edu_fields['year'] = textfield('Year',10,4);
-  $edu_fields['major'] = textfield('Major',30);
-  $edu_fields['minor'] = textfield('Minor',30);
-  $edu_fields['coursework1'] = textfield('Relevant Course Work',25);
-  $edu_fields['coursework2'] = textfield('',25);
-  $edu_fields['coursework3'] = textfield('',25);
-  $edu_fields['coursework4'] = textfield('',25);
-  $edu_fields['end'] = markup('</div>');
+  $edu_fields['year'] = textfield('Year', 10, 4);
+  $edu_fields['major'] = textfield('Major', 30);
+  $edu_fields['minor'] = textfield('Minor', 30);
+  $edu_fields['coursework1'] = textfield('Relevant Course Work', 25);
+  $edu_fields['coursework2'] = textfield('', 25);
+  $edu_fields['coursework3'] = textfield('', 25);
+  $edu_fields['coursework4'] = textfield('', 25);
+  oa_portal_set($edu_fields, 'Add another school');
 
-  // @TODO Enable multiple entry
   $form['education']['edu'][] = $edu_fields;
-  $form['education']['edu'][0]['start'] = markup('<div class="add-another-set cf">');
-  $form['education']['edu'][0]['end']['#value'] = '<div class="add-another-link cf">Add another school</div></div>';
+  $form['education']['edu'][0]['start']['#value'] = '<div class="add-another-set cf">';
   $form['education']['edu'][] = $edu_fields;
-  $form['education']['edu'][1]['end']['#value'] = '<div class="add-another-link cf">Add another school</div></div>';
   $form['education']['edu'][] = $edu_fields;
+  $form['education']['edu'][2]['end']['#value'] = '</div>';
+
   // Experience
   $form['experience'] = fieldset('Experience');
 
@@ -126,15 +124,21 @@ function oa_portal_p1_application_form($form_state) {
   $exp_fields['supervisor'] = textfield('Immediate Supervisor');
   $exp_fields['rdo_may_contact'] = radios_yesno('May we contact?');
   $exp_fields['reason'] = textfield('Reason for leaving');
+  oa_portal_set($exp_fields, 'Add another job');
+
   $form['experience']['exp'][] = $exp_fields;
-  
-  
+  $form['experience']['exp'][0]['start']['#value'] = '<div class="add-another-set cf">';
+  $form['experience']['exp'][] = $exp_fields;
+  $form['experience']['exp'][] = $exp_fields;
+  $form['experience']['exp'][2]['end']['#value'] = '</div>';
+
+
   // Preferences
   $form['preferences'] = fieldset('Preferences');
   $form['preferences']['distance'] = textfield('How far are you willing to commute on a daily basis?', 3, array(
     '#field_suffix' => t('Miles'),
   ));
-  
+
   $form['preferences']['chk_type'] = checkboxes('Check preferred employment type', array('Contract', 'Contract-to-hire', 'Direct Hire'), TRUE);
   $form['preferences']['chk_work_days'] = checkboxes('Check the days you are willing to work', array('Any', 'M', 'T', 'W', 'Th', 'F', 'S', 'Su'), TRUE);
   $form['preferences']['chk_shifts'] = checkboxes('Check the shifts you are willing to work', array('Any', 'Days', 'Nights', 'Evenings', 'Weekends'), TRUE);
@@ -145,8 +149,8 @@ function oa_portal_p1_application_form($form_state) {
   $form['preferences']['rdo_drug_alcohol_screen'] = radios_yesno('As a condition of employment, you may be required to take and pass a drug and/or alcohol screen. Testing will be done at the company\'s expense and administered by a testing facility designated by the company. Results of any testing will be kept strictly confidential. If requested, are you willing to take the drug and/or alcohol screen?');
   $form['preferences']['referral'] = select('How did you hear about On Assignment Healthcare Staffing?',
     array('onassignment.com', 'other'));
-  
-  
+
+
   $form['preferences']['experience'] = textfield('Total years of experience');
   
   // Licensures & Certifications
@@ -157,18 +161,30 @@ function oa_portal_p1_application_form($form_state) {
   $lc_fields['state'] = state();
   $lc_fields['number'] = textfield('License Number', 12);
   $lc_fields['expiry_date'] = date_popup('Expires');
+  oa_portal_set($lc_fields, 'Add another Licensure/Certification');
 
   $form['licecerts']['lc'][] = $lc_fields;
-  
-  
+  $form['licecerts']['lc'][0]['start']['#value'] = '<div class="add-another-set cf">';
+  $form['licecerts']['lc'][] = $lc_fields;
+  $form['licecerts']['lc'][] = $lc_fields;
+  $form['licecerts']['lc'][] = $lc_fields;
+  $form['licecerts']['lc'][3]['end']['#value'] = '</div>';
+
+
   $form['proforgs'] = fieldset('Professional Organizations');
   $proforgs['chk_none'] = checkbox('I am not a member of any organizations');
   $proforgs['org_name'] = textfield('Organization');
   $proforgs['org_role'] = textfield('Role');
   $proforgs['org_start'] = date_popup('From');
   $proforgs['org_end'] = date_popup('To');
-  $form['proforgs']['orgs'][] = $proforgs;
+  oa_portal_set($proforgs, 'Add another Organization');
 
+  $form['proforgs']['orgs'][] = $proforgs;
+  $form['proforgs']['orgs'][0]['start']['#value'] = '<div class="add-another-set cf">';
+  $form['proforgs']['orgs'][] = $proforgs;
+  $form['proforgs']['orgs'][] = $proforgs;
+  $form['proforgs']['orgs'][2]['end']['#value'] = '</div>';
+  
   $terms_desc = '<p>I certify that the information provided on this Application is accurate. I understand 
   that the withholding of information or the giving of false information on this Application may 
   result in a refusal to hire or disciplinary action including, but not limited to, termination. 
@@ -191,6 +207,17 @@ function oa_portal_p1_application_form($form_state) {
   $docs = array('ucmid123' => 'Doc 123', 'ucmid456' => 'Doc 456');
   oa_portal_submit($form, $docs);
   return $form;
+}
+
+function oa_portal_set($elements, $text) {
+  $edu_fields['start'] = array(
+    '#value' => '<div class="add-another-set set-hide cf">',
+    '#weight' => -1000,
+  );
+  $elements['end'] = array(
+    '#value' => '<div class="add-another-link cf">'. t('') .'</div></div>';
+    '#weight' => 1999,
+  );
 }
 
 /**
