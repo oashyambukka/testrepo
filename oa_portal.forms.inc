@@ -97,13 +97,7 @@ function oa_portal_p1_application_form($form_state) {
   $edu_fields['coursework2'] = textfield('', 25);
   $edu_fields['coursework3'] = textfield('', 25);
   $edu_fields['coursework4'] = textfield('', 25);
-  oa_portal_set($edu_fields, 'Add another school');
-
-  $form['education']['edu'][] = $edu_fields;
-  $form['education']['edu'][0]['start']['#value'] = '<div class="add-another-set cf">';
-  $form['education']['edu'][] = $edu_fields;
-  $form['education']['edu'][] = $edu_fields;
-  $form['education']['edu'][2]['end']['#value'] = '</div>';
+  $form['education']['edu'] = oa_portal_set($edu_fields, 'Add another school', 3);
 
   // Experience
   $form['experience'] = fieldset('Experience');
@@ -124,13 +118,7 @@ function oa_portal_p1_application_form($form_state) {
   $exp_fields['supervisor'] = textfield('Immediate Supervisor');
   $exp_fields['rdo_may_contact'] = radios_yesno('May we contact?');
   $exp_fields['reason'] = textfield('Reason for leaving');
-  oa_portal_set($exp_fields, 'Add another job');
-
-  $form['experience']['exp'][] = $exp_fields;
-  $form['experience']['exp'][0]['start']['#value'] = '<div class="add-another-set cf">';
-  $form['experience']['exp'][] = $exp_fields;
-  $form['experience']['exp'][] = $exp_fields;
-  $form['experience']['exp'][2]['end']['#value'] = '</div>';
+  $form['experience']['exp'] = oa_portal_set($exp_fields, 'Add another job', 3);
 
 
   // Preferences
@@ -150,7 +138,6 @@ function oa_portal_p1_application_form($form_state) {
   $form['preferences']['referral'] = select('How did you hear about On Assignment Healthcare Staffing?',
     array('onassignment.com', 'other'));
 
-
   $form['preferences']['experience'] = textfield('Total years of experience');
   
   // Licensures & Certifications
@@ -161,15 +148,7 @@ function oa_portal_p1_application_form($form_state) {
   $lc_fields['state'] = state();
   $lc_fields['number'] = textfield('License Number', 12);
   $lc_fields['expiry_date'] = date_popup('Expires');
-  oa_portal_set($lc_fields, 'Add another Licensure/Certification');
-
-  $form['licecerts']['lc'][] = $lc_fields;
-  $form['licecerts']['lc'][0]['start']['#value'] = '<div class="add-another-set cf">';
-  $form['licecerts']['lc'][] = $lc_fields;
-  $form['licecerts']['lc'][] = $lc_fields;
-  $form['licecerts']['lc'][] = $lc_fields;
-  $form['licecerts']['lc'][3]['end']['#value'] = '</div>';
-
+  $form['licecerts']['lc'] = oa_portal_set($lc_fields, 'Add another Licensure/Certification', 4);
 
   $form['proforgs'] = fieldset('Professional Organizations');
   $proforgs['chk_none'] = checkbox('I am not a member of any organizations');
@@ -177,13 +156,8 @@ function oa_portal_p1_application_form($form_state) {
   $proforgs['org_role'] = textfield('Role');
   $proforgs['org_start'] = date_popup('From');
   $proforgs['org_end'] = date_popup('To');
-  oa_portal_set($proforgs, 'Add another Organization');
 
-  $form['proforgs']['orgs'][] = $proforgs;
-  $form['proforgs']['orgs'][0]['start']['#value'] = '<div class="add-another-set cf">';
-  $form['proforgs']['orgs'][] = $proforgs;
-  $form['proforgs']['orgs'][] = $proforgs;
-  $form['proforgs']['orgs'][2]['end']['#value'] = '</div>';
+  $form['proforgs']['orgs'] = oa_portal_set($proforgs, 'Add another Organization', 4);
   
   $terms_desc = '<p>I certify that the information provided on this Application is accurate. I understand 
   that the withholding of information or the giving of false information on this Application may 
@@ -210,15 +184,25 @@ dsm($form);
   return $form;
 }
 
-function oa_portal_set(&$elements, $text) {
-  $elements['start'] = array(
+function oa_portal_set($sub_elements, $text, $ct = 2) {
+  $sub_elements['start'] = array(
     '#value' => '<div class="add-another-set set-hide cf">',
     '#weight' => -1000,
   );
-  $elements['end'] = array(
+  $sub_elements['end'] = array(
     '#value' => '<div class="add-another-link cf">'. t($text) .'</div></div>',
     '#weight' => 1999,
   );
+  
+  $elements = array();
+  for ($i = 1; $i <= $ct; $i++) {
+    $elements[] = $sub_elements;
+  }
+
+  $elements[0]['start']['#value'] = '<div class="add-another-set cf">';
+  $elements[($ct - 1)]['end']['#value'] = '</div>';
+  dsm($elements, '$elements');
+  return $elements;
 }
 
 /**
