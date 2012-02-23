@@ -500,7 +500,49 @@ function oa_portal_p1_checklist_form_516() {
 function oa_portal_p1_checklist_form_517() {
   $elements = fieldset('Phlebotomy Skills');
 
-  oa_portal_checklist($elements);
+  $skills = array(
+    'Procedures' => array(
+      'phlebotomy' => 'Phlebotomy',
+      'pediatrics' => 'Pediatrics',
+      'geriatrics' => 'Geriatrics',
+      'general' => 'General',
+      'bloodculturecollection' => 'Blood Culture Collection',
+      'bloodalcoholcollection' => 'Blood Alcohol Collection',
+      'heelsticks' => 'Heel Sticks',
+      'fingersticks' => 'Finger Sticks',
+      'butterfly' => 'Butterfly',
+      'tubetypesuses' => 'Knowledge of Tube Types and Uses (I.e. anticoagulants, tube order, etc.)',
+      'centifugeoperation' => 'Centifuge Operation',
+      'specimenprocessing' => 'Specimen Processing',
+      'slidepreperation' => 'Slide/Manual Differentiation Preperation',
+      'safetyguidelines' => 'Basic Safety Guidelines (gloves, googles, masks, when needed)',
+      'infectioncontrol' => 'Infection Control Knowledge',
+      'hazcom' => 'Haz Com Knowledge',
+      ),
+    'Data Preparation' => array(
+      'dataentry' => 'Data Entry',
+      'labeling' => 'Labeling',
+      'phonework' => 'Phone Work (I.e. results reporting, stat requests, etc.)',
+      'compexpdisc' => 'Computer Experience: DISC',
+      'compexppace' => 'Computer Experience: PACE',
+      'compexpversys' => 'Computer Experience: VERSYS',
+      'compexpmedmgr' => 'Computer Experience: MED MGR',
+      'compexpsycare' => 'Computer Experience: SYNCARE',
+      'compexpother' => 'Computer Experience: Other',
+      'emrsystem' => 'EMR Systems (Electronic Medical Records)',
+    ),
+    'Setting' => array(
+      'cliniclab' => 'Clinic Lab',
+      'hospitallab' => 'Hospital Lab',
+      'mdofficelab' => 'MD Office Lab',
+      'bloodbank' => 'Blood Bank',
+      'mobileunit' => 'Mobile Unit',
+      'homehealth' => 'Home Health'
+      'other' => 'Other',
+    )
+  );
+
+  oa_portal_checklist($elements, $skills);
   return $elements;
 }
 
@@ -730,8 +772,7 @@ function oa_portal_p2_background_reference_form($form_state) {
   $form['consent']['residence_state'] = date_popup('Lived at your current address since');
   $form['consent']['residence_state']['#suffix'] = '<strong>Note: We need 7 years of address history. Please add all addresses for the past 7 years.</strong>';
   
-  $form['consent']['former_addresses'] = oa_portal_set(address(), 'Add another address', 6);
-  dsm($form['consent'['former_addresses']]);
+  $form['consent']['former_addresses'] = oa_portal_set(address(), 'Add another address', 7);
   
   $form['consent']['chk_certification'] = checkbox('I certify...');
   
@@ -1146,11 +1187,11 @@ function oa_portal_submit(&$form, $docs = array()) {
   // @TODO Query UCM for existing submitted document
 }
 
-function oa_portal_checklist($elements) {
-  $elements['#tree'] = TRUE;
-  foreach ($elements AS $k => $v) {
-    if ($v['#type'] && $v['#type'] == 'fieldset') {
-      $elements[$k]['#tree'] = TRUE;
+function oa_portal_checklist(&$elements, $skills) {
+  foreach ($skills AS $section => $skills) {
+    $elements[$section] = fieldset($section);
+    foreach ($skills AS $k => $v) {
+      $elements[$section][$k] = radios_123($v);
     }
   }
 }
