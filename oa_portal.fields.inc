@@ -27,20 +27,21 @@ function textfield($title, $size = 60, $maxlength = null) {
   return $element;
 }
 
-function email($title = null) {
+function email($title = 'Email', $size = 40) {
   $element = array(
     '#type' => 'textfield',
     '#required' => TRUE,
-    '#title' => ($title) ? t($title) : t('Email'),
+    '#title' => t($title),
     '#maxlength' => 100,
     '#attributes' => array('class' => 'textfield-email'),
     '#rules' => array('email'),
     '#filters' => array('trim'),
+    '#size' => $size,
   );
   return $element;
 }
 
-function textfield_sin() {
+function textfield_ssn() {
   $element = array(
     '#type' => 'fieldset',
     '#title' => t('Social Security Number:'),
@@ -96,14 +97,14 @@ function radios($title, $choices, $map = FALSE) {
   return $element;
 }
 
-function date_popup($title, $size = 13) {
+function date_popup($title, $format = 'd-m-Y') {
   $element = array(
     '#type' => 'date_popup',
-    '#date_format' => 'd-m-Y',
+    '#date_format' => $format,
     '#prefix' => '<div class="date-popup">',
     '#title' => t($title),
     '#suffix' => '</div>',
-    '#size' => $size,
+    '#size' => 13,
     '#required' => TRUE,
   );
   return $element;
@@ -186,12 +187,35 @@ function address() {
   $elements['address2']['#required'] = FALSE;
   $elements['city'] = textfield('City');
   $elements['state'] = state();
-  $elements['zip'] = textfield('Zip Code', 10);
+  $elements['zip'] = zip();
   $elements['zip']['#suffix'] = '</div>';
-  $elements['zip']['#rules'][] = 'numeric';
-  $elements['zip']['#rules'][] = 'length[5]';
   return $elements;
 }
+
+function zip() {
+  $element = textfield('Zip Code', 5);
+  $element['#rules'] = array('numeric', 'length[5]');
+  return $element;
+}
+
+function phone($title = 'Phone') {
+  $element = textfield($title, 24);
+  $element['#rules'] = array(array('rule' => 'regexp[/
+    \D*           # ignore non-digits
+    (\d*)         # an optional 1
+    \D*           # optional separator
+    [2-9][0-8]\d  # area code (Allowed range of [2-9] for the first digit, [0-8] for the second, and [0-9] for the third digit)
+    \D*           # optional separator
+    [2-9]\d{2}    # 3-digit prefix (cannot start with 0 or 1)
+    \D*           # optional separator
+    \d{4}         # 4-digit line number
+    \D*           # optional separator
+    \d*           # optional extension
+    \D*           # ignore trailing non-digits
+    /x]', 'error' => 'Please specify a valid %field number.'));
+  
+}
+
 
 function cap_yne($title, $yn_title = 'If no, explain') {
   $elements = array('#tree' => TRUE);

@@ -106,14 +106,14 @@ function oa_portal_p1_application_form($form_state) {
   $exp_fields['employer'] = textfield('Employer',75);
   $exp_fields['city'] = textfield('City');
   $exp_fields['state'] = state('State');
-  //$exp_fields['start_date'] = date_popup('Start Date');
-  $exp_fields['end_date'] = date_popup('End Date');
+  $exp_fields['empdatefrom'] = date_popup('Start Date', 'm-Y');
+  $exp_fields['empdateto'] = date_popup('End Date', 'm-Y');
   $exp_fields['chk_present'] = checkbox('Present');
-  $exp_fields['title'] = textfield('Title');
+  $exp_fields['posheld'] = textfield('Title');
   $exp_fields['salary'] = textfield('Salary');
   $exp_fields['rdo_salary_period'] = radios('Salary', array('annual' => t('Annual'), 'hourly' => t('Hourly')));
   $exp_fields['description'] = textarea('Description', 5);
-  $exp_fields['supervisor'] = textfield('Immediate Supervisor');
+  $exp_fields['supname'] = textfield('Immediate Supervisor');
   $exp_fields['rdo_may_contact'] = radios_yesno('May we contact?');
   $exp_fields['reason'] = textfield('Reason for leaving');
   $form['experience']['exp'] = oa_portal_set($exp_fields, 'Add another job', 3);
@@ -757,51 +757,49 @@ function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
  */
 function oa_portal_p2_background_reference_form($form_state) {
   $form = array();
-  $form['#description'] = t('');
-  $terms_desc = '<p>I hereby authorize On Assignment, and/or its agents to make an independent investigation of my background, references, character, past employment, education, credit history, motor vehicle operation history, criminal or police records, including those maintained by both public and private organizations and all public records for the purpose of confirming the information contained on my Application and/or obtaining other information which may be material to my qualifications for employment.  I release On Assignment and/or its agents and any person or entity, which provides information pursuant to this authorization, from any and all liabilities, claims or law suits in regards to the information obtained from any and all above referenced sources used.  I understand that all or part of this information, including my social security number may be released to clients as part of the hiring process, and agree to the release of any part or all of this information including my social security number.</p>
-<br>
-<p>This is a consumer notification that a Background Report will be requested and obtained, and that the report will be used for the purpose of evaluating me for employment, promotion, reassignment or retention as an employee.</p>
-<br>
-<p>As a resident of Minnesota and Oklahoma only, I have a right to obtain a copy of this report by checking this box.</p>
-<br>
-<p>NOTICE TO CALIFORNIA CANDIDATES</p><p><span style="font-size:90%">You have a right to obtain a copy of any consumer report or investigative consumer report obtained by On Assignment, Inc. by checking the box provided below. The report will be provided to you within three (3) business days after we receive the requested reports related to the matter investigated.  I request to receive a free copy of this report by checking this box.  Under section 1786.22 of the California Civil Code, you may view the file maintained on you by GIS (the search company) during normal business hours.  You may also obtain a copy of this file upon submitting proper identification and paying the costs of duplication services, by appearing at GIS in person or by mail.  You may also receive a summary of the file by telephone.  The agency is required to have personnel available to explain your file to you and the agency must explain to you any coded information appearing in your file.  If you appear in person, a person of your choice may accompany you, provided that this person furnishes proper identification.</span></p>
-<br><br>
+  $form[233] = fieldset('Background Investigation Consent');
+  $form[233]['#description'] = '<p>I hereby authorize On Assignment, and/or its agents to make an independent investigation of my background, references, character, past employment, education, credit history, motor vehicle operation history, criminal or police records, including those maintained by both public and private organizations and all public records for the purpose of confirming the information contained on my Application and/or obtaining other information which may be material to my qualifications for employment.  I release On Assignment and/or its agents and any person or entity, which provides information pursuant to this authorization, from any and all liabilities, claims or law suits in regards to the information obtained from any and all above referenced sources used.  I understand that all or part of this information, including my social security number may be released to clients as part of the hiring process, and agree to the release of any part or all of this information including my social security number.</p><br>
+<p>This is a consumer notification that a Background Report will be requested and obtained, and that the report will be used for the purpose of evaluating me for employment, promotion, reassignment or retention as an employee.</p><br>
+<p>As a resident of Minnesota and Oklahoma only, I have a right to obtain a copy of this report by checking this box.</p><br>
+<p>NOTICE TO CALIFORNIA CANDIDATES</p><p><span style="font-size:90%">You have a right to obtain a copy of any consumer report or investigative consumer report obtained by On Assignment, Inc. by checking the box provided below. The report will be provided to you within three (3) business days after we receive the requested reports related to the matter investigated.  I request to receive a free copy of this report by checking this box.  Under section 1786.22 of the California Civil Code, you may view the file maintained on you by GIS (the search company) during normal business hours.  You may also obtain a copy of this file upon submitting proper identification and paying the costs of duplication services, by appearing at GIS in person or by mail.  You may also receive a summary of the file by telephone.  The agency is required to have personnel available to explain your file to you and the agency must explain to you any coded information appearing in your file.  If you appear in person, a person of your choice may accompany you, provided that this person furnishes proper identification.</span></p><br><br>
 <p><strong>The following is my true and complete legal name and all information is true and correct to the best of my knowledge:</strong></p>';
-  // 
-  $form['consent'] = fieldset('Background Investigation Consent');
-  $form['consent']['#description'] = $terms_desc;
-  $form['consent']['maiden_name'] = textfield('Maiden/other names used');
-  $form['consent']['dob'] = date_popup('Date of birth');
-  $form['consent']['sin'] = textfield_sin();
-  $form['consent']['dl_number'] = textfield('Driver License Number', 20);
-  $form['consent']['dl_state'] = state('Driver License State');
-  $form['consent']['residence_state'] = date_popup('Lived at your current address since');
-  $form['consent']['residence_state']['#suffix'] = '<strong>Note: We need 7 years of address history. Please add all addresses for the past 7 years.</strong>';
-  
-  $form['present_from_mm'] = select('MM', range(1, 12));
-  $from['present_from_yyyy'] = select('YYYY', range(date('Y'), (date('Y') - 20)));
+
+  $form[233]['receivereport'] = checkbox('I request to receive a free copy of this report by checking this box. Under section 1786.22 of the California Civil Code, you may view the file maintained on you by GIS (the search company) during normal business hours. You may also obtain a copy of this file upon submitting proper identification and paying the costs of duplication services, by appearing at GIS in person or by mail. You may also receive a summary of the file by telephone. The agency is required to have personnel available to explain your file to you and the agency must explain to you any coded information appearing in your file. If you appear in person, a person of your choice may accompany you, provided that this person furnishes proper identification.');
+  $form[233]['receivereport']['#prefix'] = 'NOTICE TO CALIFORNIA CANDIDATES<br /><p>You have a right to obtain a copy of any consumer report or investigative consumer report obtained by On Assignment, Inc by checking the box provided below. The report will be provided to you within three (3) business days after we receive the requested reports related to the matter investigated.</p>';
+
+  $form[233]['maiden_name'] = textfield('Maiden/other names used');
+  $form[233]['dob'] = date_popup('Date of birth');
+  $form[233]['ssn'] = textfield_ssn();
+  $form[233]['dlnumber'] = textfield('Driver License Number', 20);
+  $form[233]['stateoflicense'] = state('Driver License State');
+  $form[233]['frompresentaddr'] = date_popup('Lived at your current address since', 'm-Y');
+  $form[233]['frompresentaddr']['#suffix'] = '<strong>Note: We need 7 years of address history. Please add all addresses for the past 7 years.</strong>';
+  $form[233]['topresentaddr'] = array(
+    '#type' => 'value',
+    '#value' => 'Present',
+  );
   $fmr = array();
-  $fmr['from_mm'] = select('Lived at your current address since', range(1, 12));
-  $fmr['from_yyyy'] = select('Lived at your current address since (Year)', range(date('Y'), (date('Y') - 40)));
-  $fmr['to_mm'] = select('MM', range(1, 12));
-  $fmr['to_yyyy'] = select('YYYY', range(date('Y'), (date('Y') - 40)));
+  $fmr['fromformeraddr'] = date_popup('From', 'm-Y');
+  $fmr['toformeraddr'] = date_popup('To', 'm-Y')
   $fmr = $fmr + address();
   unset($fmr['address2']);
-  $form['consent']['former_addresses'] = oa_portal_set($fmr, 'Add another address', 7);
-  
-  $form['consent']['chk_certification'] = checkbox('I certify...');
-  
-  $form['reference1'] = fieldset('Reference Check 1');
-  
+  $form[233]['former_addresses'] = oa_portal_set($fmr, 'Add another address', 7);
+  $form[233]['chk_certification'] = checkbox('I certify...');
+
   $ref = array('#tree' => TRUE);
-  $ref['company'] = select('Company', array('Company A', 'Company B'));
-  $ref['supervisor'] = textfield('Supervisor');
-  $ref['address'] = address();
-  $ref['phone'] = textfield('Phone', 12);
+  $ref['employer'] = select('Company', array('Company A', 'Company B'));
+  $ref['supname'] = textfield('Supervisor');
+  $ref['title'] = textfield('Supervisor\'s Title');
+  $ref['mailingaddress'] = textfield('Mailing Address', 30);
+  $ref['zip'] = textfield('Zip Code', 10);
+  $ref['phone'] = phone();
   $ref['email'] = email();
-  $ref['email']['#size'] = 40;
   $ref['chk_certification'] = checkbox('I hereby give permission to the above named employer to release information to On Assignment regarding my performance while employed at that facility');
-  $form['reference1']['ref'] = $ref;
+
+  $form[476] = fieldset('Reference Check 1');
+  $form[476]['ref'] = $ref;
+  $form[477] = fieldset('Reference Check 2');
+  $form[477]['ref'] = $ref;
  
   oa_portal_submit($form);
   return $form;
@@ -819,16 +817,57 @@ function oa_portal_p2_background_reference_form_validate($form, &$form_state) {
  * Form submission callback for Background/Reference Check
  */
 function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
-  // @TODO Post to UCM
-
-  /** Former Addresses
-   * formeraddress1
-   * fromformeraddr1
-   * toformeraddr1
-   * cityformeraddr1
-   * zipformeraddr1
+  /**
+   * @TODO Post 233 Background Consent to UCM
+   *
+   * name - full name
+   * receivereport
+   * fullname
+   * maidenname
+   * dob
+   * ssn
+   * dlnumber
+   * stateoflicense
+   * presentaddress
+   * frompresentaddr
+   * topresentaddr
+   * citypresentaddr
+   * zippresentaddr
+   *
+   * Former Addresses (N: 1-7):
+   * formeraddressN
+   * fromformeraddrN
+   * toformeraddrN
+   * cityformeraddrN
+   * zipformeraddrN
    */
+  dsm($form_state['values'][233], 'Process & post 233 to UCM');
 
+  /**
+   * @TODO Post 476 & 477 Professional Reference 1/2 to UCM
+   *
+   * name - fullname
+   * applicantname - fullname
+   * employer - From Application->Experience
+   *
+   * NOTE: All contact fields relate to the Company/Supervisor, not the applicant
+   * mailingaddress
+   * supname
+   * posheld - From Application->Experience
+   * empdatefrom
+   * empdateto
+   * city - From Application->Experience
+   * state - From Application->Experience
+   * zip
+   * title
+   * phone
+   * email
+   * datesigned - Date signed
+   */
+  dsm($form_state['values'][476], 'Process & post 476 to UCM');
+  dsm($form_state['values'][477], 'Process & post 477 to UCM');
+  
+  
 }
 
 /**
@@ -839,13 +878,11 @@ function oa_portal_p2_capabilities_form($form_state) {
   
   $form['jcq'] = fieldset('Job Capabilities Questionnaire');
   $form['jcq']['#description'] = t('As a candidate for employment at On Assignment1, you have met the basic requirements of skills, experience, education and availability needed by our Clients.  Clients request that our employees work at their location for a specific period of time to complete various work duties.  As an On Assignment employee, you will typically be assigned to positions in healthcare, research and development and/or many different types of facilities.  These positions may involve working with various potentially hazardous substances and physical agents, including, but not limited to, the following:<br><br>
-  <ul>
-  	<li>Various organic volatile and non-volatile chemicals, corrosives, potential carcinogens, mutagens and teratogens</li>
-	<li>Biological agents, bloodborne pathogens and radioactive sources and materials</li>
-	<li>Heat, cold, pressure (including compressed gasses), and noise</li>
-	<li>Working with glassware, pipetting, repetitive tasks</li>
-  </ul><br>
-  These assignments may also include physical requirements that involve sitting/standing/walking for extended periods, bending and stooping, lifting or moving heavy objects and lifting up to 50 lbs. above the shoulders.  They may also involve repetitive tasks such as using a keyboard, operating equipment or manipulating small objects.  A safe working environment is important not only to you, but also to On Assignment and our Clients.  You are expected to take all reasonable safety precautions, and to follow all On Assignment and client safety policies and procedures.  This may include, but is not limited to Standard Operating Procedures, appropriate use of personal protective equipment and devices, and personal hygiene.  To assist us in assuring that we select the best possible assignment for you, please complete the following Job Capabilities Questionnaire.<br><br>');
+<ul><li>Various organic volatile and non-volatile chemicals, corrosives, potential carcinogens, mutagens and teratogens</li>
+<li>Biological agents, bloodborne pathogens and radioactive sources and materials</li>
+<li>Heat, cold, pressure (including compressed gasses), and noise</li>
+<li>Working with glassware, pipetting, repetitive tasks</li>
+</ul><br>These assignments may also include physical requirements that involve sitting/standing/walking for extended periods, bending and stooping, lifting or moving heavy objects and lifting up to 50 lbs. above the shoulders.  They may also involve repetitive tasks such as using a keyboard, operating equipment or manipulating small objects.  A safe working environment is important not only to you, but also to On Assignment and our Clients.  You are expected to take all reasonable safety precautions, and to follow all On Assignment and client safety policies and procedures.  This may include, but is not limited to Standard Operating Procedures, appropriate use of personal protective equipment and devices, and personal hygiene.  To assist us in assuring that we select the best possible assignment for you, please complete the following Job Capabilities Questionnaire.<br><br>');
   $form['jcq']['performance'] = cap_yne('Can you perform all of these and similar tasks with reasonable accommodation?');
   $form['jcq']['health'] = cap_yne('Do you have any health reasons that would prohibit you from performing these or similar tasks?');
   $form['jcq']['restrictions'] = cap_yne('Do you have any restrictions preventing you from performing these tasks?');
