@@ -778,7 +778,16 @@ function oa_portal_p2_background_reference_form($form_state) {
   $form['consent']['residence_state'] = date_popup('Lived at your current address since');
   $form['consent']['residence_state']['#suffix'] = '<strong>Note: We need 7 years of address history. Please add all addresses for the past 7 years.</strong>';
   
-  $form['consent']['former_addresses'] = oa_portal_set(address(), 'Add another address', 7);
+  $form['present_from_mm'] = select('MM', range(1, 12));
+  $from['present_from_yyyy'] = select('YYYY', range(date('Y'), (date('Y') - 20)));
+  $fmr = array();
+  $fmr['from_mm'] = select('Lived at your current address since', range(1, 12));
+  $fmr['from_yyyy'] = select('Lived at your current address since (Year)', range(date('Y'), (date('Y') - 40)));
+  $fmr['to_mm'] = select('MM', range(1, 12));
+  $fmr['to_yyyy'] = select('YYYY', range(date('Y'), (date('Y') - 40)));
+  $fmr = $fmr + address();
+  unset($fmr['address2']);
+  $form['consent']['former_addresses'] = oa_portal_set($fmr, 'Add another address', 7);
   
   $form['consent']['chk_certification'] = checkbox('I certify...');
   
@@ -811,6 +820,15 @@ function oa_portal_p2_background_reference_form_validate($form, &$form_state) {
  */
 function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
   // @TODO Post to UCM
+
+  /** Former Addresses
+   * formeraddress1
+   * fromformeraddr1
+   * toformeraddr1
+   * cityformeraddr1
+   * zipformeraddr1
+   */
+
 }
 
 /**

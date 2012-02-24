@@ -397,3 +397,16 @@ function oa_portal_get_modality_formtypes($phase, $id) {
   $results = oa_portal_soap('ComplianceCheck', $params);
   return explode(',', $results->ComplianceCheckResult->{'OAPhase'. $phase .'MissingFormIDs'});
 }
+
+/**
+ * Implements hook_ajax_validate_pass().
+ */
+function oa_portal_ajax_validate_pass(&$form, &$form_state, &$data, &$pass) {
+/*
+  if ($form['form_id']['#value'] == 'oa_portal_p1_checklist_form') {
+dsm($data, '$data in validate_pass');
+    dsm($form, 'oa_portal_ajax_validate_pass $form');
+  }
+  return TRUE;
+*/
+}
