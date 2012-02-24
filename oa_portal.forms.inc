@@ -919,9 +919,46 @@ function oa_portal_p2_policies_form($form_state) {
   $form['substance_abuse']['testing'] = acknowledgement('I understand that I may be offered a position with On Assignment...');
   $form['substance_abuse']['sample'] = acknowledgement('I agree to provide an appropriate sample...');
 
-  $form['employment'] = fieldset('Employment Agreement');
-  $form['employment']['personelle'] = acknowledgement('On Assignment Staffing Services, Inc.....');
-  $form['employment']['ca_addendum'] = acknowledgement('Addendum for CA...');
+  $form[433] = fieldset('Employment Agreement');
+  $form[433]['personelle'] = acknowledgement('On Assignment Staffing Services, Inc. (“On Assignment”) is engaged in the business of providing life sciences, healthcare and laboratory support services to other parties (“Client(s)”), who have requested contract professionals to fill their staffing needs. ______________________________ (“Personnel”) wishes to enter into this Employment Agreement with On Assignment.
+  On Assignment and Personnel agree as follows:
+  1. Scope of Employment Relationship.
+  a) Assignment. Personnel is employed by On Assignment for a specific assignment with Client (“Assignment”).
+  b) Supervision. Client will direct and supervise Personnel while assigned to Client.
+  c) Policies and Procedures. Personnel agrees to abide by the policies and procedures of Client including, but not limited to: safety,
+  confidentiality and HIPAA (Health Insurance Portability and Accountability Act of 1996). Personnel will notify his/her On Assignment
+  representative if there is a conflict with On Assignment policies.
+  d) Best Efforts. Personnel agrees to use his/her best efforts in performing services to Client under this Agreement. Personnel understands that
+  inappropriate behavior can damage On Assignment’s relationship with the Client. Suspicious, illegal, or unauthorized behavior that comes to the attention of On Assignment may be reported to the appropriate law enforcement or regulatory agencies. Such behavior and poor performance may be cause for termination of the Assignment with Client or termination of employment with On Assignment.
+  e) No interference. Personnel acknowledges that there is no contract or condition that would prohibit or interfere with Personnel’s ability to work for On Assignment in the capacity as intended.
+  f) Legal Obligation. Personnel is not authorized to incur any legal obligation on behalf of On Assignment, execute any agreement, exercise any authority or otherwise sign any document on behalf of On Assignment.
+  g) Work-related issues. Personnel shall immediately inform On Assignment of all work-related issues that arise.
+  h) Termination of Assignment. Personnel shall provide On Assignment with timely notice of any intended employment changes, such as
+  termination (please note that two weeks notice prior to termination is a professional courtesy).
+  i) Request for Time off. Personnel must request time off for days off or appointments at least 24 hours in advance; all requests must be directed
+  to On Assignment. In cases of illness or emergency, Personnel must inform On Assignment that he/ she will not be able to attend the scheduled
+  Assignment at least thirty minutes prior to commencement time.
+  j) Personal items. On Assignment does not assume liability for Personnel’s personal items at the Client site and/or while on Assignment.
+  k) Driving. Personnel is prohibited from driving any vehicle (including, but not limited to personal car, rental car, or Client-owned car) for work-
+  related duties without express written authorization from On Assignment. “Work-related duties” include responsibilities directed by Client for which Personnel will be compensated.
+  2. Background Check. Personnel’s employment with On Assignment and placement with Client conditioned upon satisfactory results of a criminal background check, drug test, credit history, driving record, medical history, any other tests that may be appropriate for the Assignment or otherwise required by Client. Personnel authorizes On Assignment to perform tests and checks and provide relevant results to Client, as required.
+  3. Current Certifications. Personnel must possess and provide On Assignment with copies of current licenses, certifications, registrations (as appropriate to the state in which the Assignment is located), and regulatory compliance documents, as appropriate. The documents must be provided prior to the commencement of the Assignment; failure to provide or maintain these documents may result in the cancellation of the Assignment. Personnel may be liable to On Assignment for consequential damages resulting from falsifying, failing to provide or failing to maintain these documents.
+  4. Termination. As the employment relationship between Personnel and On Assignment is an employment at will, any party may terminate the employment relationship or an Assignment at any time, for any reason, with or without notice. On Assignment has no responsibility to pay any further salary or expenses if the term of an Assignment is cut short by any party, for any reason.
+  5. Payment. On Assignment shall pay Personnel the mutually agreed upon rate for hours worked, unless otherwise agreed. Personnel will be paid weekly, only for actual hours worked as accurately documented in a Client-approved timesheet, submitted to On Assignment each week in a timely manner. On Assignment will not reimburse any expense incurred by Personnel unless the expense has been approved in advance and in writing by On Assignment.
+  6. Indemnification. Personnel understands that On Assignment may have immediate expenses associated with placing Personnel at an Assignment including, but not limited to, purchases of glasses and safety shoes or costs of medical exams. If Personnel voluntarily leaves an Assignment prior to the original planned completion date or if Personnel is terminated from the Assignment for cause, Personnel understands that he/she may be required to reimburse On Assignment for these reasonable expenses. On Assignment will not be liable to Personnel for any damages, losses, expenses, inconveniences, or loss of alternative employment as a result of Client’s actions or Client-initiated changes to the Assignment.
+  7. Confidential Information. Personnel acknowledges and agrees that in performing obligations under this Agreement he/she may have access to valuable trade secrets and confidential information of Client or On Assignment including, but not limited to, trade secrets, processes, formulae, inventions, techniques, marketing plans, strategies, forecasts, computer programs, patentable or copyrightable material, patient information, and customer lists (“Confidential Information”). This information will include, without limitation, any commercially valuable information created by, discovered or developed by, or made known to Personnel during the period of employment. Personnel agrees that he/she shall preserve and protect the confidentiality of the Confidential Information and that any confidential material shall remain the sole property of On Assignment or Client and shall be returned immediately upon request or upon termination of employment. All documents, records, apparatus, equipment and other physical property, or reproductions thereof, furnished to Personnel by On Assignment or its Clients or produced in connection with the performance of Assignments, whether or not pertaining to Confidential Information, shall be and remain the sole property of On Assignment or its Clients and shall be returned immediately upon request or upon termination of Personnel’s employment for any reason. All Confidential Information, inventions, patents or copyrights, and other rights in connection therewith, developed during the course of an Assignment shall be the sole property of On Assignment or its Clients and their respective assigns. The obligations set forth in this section shall survive the termination of this Agreement.
+  8. Non-Competition Agreement. Personnel agrees that he/she will not accept any offer of employment (either as an employee, as an independent contractor, or through another staffing agency) with any Client for whom Personnel performed services while employed by On Assignment without On Assignment’s express written consent during the Assignment and for a period of 180 days after the termination of the Assignment.');
+
+  $form[433]['personnelinitials'] = initial('Addendum for California personnel
+    Section 2870 of the California Labor Code states: 
+    A. Any provision in an employment agreement which provides that an employee shall assign, or offer to assign, any of his or her rights in an invention to his or her employer shall not apply to an invention that the employee developed entirely on his or her own time without using the employer’s equipment, supplies, facilities, or trade secret information except for those inventions that either:
+    1.) Relate at the time of conception or reduction to practice of the invention to the employer’s business, or actual or demonstrably anticipated research or development of the employer; or
+    2.) Result from any work performed by the employee for the employer.
+    B. To the extent a provision in an employment agreement purports to require an employee to assign an invention otherwise excluded from being required to be assigned under subdivision (a), then provision is against the public policy of this state and is unenforceable.
+    Accordingly, On Assignment does not require Personnel to assign any invention prohibited by Section 2870 of the California Labor Code.');
+  
+  
+  
   
   $form['direct_hire'] = fieldset('Direct Hire Candidate Agreement');
   $form['direct_hire']['relationship'] = acknowledgement('On Assignment Staffing Services...');
@@ -943,9 +980,20 @@ function oa_portal_p2_policies_form_validate($form, &$form_state) {
  * Form submission callback for Policies & Agreements
  */
 function oa_portal_p2_policies_form_submit($form, &$form_state) {
-  // @TODO Post to UCM
-}
+  /**
+   * @TODO Post 433 Employment Agreement to UCM
+   *
+   * personnelname - From Profile
+   * personnelsignature - ?
+   * personneladdress - From Profile
+   * personnelphone - From Profile
+   * personneldatesigned - current date
+   * personnelinitials
+   */
+  dsm($form_state['values'][433], 'Process & post 433 to UCM');
+  
 
+}
 
 /**
  * Form callback for Medical Authorization and Disclosures
@@ -1098,20 +1146,19 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
  */
 function oa_portal_p3_w4_form($form_state) {
   $form = array();
-  $form['w4'] = fieldset('W4');
-  $form['w4']['#description'] = 'If you would like to reference the W4 Personal Allowances Worksheet, Deductions and Adjustments Worksheet, and Two-Earners/Multiple Jobs Worksheet please <a href="to-do">click here</a>.';
+  $form[474] = fieldset('W4');
   
-  $form['w4']['rdo_marital_status'] = radios('', array(
-    'Single', 'Married', 'Married, but withhold at higher Single rate'
-  ), TRUE);
-  $form['w4']['marital_status']['#description'] = t('<strong>Note:</strong> If married, but legally seperated, or spouse is a nonresident alien, check the "Single" box');
-  $form['w4']['different_name'] = markup('<p><strong>If your last name differs from that shown on your social security card, check here.<br/>You must call 1-800-772-1213 for a replacement.</strong></p>');
-  $form['w4']['allowances'] = textfield('Total number of allowances you are claiming',6);
-  $form['w4']['amount_withheld'] = textfield('Additional amount, if any, you want withheld from each paycheck',6);
-  $form['w4']['exempt_terms'] = markup('<strong>I claim exemption from withholding for 2012, and I certify that I meet both of the following conditions for exemption:</strong><br/>
+  $form[474]['#description'] = 'If you would like to reference the W4 Personal Allowances Worksheet, Deductions and Adjustments Worksheet, and Two-Earners/Multiple Jobs Worksheet please <a href="to-do">click here</a>.';
+  
+  $form[474]['rdo_marital_status'] = radios('', array('Single', 'Married', 'Married, but withhold at higher Single rate'), TRUE);
+  $form[474]['marital_status']['#description'] = t('<strong>Note:</strong> If married, but legally seperated, or spouse is a nonresident alien, check the "Single" box');
+  $form[474]['different_name'] = markup('<p><strong>If your last name differs from that shown on your social security card, check here.<br/>You must call 1-800-772-1213 for a replacement.</strong></p>');
+  $form[474]['totalclaims'] = textfield('Total number of allowances you are claiming',6);
+  $form[474]['addtnlamount'] = textfield('Additional amount, if any, you want withheld from each paycheck',6);
+  $form[474]['exempt_desc'] = markup('<strong>I claim exemption from withholding for 2012, and I certify that I meet both of the following conditions for exemption:</strong><br/>
   <ul><li>Last year I had a right to a refund of all federal income tax withheld because I had no tax liability, and </li><li>This year I expect a refund of all federal income tax withheld because I expect to have no tax liability</li></ul><strong>');
-  $form['w4']['exempt'] = textfield('If you meet both conditions, write "Exempt" here', 6);
-  $form['w4']['chk_certify'] = checkbox('Under penalties of perjury, I declare that I have examined this certificate and, to the best of my knowledge and belief, it is true, correct, and complete.');
+  $form[474]['exempt'] = textfield('If you meet both conditions, write "Exempt" here', 6);
+  $form[474]['chk_certify'] = checkbox('Under penalties of perjury, I declare that I have examined this certificate and, to the best of my knowledge and belief, it is true, correct, and complete.');
   
   
   oa_portal_submit($form);
@@ -1130,7 +1177,21 @@ function oa_portal_p3_w4_form_validate($form, &$form_state) {
  * Form submission callback for W4
  */
 function oa_portal_p3_w4_form_submit($form, &$form_state) {
-  // @TODO Post to UCM
+  /**
+   * @TODO Post 474 2011 W4 to UCM
+   *
+   * firstnameandinitial - From Profile
+   * lastname - From Profile
+   * ssn - From Profile
+   * address - From Profile
+   * citystatezip - From Profile
+   * @TODO Missing from PDF doc: Marital status (marital_status above)
+   * totalclaims
+   * addtnlamount
+   * exempt
+   */
+  dsm($form_state['values'][474], 'Process & post 477 to UCM');
+  
 }
 
 /**
@@ -1140,11 +1201,16 @@ function oa_portal_p3_i9_form($form_state) {
   $form = array();
   $form['#description'] = t('');
 
-  $form['i9'] = fieldset('I9');
-  $form['i9']['rdo_citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
+  $form[461] = fieldset('I9');
+  // Maiden name is not in the UX doc, but seems important on the PDF -rp
+  $form[461]['maiden'] = textfield('Maiden Name');
+  $form[461]['maiden']['#required'] = FALSE;
+  
+  $form[461]['citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
     array('citizen' => t('A citizen of the United States'), 'national' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
-  $form['i9']['until'] = date_popup('Until (expiration date if applicable)');
-  $form['i9']['chk_certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');								
+  $form[461]['expiry'] = date_popup('Until (expiration date if applicable)');
+
+  $form[461]['chk_certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');								
 
   oa_portal_submit($form);
   return $form;
@@ -1162,7 +1228,27 @@ function oa_portal_p3_i9_form_validate($form, &$form_state) {
  * Form submission callback for I-9
  */
 function oa_portal_p3_i9_form_submit($form, &$form_state) {
-  // @TODO Post to UCM
+  /**
+   * @TODO Post 461 I9 to UCM
+   *
+   * lastname - From Profile
+   * firstname - From Profile
+   * initial - From Profile
+   * maiden - From ?
+   * address - From Profile
+   * apt - From Profile
+   * dob - From Profile
+   * city - From Profile
+   * state - From Profile
+   * zip - From Profile
+   * ssn - From Profile
+   * citizentype
+   * expiry - @TODO Missing from PDF: Expiration date of employment status
+   * appsignature - ?
+   * apptimestamp - Current date
+   */
+  dsm($form_state['values'][461], 'Process & post 461 to UCM');
+  
 }
 
 /**

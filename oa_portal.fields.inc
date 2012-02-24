@@ -227,7 +227,14 @@ function cap_yne($title, $yn_title = 'If no, explain') {
 }
 
 function acknowledgement($description) {
-  $element = checkbox('I acknowledge, understand , and accept this Agreement/Statement.');
+  $element = checkbox('I acknowledge, understand, and accept this Agreement/Statement.');
+  $element['#prefix'] = '<div class="field-acknowledgement"><div class="acknowledgement-description">'. $description .'</div>';
+  $element['#suffix'] = '</div>';
+  return $element;
+}
+
+function initial($description) {
+  $element = textfield('I acknowledge, understand, and accept this Agreement/Statement. Please initial here.', 2);
   $element['#prefix'] = '<div class="field-acknowledgement"><div class="acknowledgement-description">'. $description .'</div>';
   $element['#suffix'] = '</div>';
   return $element;
