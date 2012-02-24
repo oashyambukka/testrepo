@@ -49,14 +49,6 @@ function oa_portal_p1_contact_form() {
 }
 
 /**
- * Form validation callback for Contact
- */
-/*
-function oa_portal_p1_contact_form_validate($form, &$form_state) {
-}
-*/
-
-/**
  * Form submission callback for Background/Reference Check
  */
 function oa_portal_p1_contact_form_submit($form, &$form_state) {
@@ -69,20 +61,20 @@ function oa_portal_p1_contact_form_submit($form, &$form_state) {
  */
 function oa_portal_p1_application_form($form_state) {
   $form = array();
+  $form['#description'] = '<p><br>If you are ready to begin working with On Assignment Healthcare Staffing, we\'re ready to start working with you.  Please complete the application and one of our experienced recruiters will contact you soon.</p><br>
+  <p>Please be assured that On Assignment maintains a strict privacy policy.  We will not share your information with any third party without your authorization and will only contact you for the specific purpose of serving your request.</p><br><br>';
   
   // Contact Information
-  $form['contact'] = fieldset('Contact Information');
-  $form['contact']['#prefix'] = '<p><br>If you are ready to begin working with On Assignment Healthcare Staffing, we\'re ready to start working with you.  Please complete the application and one of our experienced recruiters will contact you soon.</p><br>
-  <p>Please be assured that On Assignment maintains a strict privacy policy.  We will not share your information with any third party without your authorization and will only contact you for the specific purpose of serving your request.</p><br><br>';
-  $form['contact']['emerg1_name'] = textfield('Name', 30, 50);
-  $form['contact']['emerg1_name']['#prefix'] = t('<h1>Emergency Contact 1</h1>');
-  $form['contact']['emerg1_phone'] = textfield('Phone', 15, 15);
-  $form['contact']['emerg2_name'] = textfield('Name', 30, 50);
-  $form['contact']['emerg2_name']['#prefix'] = t('<h1>Emergency Contact 2</h1>');
-  $form['contact']['emerg2_phone'] = textfield('Phone', 15, 15);
+  $form[4] = fieldset('Contact Information');
+  $form[4]['emerg1_name'] = textfield('Name', 30, 50);
+  $form[4]['emerg1_name']['#prefix'] = t('<h1>Emergency Contact 1</h1>');
+  $form[4]['emerg1_phone'] = phone();
+  $form[4]['emerg2_name'] = textfield('Name', 30, 50);
+  $form[4]['emerg2_name']['#prefix'] = t('<h1>Emergency Contact 2</h1>');
+  $form[4]['emerg2_phone'] = phone();
 
   // Education
-  $form['education'] = fieldset('Education', 'Please do not note the year high school diploma was received');
+  $form[7] = fieldset('Education', 'Please do not note the year high school diploma was received');
 
   $edu_fields['school'] = textfield('School', array('#options' => array('opt1' => 'Opt 1')));
   $edu_fields['rdo_grad_status'] = radios('Did you graduate', array(1 => 'Yes', 0 => 'No'));
@@ -96,12 +88,12 @@ function oa_portal_p1_application_form($form_state) {
   $edu_fields['coursework2'] = textfield('', 25);
   $edu_fields['coursework3'] = textfield('', 25);
   $edu_fields['coursework4'] = textfield('', 25);
-  $form['education']['edu'] = oa_portal_set($edu_fields, 'Add another school', 3);
+  $form[7]['edu'] = oa_portal_set($edu_fields, 'Add another school', 3);
 
   // Experience
-  $form['experience'] = fieldset('Experience');
+  $form[6] = fieldset('Experience');
 
-  $form['experience']['chk_recent_grad'] = checkbox('Check box if you are a recent college graduate');  
+  $form[6]['chk_recent_grad'] = checkbox('Check box if you are a recent college graduate');  
 
   $exp_fields['employer'] = textfield('Employer',75);
   $exp_fields['city'] = textfield('City');
@@ -116,7 +108,7 @@ function oa_portal_p1_application_form($form_state) {
   $exp_fields['supname'] = textfield('Immediate Supervisor');
   $exp_fields['rdo_may_contact'] = radios_yesno('May we contact?');
   $exp_fields['reason'] = textfield('Reason for leaving');
-  $form['experience']['exp'] = oa_portal_set($exp_fields, 'Add another job', 3);
+  $form[6]['exp'] = oa_portal_set($exp_fields, 'Add another job', 3);
 
 
   // Preferences
@@ -139,22 +131,22 @@ function oa_portal_p1_application_form($form_state) {
   $form['preferences']['experience'] = textfield('Total years of experience');
   
   // Licensures & Certifications
-  $form['licecerts'] = fieldset('Licensures/Certifications');
+  $form[535] = fieldset('Licensures/Certifications');
 
   $lc_fields['name'] = textfield('Licensure/Certification');
   $lc_fields['state'] = state();
   $lc_fields['number'] = textfield('License Number', 12);
   $lc_fields['expiry_date'] = date_popup('Expires');
-  $form['licecerts']['lc'] = oa_portal_set($lc_fields, 'Add another Licensure/Certification', 4);
+  $form[535]['lc'] = oa_portal_set($lc_fields, 'Add another Licensure/Certification', 4);
 
-  $form['proforgs'] = fieldset('Professional Organizations');
+  $form[534] = fieldset('Professional Organizations');
   $proforgs['chk_none'] = checkbox('I am not a member of any organizations');
   $proforgs['org_name'] = textfield('Organization');
   $proforgs['org_role'] = textfield('Role');
   $proforgs['org_start'] = date_popup('From');
   $proforgs['org_end'] = date_popup('To');
 
-  $form['proforgs']['orgs'] = oa_portal_set($proforgs, 'Add another Organization', 4);
+  $form[534]['orgs'] = oa_portal_set($proforgs, 'Add another Organization', 4);
   
   $terms_desc = '<p>I certify that the information provided on this Application is accurate. I understand 
   that the withholding of information or the giving of false information on this Application may 
@@ -181,20 +173,45 @@ function oa_portal_p1_application_form($form_state) {
 }
 
 /**
- * Form validation callback for Application
- */
-/*
-function oa_portal_p1_application_form_validate($form, &$form_state) {
-}
-*/
-
-/**
  * Form submission callback for Application
  */
 function oa_portal_p1_application_form_submit($form, &$form_state) {
-  // @TODO Post to RMax/UCM
-//  $values = $form_state['values'];
-//  dsm($values);
+  /**
+   * @TODO Post 4 Emergency Contact to UCM
+   *
+   */
+  dsm($form_state['values'][4], 'Process & post 4 to UCM');
+
+  /**
+   * @TODO Post 7 Education & Credentials to UCM
+   *
+   */
+  dsm($form_state['values'][7], 'Process & post 7 to UCM');
+
+  /**
+   * @TODO Post 6 Employment History to UCM
+   *
+   */
+  dsm($form_state['values'][6], 'Process & post 6 to UCM');
+
+  /**
+   * @TODO Post ? Preferences to UCM
+   *
+   */
+  dsm($form_state['values']['preferences'], 'Process & post preferences to UCM');
+
+  /**
+   * @TODO Post 535 Licensures/Certifications to UCM
+   *
+   */
+  dsm($form_state['values'][535], 'Process & post 535 to UCM');
+  
+  /**
+   * @TODO Post 534 Professional Organizations to UCM
+   *
+   */
+  dsm($form_state['values'][534], 'Process & post 534 to UCM');
+  
 }
 
 /**
@@ -221,14 +238,6 @@ function oa_portal_p1_checklist_form($form_state) {
   dsm($form, 'Skills Checklist $form');
   return $form;
 }
-
-/**
- * Form validation callback for Checklist
- */
-/*
-function oa_portal_p1_checklist_form_validate($form, &$form_state) {
-}
-*/
 
 /**
  * Form submission callback for Checklist
@@ -694,14 +703,6 @@ function oa_portal_p2_professional_orgs_form($form_state) {
 }
 
 /**
- * Form validation callback for Professional Organizations
- */
-/*
-function oa_portal_p2_professional_orgs_form_validate($form, &$form_state) {
-}
-*/
-
-/**
  * Form submission callback for Professional Organizations
  */
 function oa_portal_p2_professional_orgs_form_submit($form, &$form_state) {
@@ -737,20 +738,11 @@ function oa_portal_p2_licensure_certs_form($form_state) {
 }
 
 /**
- * Form validation callback for Licensure Certifications
- */
-/*
-function oa_portal_p2_licensure_certs_form_validate($form, &$form_state) {
-}
-*/
-
-/**
  * Form submission callback for Licensure Certifications
  */
 function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
   // @TODO Post individual files to UCM, mark as finalized either after checkbox has been checked, or 
 }
-
 
 /**
  * Form callback for Background/Reference Check
@@ -804,14 +796,6 @@ function oa_portal_p2_background_reference_form($form_state) {
   oa_portal_submit($form);
   return $form;
 }
-
-/**
- * Form validation callback for Background/Reference Check
- */
-/*
-function oa_portal_p2_background_reference_form_validate($form, &$form_state) {
-}
-*/
 
 /**
  * Form submission callback for Background/Reference Check
@@ -876,38 +860,35 @@ function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
 function oa_portal_p2_capabilities_form($form_state) {
   $form = array();
   
-  $form['jcq'] = fieldset('Job Capabilities Questionnaire');
-  $form['jcq']['#description'] = t('As a candidate for employment at On Assignment1, you have met the basic requirements of skills, experience, education and availability needed by our Clients.  Clients request that our employees work at their location for a specific period of time to complete various work duties.  As an On Assignment employee, you will typically be assigned to positions in healthcare, research and development and/or many different types of facilities.  These positions may involve working with various potentially hazardous substances and physical agents, including, but not limited to, the following:<br><br>
+  $form[5] = fieldset('Job Capabilities Questionnaire');
+  $form[5]['#description'] = t('As a candidate for employment at On Assignment1, you have met the basic requirements of skills, experience, education and availability needed by our Clients.  Clients request that our employees work at their location for a specific period of time to complete various work duties.  As an On Assignment employee, you will typically be assigned to positions in healthcare, research and development and/or many different types of facilities.  These positions may involve working with various potentially hazardous substances and physical agents, including, but not limited to, the following:<br><br>
 <ul><li>Various organic volatile and non-volatile chemicals, corrosives, potential carcinogens, mutagens and teratogens</li>
 <li>Biological agents, bloodborne pathogens and radioactive sources and materials</li>
 <li>Heat, cold, pressure (including compressed gasses), and noise</li>
 <li>Working with glassware, pipetting, repetitive tasks</li>
 </ul><br>These assignments may also include physical requirements that involve sitting/standing/walking for extended periods, bending and stooping, lifting or moving heavy objects and lifting up to 50 lbs. above the shoulders.  They may also involve repetitive tasks such as using a keyboard, operating equipment or manipulating small objects.  A safe working environment is important not only to you, but also to On Assignment and our Clients.  You are expected to take all reasonable safety precautions, and to follow all On Assignment and client safety policies and procedures.  This may include, but is not limited to Standard Operating Procedures, appropriate use of personal protective equipment and devices, and personal hygiene.  To assist us in assuring that we select the best possible assignment for you, please complete the following Job Capabilities Questionnaire.<br><br>');
-  $form['jcq']['performance'] = cap_yne('Can you perform all of these and similar tasks with reasonable accommodation?');
-  $form['jcq']['health'] = cap_yne('Do you have any health reasons that would prohibit you from performing these or similar tasks?');
-  $form['jcq']['restrictions'] = cap_yne('Do you have any restrictions preventing you from performing these tasks?');
-  $form['jcq']['allergies'] = cap_yne('Do you have any known allergies?', 'If yes, list');
-  $form['jcq']['allergies']['rdo_dermatitis'] = radios_yesno('Do you have dermatitis?');
-  $form['jcq']['allergies']['rdo_latex'] = radios_yesno('Are you allergic to latex gloves?');
-  $form['jcq']['preference'] = cap_yne('Are there any assignments that you cannot or prefer not to do?');
-  $form['jcq']['chk_certify'] = checkbox('I certify this information is correct, and understand that withholding or giving false information will result in refusal to hire or disciplinary action up to, and including, termination.');
+  $form[5]['performance'] = cap_yne('Can you perform all of these and similar tasks with reasonable accommodation?');
+  $form[5]['health'] = cap_yne('Do you have any health reasons that would prohibit you from performing these or similar tasks?');
+  $form[5]['restrictions'] = cap_yne('Do you have any restrictions preventing you from performing these tasks?');
+  $form[5]['allergies'] = cap_yne('Do you have any known allergies?', 'If yes, list');
+  $form[5]['allergies']['rdo_dermatitis'] = radios_yesno('Do you have dermatitis?');
+  $form[5]['allergies']['rdo_latex'] = radios_yesno('Are you allergic to latex gloves?');
+  $form[5]['preference'] = cap_yne('Are there any assignments that you cannot or prefer not to do?');
+  $form[5]['chk_certify'] = checkbox('I certify this information is correct, and understand that withholding or giving false information will result in refusal to hire or disciplinary action up to, and including, termination.');
   oa_portal_submit($form);
   return $form;
 }
 
 /**
- * Form validation callback for Capabilities Questionnaire
- */
-/*
-function oa_portal_p2_capabilities_form_validate($form, &$form_state) {
-}
-*/
-
-/**
  * Form submission callback for Capabilities Questionnaire
  */
 function oa_portal_p2_capabilities_form_submit($form, &$form_state) {
-  // @TODO Post to UCM
+  /**
+   * @TODO Post 5 Job Capabilities Questionnaire to UCM
+   * @TODO needs PDF fields
+   */
+  dsm($form_state['values'][5], 'Process & post 5 to UCM');
+
 }
 
 /**
@@ -915,9 +896,9 @@ function oa_portal_p2_capabilities_form_submit($form, &$form_state) {
  */
 function oa_portal_p2_policies_form($form_state) {
   $form = array();
-  $form['substance_abuse'] = fieldset('Substance Abuse Testing Consent');
-  $form['substance_abuse']['testing'] = acknowledgement('I understand that I may be offered a position with On Assignment...');
-  $form['substance_abuse']['sample'] = acknowledgement('I agree to provide an appropriate sample...');
+  $form[256] = fieldset('Substance Abuse Testing Consent');
+  $form[256]['testing'] = acknowledgement('I understand that I may be offered a position with On Assignment...');
+  $form[256]['sample'] = acknowledgement('I agree to provide an appropriate sample...');
 
   $form[433] = fieldset('Employment Agreement');
   $form[433]['personelle'] = acknowledgement('On Assignment Staffing Services, Inc. (“On Assignment”) is engaged in the business of providing life sciences, healthcare and laboratory support services to other parties (“Client(s)”), who have requested contract professionals to fill their staffing needs. ______________________________ (“Personnel”) wishes to enter into this Employment Agreement with On Assignment.
@@ -956,25 +937,15 @@ function oa_portal_p2_policies_form($form_state) {
     2.) Result from any work performed by the employee for the employer.
     B. To the extent a provision in an employment agreement purports to require an employee to assign an invention otherwise excluded from being required to be assigned under subdivision (a), then provision is against the public policy of this state and is unenforceable.
     Accordingly, On Assignment does not require Personnel to assign any invention prohibited by Section 2870 of the California Labor Code.');
-  
-  
-  
-  
-  $form['direct_hire'] = fieldset('Direct Hire Candidate Agreement');
-  $form['direct_hire']['relationship'] = acknowledgement('On Assignment Staffing Services...');
+
+
+  $form[432] = fieldset('Direct Hire Candidate Agreement');
+  $form[432]['relationship'] = acknowledgement('On Assignment Staffing Services...');
   $form['questions'] = markup('If you have any questions..');
-  
+
   oa_portal_submit($form);
   return $form;
 }
-
-/**
- * Form validation callback for Policies & Agreements
- */
-/*
-function oa_portal_p2_policies_form_validate($form, &$form_state) {
-}
-*/
 
 /**
  * Form submission callback for Policies & Agreements
@@ -992,6 +963,20 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
    */
   dsm($form_state['values'][433], 'Process & post 433 to UCM');
   
+  /**
+   * @TODO Post 256 Substance Abuse Testing Consent to UCM
+   * @TODO needs PDF fields
+   * 
+   */
+  dsm($form_state['values'][256], 'Process & post 256 to UCM');
+
+  /**
+   * @TODO Post 432 Direct Hire Agreement to UCM
+   * @TODO needs PDF fields
+   * 
+   */
+  dsm($form_state['values'][432], 'Process & post 432 to UCM');
+
 
 }
 
@@ -1002,20 +987,23 @@ function oa_portal_p2_medical_form($form_state) {
   $form = array();
   $form['#attributes'] = array('enctype' => "multipart/form-data");
 
-  $form['auth'] = fieldset('Authorization For Use Or Disclosure Of Health Information');
-  $form['auth']['disclosure'] = acknowledgement('I authorize the use or disclosure of my health information...');
-  $form['auth']['providers'] = textfield('As described in section 1, list specific providers of information if applicable', 80);
-  $form['auth']['info'] = textfield('As described in section 3, list specific information that may be used or disclosed if applicable', 80);
-  $form['auth']['dates'] = textfield('As described in section 7, list date or event per 3) if applicable', 80);
+  $form[263] = fieldset('Authorization For Use Or Disclosure Of Health Information');
+  $form[263]['disclosure'] = acknowledgement('I authorize the use or disclosure of my health information...');
+  $form[263]['providers'] = textfield('As described in section 1, list specific providers of information if applicable', 80);
+  $form[263]['info'] = textfield('As described in section 3, list specific information that may be used or disclosed if applicable', 80);
+  $form[263]['dates'] = textfield('As described in section 7, list date or event per 3) if applicable', 80);
   
   // @TODO Add help tooltip
   $form['tb'] = fieldset('TB');
+  
+  // @TODO Which PDF for TB Stage 1&2?
   $form['tb']['rdo_state_12_negative_chest'] = radios('', array(
     'stage_12' => 'TB Vaccine Stage 1 & Stage 2',
-    'negative_chest' => 'Negative Chest X-ray (every 3 years)',
+    288 => 'Negative Chest X-ray (every 3 years)',
     ));
 
   // @TODO Add help tooltip
+  // PDFs 261/262?
   $form['mmr'] = fieldset('MMR');
   $form['mmr']['rdo_mmr_12_rubella_titer'] = radios('', array(
     'mmr_12' => 'MMR #1 / #2 if born after 1957',
@@ -1030,9 +1018,13 @@ function oa_portal_p2_medical_form($form_state) {
   );
   $form['mmr']['chk_fax_preference'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
 
+  // @TODO Which PDF(s) for Cardiac Life Support?
+  // BLS: 19
+  // CPR: 37
+  // ACLS: 13
   $form['cardiac'] = fieldset('Cardiac Life Support');
   $form['cardiac']['#tree'] = TRUE;
-  $form['cardiac']['rdo_cardiac'] = radios('', array('BLS', 'CPR', 'ACLS'), TRUE);
+  $form['cardiac']['rdo_cardiac'] = radios('', array(19 => 'BLS', 37 => 'CPR', 13 => 'ACLS'), TRUE);
   $form['cardiac']['certificate'] = array(
     '#type' => 'file',
     '#title' => t('Certificate'),
@@ -1040,12 +1032,16 @@ function oa_portal_p2_medical_form($form_state) {
     '#size' => 80,
   );
 
+  // @TODO Which PDF(s) for Varivax/Varicella?
+  // Varivax/Varicella PDFs: 295, 296, 297, 298, 299
   $form['vari'] = fieldset('Varivax/Varicella');
   $form['vari']['rdo_vari'] = radios('', array(
     'vari_vaccine' => 'Varivax Vaccine #1',
     'stmt' => 'Varicella Immunity Stmt/Hist. of Disease',
     'titer' => 'Varicella Titer'));
   
+  // @TODO Which PDF(s) for Hepatitis B?
+  // Hepatitis B PDFs: 274, 275
   $form['hepb'] = fieldset('Hepatitis B Vaccination');
   $form['hepb']['#tree'] = TRUE;
   $form['hepb']['rdo_vaccination'] = radios('', array(
@@ -1062,18 +1058,16 @@ function oa_portal_p2_medical_form($form_state) {
 }
 
 /**
- * Form validation callback for Medical Authorization and Disclosures
- */
-/*
-function oa_portal_p2_medical_form_validate($form, &$form_state) {
-}
-*/
-
-/**
  * Form submission callback for Medical Authorization and Disclosures
  */
 function oa_portal_p2_medical_form_submit($form, &$form_state) {
-  // @TODO Post to UCM
+  /**
+   * @TODO Post 263 Health Disclosure Agreement to UCM
+   * @TODO needs PDF fields
+   * 
+   */
+  dsm($form_state['values'][263], 'Process & post 263 to UCM');
+
 }
 
 /**
@@ -1093,6 +1087,9 @@ function oa_portal_p2_competency_form($form_state) {
  */
 function oa_portal_p3_paycheck_form($form_state) {
   $form = array();
+  
+  // @TODO Which PDF(s) for Paycheck preferences?
+  // 
   $form['delivery'] = fieldset('Paycheck Delivery');
   $form['delivery']['rdo_delivery_option'] = radios('', array(
     'yes' => '<strong>I do</strong> wish to sign up for Direct Deposit or CashPay at this time and will complete a paycheck delivery method below.',
@@ -1109,36 +1106,42 @@ function oa_portal_p3_paycheck_form($form_state) {
   $form['dd']['bank_route'] = textfield('Routing #');
   $form['dd']['rdo_account_type'] = radios('Account Type', array('Checking', 'Savings'), TRUE);
   
-  $form['cp'] = fieldset('CashPay Enrollment');
-  $form['cp']['#description'] = 'Please select the card type and English or Spanish below:';
-  $form['cp']['rdo_cc_type'] = radios('', array('Visa', 'Instant Issue (Issue at Employment Location)'), TRUE);
-  $form['cp']['rdo_cc_lang'] = radios('', array('English', 'Spanish'), TRUE);
-  $form['cp']['cc_number']['#tree'] = TREE;
+  $form[537] = fieldset('CashPay Enrollment');
+  $form[537]['#description'] = 'Please select the card type and English or Spanish below:';
+  $form[537]['rdo_cc_type'] = radios('', array('Visa', 'Instant Issue (Issue at Employment Location)'), TRUE);
+  $form[537]['rdo_cc_lang'] = radios('', array('English', 'Spanish'), TRUE);
+  $form[537]['cc_number']['#tree'] = TREE;
   $cc_num = textfield('', 4, 4);
-  $form['cp']['cc_number'][] = $cc_num;
-  $form['cp']['cc_number'][0]['#prefix'] = '<div class="field-cc">';
-  $form['cp']['cc_number'][] = $cc_num;
-  $form['cp']['cc_number'][] = $cc_num;
-  $form['cp']['cc_number'][] = $cc_num;
-  $form['cp']['cc_number'][3]['#suffix'] = '</div>';
+  $form[537]['cc_number'][] = $cc_num;
+  $form[537]['cc_number'][0]['#prefix'] = '<div class="field-cc">';
+  $form[537]['cc_number'][] = $cc_num;
+  $form[537]['cc_number'][] = $cc_num;
+  $form[537]['cc_number'][] = $cc_num;
+  $form[537]['cc_number'][3]['#suffix'] = '</div>';
 
   oa_portal_submit($form);
   return $form;
 }
 
 /**
- * Form validation callback for Paycheck Method
- */
-/*
-function oa_portal_p3_paycheck_form_validate($form, &$form_state) {
-}
-*/
-
-/**
  * Form submission callback for Paycheck Method
  */
 function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
-  // @TODO Post to UCM
+  /**
+   * @TODO Post paycheck options & direct deposit to UCM
+   * @TODO needs PDFs & PDF fields
+   * 
+   */
+  dsm($form_state['values']['delivery'], 'Process & post Paycheck delivery to UCM');
+  dsm($form_state['values']['dd'], 'Process & post Direct Deposit to UCM');
+
+  /**
+   * @TODO Post 537 Cashpay Enrollment to UCM
+   * @TODO needs PDF fields
+   * 
+   */
+  dsm($form_state['values'][537], 'Process & post 537 to UCM');
+
 }
 
 /**
@@ -1160,18 +1163,9 @@ function oa_portal_p3_w4_form($form_state) {
   $form[474]['exempt'] = textfield('If you meet both conditions, write "Exempt" here', 6);
   $form[474]['chk_certify'] = checkbox('Under penalties of perjury, I declare that I have examined this certificate and, to the best of my knowledge and belief, it is true, correct, and complete.');
   
-  
   oa_portal_submit($form);
   return $form;
 }
-
-/**
- * Form validation callback for W4
- */
-/*
-function oa_portal_p3_w4_form_validate($form, &$form_state) {
-}
-*/
 
 /**
  * Form submission callback for W4
@@ -1199,30 +1193,18 @@ function oa_portal_p3_w4_form_submit($form, &$form_state) {
  */
 function oa_portal_p3_i9_form($form_state) {
   $form = array();
-  $form['#description'] = t('');
-
   $form[461] = fieldset('I9');
   // Maiden name is not in the UX doc, but seems important on the PDF -rp
   $form[461]['maiden'] = textfield('Maiden Name');
   $form[461]['maiden']['#required'] = FALSE;
-  
   $form[461]['citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
     array('citizen' => t('A citizen of the United States'), 'national' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
   $form[461]['expiry'] = date_popup('Until (expiration date if applicable)');
-
-  $form[461]['chk_certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');								
+  $form[461]['chk_certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');
 
   oa_portal_submit($form);
   return $form;
 }
-
-/**
- * Form validation callback for I-9
- */
-/*
-function oa_portal_p3_i9_form_validate($form, &$form_state) {
-}
-*/
 
 /**
  * Form submission callback for I-9
@@ -1274,14 +1256,6 @@ function oa_portal_p3_eeo_form($form_state) {
 }
 
 /**
- * Form validation callback for EEO Form
- */
-/*
-function oa_portal_p3_eeo_form_validate($form, &$form_state) {
-}
-*/
-
-/**
  * Form submission callback for EEO Form
  */
 function oa_portal_p3_eeo_form_submit($form, &$form_state) {
@@ -1294,29 +1268,36 @@ function oa_portal_p3_eeo_form_submit($form, &$form_state) {
 function oa_portal_p3_work_policy_form($form_state) {
   $form = array();
   $form['#description'] = t('');
-  
-  $form['harassment'] = fieldset('Harassment Policy Acknowledgement');
+
+  $form[438] = fieldset('Harassment Policy Acknowledgement');
+  $form[438]['ack'] = acknowledgement('In an effort to reiterate On Assignment\'s long-standing policy against illegal harassment in the workplace, enclosed is a copy of the On Assignment Harassment Policy. Sexual harassment or any other form of harassment based on a protected characteristic (e.g. age, race, religion etc.) is against the law and will not be tolerated at On Assignment. Please sign and date the enclosed acknowledgment that you have received and agree to abide by the policy.
+    Our policy against harassment applies to all of our employees, including temporary professionals, as well as all applicants and other persons providing services pursuant to a contract. The policy also applies when our temporary professionals are assigned to work at a client’s facility, regardless of whether or not the person who is engaged in improper conduct is one of our employees or temporary professionals. If you are being subjected to illegal harassment, we want to know about it so that we can act to investigate and address the situation as quickly as possible.
+    It is your responsibility, however, to report the problem to us, and we encourage you to use the attached Complaint Form to do so.
+    If you have any questions about this policy, please contact the Human Resources Director at 818-878-7900.',
+    'I acknowledge receipt of On Assignment\'s Harassment Policy and written complaint form and I Agree to abide by the policy.');
+
+  // @TODO Which PDF for Safety Policy?
+  // 
   $form['safety'] = fieldset('Safety Policy Acknowledgement');
-  $form['stock_plan'] = fieldset('On Assignment, Inc.\'s Employee Stock Purchase Plan');
   
+  // @TODO Which PDF for Stock Plan?
+  // 
+  $form['stock_plan'] = fieldset('On Assignment, Inc.\'s Employee Stock Purchase Plan');
   
   oa_portal_submit($form);
   return $form;
 }
 
 /**
- * Form validation callback for Work Policy
- */
-/*
-function oa_portal_p3_work_policy_form_validate($form, &$form_state) {
-}
-*/
-
-/**
  * Form submission callback for Work Policy
  */
 function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
-  // @TODO Post to UCM
+  /**
+   * @TODO Post 438 Harassment Policy Acknowledgement to UCM
+   *
+   */
+  dsm($form_state['values'][461], 'Process & post 461 to UCM');
+
 }
 
 
