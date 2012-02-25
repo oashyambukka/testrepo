@@ -213,7 +213,7 @@ function phone($title = 'Phone') {
     \d*           # optional extension
     \D*           # ignore trailing non-digits
     /x]', 'error' => 'Please specify a valid %field number.'));
-  
+  return $element;
 }
 
 

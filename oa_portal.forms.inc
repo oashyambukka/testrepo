@@ -751,7 +751,7 @@ function oa_portal_p2_background_reference_form($form_state) {
   );
   $fmr = array();
   $fmr['fromformeraddr'] = date_popup('From', 'm-Y');
-  $fmr['toformeraddr'] = date_popup('To', 'm-Y')
+  $fmr['toformeraddr'] = date_popup('To', 'm-Y');
   $fmr = $fmr + address();
   unset($fmr['address2']);
   $form[233]['former_addresses'] = oa_portal_set($fmr, 'Add another address', 7);
@@ -1076,14 +1076,17 @@ function oa_portal_p3_paycheck_form($form_state) {
 
   // @TODO Add JS: expose either Direct Deposit or CashPay Enrollment conditionally based on rdo_delivery_option status
   $form['delivery'] = fieldset('Paycheck Delivery');
+  $form['delivery']['#collapsible'] = FALSE;
   $form['delivery']['rdo_delivery_option'] = radios('', array(
     'directdeposit' => '<strong>I do</strong> wish to sign up for Direct Deposit at this time and will complete the section below.',
     'cashpay' => '<strong>I do</strong> wish to sign up for CashPay at this time and will complete the section below.',
-    'no' => '<strong>I do</strong> wish to sign up for Direct Deposit or CashPay at this time. I would prefer to have my pay check mailed to me. I understand that there may be a delay to my paycheck delivery via the US Postal Service which is beyond the control of On Assignment.',
+    'no' => '<strong>I do not</strong> wish to sign up for Direct Deposit or CashPay at this time. I would prefer to have my pay check mailed to me. I understand that there may be a delay to my paycheck delivery via the US Postal Service which is beyond the control of On Assignment.',
   ));
   $form['delivery']['policy'] = markup('<p>Check Replacement Policy<br/>On Assignment requires that you wait 5 business days from the date the check was mailed before requesting a replacement check. Additionally, if a check replacement is needed, you will be rquired to sign up for Direct Deposit or CashPay.</p>');
 
   $form[536] = fieldset('Direct Deposit');
+  $form[536]['#attributes']['id'] = 'fieldset-directdeposit';
+  $form[536]['#collapsed'] = TRUE;
   $form[536]['bank_name'] = textfield('Bank Name',40);
   $form[536]['bank_city'] = textfield('Bank City',40);
   $form[536]['bank_state'] = state('State');
@@ -1093,10 +1096,14 @@ function oa_portal_p3_paycheck_form($form_state) {
   $form[536]['rdo_account_type'] = radios('Account Type', array('Checking', 'Savings'), TRUE);
   // No fields required.
   foreach ($form[536] AS $k => $v) {
-    unset($form[536][$k]['#required']);
+    if (in_array($v['#type'], array('textfield', 'radios', 'select'))) {
+      $form[536][$k]['#required'] = null;
+    }
   }
 
   $form[537] = fieldset('CashPay Enrollment');
+  $form[537]['#attributes']['id'] = 'fieldset-cashpay';
+  $form[537]['#collapsed'] = TRUE;
   $form[537]['#description'] = 'Please select the card type and English or Spanish below:';
   $form[537]['rdo_cc_type'] = radios('', array('Visa', 'Instant Issue (Issue at Employment Location)'), TRUE);
   $form[537]['rdo_cc_lang'] = radios('', array('English', 'Spanish'), TRUE);
@@ -1110,7 +1117,9 @@ function oa_portal_p3_paycheck_form($form_state) {
   $form[537]['cc_number'][3]['#suffix'] = '</div>';
   // No fields required.
   foreach ($form[537] AS $k => $v) {
-    unset($form[537][$k]['#required']);
+    if ($v['#type'] == 'textfield' || $v['#type'] == 'radios') {
+      $form[537][$k]['#required'] = null;
+    }
   }
 
   oa_portal_submit($form);
@@ -1328,7 +1337,6 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
       $form['#formtypes'][$k] = $k;
     }
   }
-  dsm($form, 'hook_form_alter processed $form');
 }
 
 /**
