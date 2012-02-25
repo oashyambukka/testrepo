@@ -1334,7 +1334,7 @@ function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
 function oa_portal_form_alter(&$form, &$form_state, $form_id) {
   foreach ($form AS $k => $v) {
     if (is_numeric($k)) {
-      $form['#formtypes'][$k] = $k;
+      $form['#formtypes'][] = $k;
     }
   }
 }
