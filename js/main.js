@@ -18,23 +18,32 @@ $(document).ready(function() {
   });
 
 
-  $('#edit-delivery-rdo-delivery-option-directdeposit-wrapper input').change(function () {
-    var value = $(this).val();
-    fieldset_hide('fieldset-directdeposit');
-    fieldset_hide('fieldset-cashpay');
-    if (value == 'cashpay' || value = 'directdeposit') {
-      fieldset_show('fieldset-' + value);
+  $('#edit-delivery-rdo-delivery-option-directdeposit-wrapper input, #edit-delivery-rdo-delivery-option-no-wrapper input, #edit-delivery-rdo-delivery-option-cashpay-wrapper input').change(function () { fieldset_change(this); });
+
+  function fieldset_change(element) {
+    var value = $(element).val();
+    if (value == 'cashpay') {
+      fieldset_hide('directdeposit');
+      fieldset_show('cashpay');
     }
-  });
-  
-  function fieldset_hide($id) {
-    if (!$(id).hasClass('collapsed')) {
-      $('#fieldset-directdeposit legend a').click();
+    if (value == 'directdeposit') {
+      fieldset_hide('cashpay');
+      fieldset_show('directdeposit');
+    }
+    if (value == 'no') {
+      fieldset_hide('cashpay');
+      fieldset_hide('directdeposit');
     }
   }
-  function fieldset_show($id) {
-    if ($(id).hasClass('collapsed')) {
-      $('#fieldset-directdeposit legend a').click();
+  
+  function fieldset_hide(id) {
+    if (!$('#fieldset-' + id).hasClass('collapsed')) {
+      $('#fieldset-' + id + ' legend a').click();
+    }
+  }
+  function fieldset_show(id) {
+    if ($('#fieldset-' + id).hasClass('collapsed')) {
+      $('#fieldset-' + id + ' legend a').click();
     }
   }
 
