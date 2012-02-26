@@ -9,16 +9,17 @@ $(document).ready(function() {
   });
 
   $(".oap-tooltip .close").click(function() {
-      $(".oap-tooltip").css("display","none");
+    $(".oap-tooltip").css("display","none");
   });
 
   $(".add-another-link").click(function() {
-      $(this).hide();
-      $(this).parent().next().slideDown();
+    $(this).hide();
+    $(this).parent().next().slideDown();
   });
 
 
-  $('#edit-delivery-rdo-delivery-option-directdeposit-wrapper input, #edit-delivery-rdo-delivery-option-no-wrapper input, #edit-delivery-rdo-delivery-option-cashpay-wrapper input').change(function () { fieldset_change(this); });
+  $('#edit-delivery-rdo-delivery-option-directdeposit-wrapper input, #edit-delivery-rdo-delivery-option-no-wrapper input,
+    #edit-delivery-rdo-delivery-option-cashpay-wrapper input').change(function () { fieldset_change(this); });
 
   function fieldset_change(element) {
     var value = $(element).val();
