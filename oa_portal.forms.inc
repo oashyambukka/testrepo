@@ -31,38 +31,6 @@ function oa_portal_change_password_form_submit($form, &$form_state) {
 }
 
 /**
- * Form callback for Contact
- */
-function oa_portal_p1_contact_form() {
-  global $user;
-  $form[1] = fieldset('Contact Information');
-  $form[1]['firstname'] = textfield('First Name', 15, 20);
-  $form[1]['initial'] = textfield('Middle Initial', 3, 1);
-  $form[1]['initial']['#required'] = FALSE;
-  $form[1]['lastname'] = textfield('Last Name', 20, 30);
-  $form[1]['address'] = address();
-  $form[1]['primary_phone'] = textfield('Primary Phone', 15, 10);
-  $form[1]['mobile_phone'] = textfield('Cell Phone', 15, 10);
-  $form[1]['email'] = textfield('Email');
-  $form[1]['email']['#default_value'] = $user->mail;
-  $form[1]['email']['#rules'][] = 'email';
-  oa_portal_submit($form);
-  return $form;
-}
-
-/**
- * Form submission callback for Background/Reference Check
- */
-function oa_portal_p1_contact_form_submit($form, &$form_state) {
-  global $user;
-  if ($user->mail != $form_state['values'][1]['email']) {
-    // @TODO Change Drupal email on file
-  }
-  // @TODO Post all fields to RMax
-}
-
-
-/**
  * Form callback for Application form
  */
 function oa_portal_p1_application_form($form_state) {
