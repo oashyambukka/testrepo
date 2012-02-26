@@ -153,10 +153,10 @@ function oa_portal_p1_application_form($form_state) {
 function oa_portal_p1_application_form_submit($form, &$form_state) {
   /**
    * @TODO Get Contact profile data from RMax
-   * @TODO Post all sections in Application to UCM
+   * @TODO Post all sections in 2 Application to UCM
    *
    */
-  dsm($form_state['values'], 'Process & post 1 to UCM');
+  dsm($form_state['values'], 'Process & post 2 to UCM');
   
 }
 
@@ -172,7 +172,7 @@ function oa_portal_p1_checklist_form($form_state) {
 
   $p1_formtypes = oa_portal_get_modality_formtypes(1, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
   $checklist_formtypes = array_intersect(range(480, 532) + array(547), $p1_formtypes);
-  $form['#formtypes'] = array(517);
+//  $form['#formtypes'] = array(517);
   foreach ($form['#formtypes'] AS $cft) {
     $fn = 'oa_portal_p1_checklist_form_'. $cft;
     $form[$cft] = $fn();
@@ -639,15 +639,14 @@ function oa_portal_p2_professional_orgs_form($form_state) {
   $form['prof_orgs']['chk_no_orgs'] = checkbox('I am not a member of any organizations');
 
   // @TODO Pre-populate with Professional Organizations from Application stage
-  $org = array('#tree' => TRUE);
-  $org['org_name'] = textfield('Organization');
-  $org['org_role'] = textfield('Role');
-  $org['org_date_from'] = date_popup('From');
-  $org['org_date_to'] = date_popup('To');
-  $form['prof_orgs']['org1']['#tree'] = TRUE;
-  $form['prof_orgs']['org1'] = $org;
-  $form['prof_orgs']['org2']['#tree'] = TRUE;
-  $form['prof_orgs']['org2'] = $org;
+  $proforgs = array('#tree' => TRUE);
+  $proforgs['org_name'] = textfield('Organization');
+  $proforgs['org_role'] = textfield('Role');
+  $proforgs['org_start'] = date_popup('From');
+  $proforgs['org_end'] = date_popup('To');
+
+  $form['prof_orgs']['orgs1'] = $proforgs;
+  $form['prof_orgs']['orgs2'] = $proforgs;
 
   oa_portal_submit($form);
   return $form;
@@ -688,7 +687,7 @@ function oa_portal_p2_licensure_certs_form($form_state) {
  * Form submission callback for Licensure Certifications
  */
 function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
-  // @TODO Post individual files to UCM, mark as finalized either after checkbox has been checked, or 
+  // @TODO Post individual files to UCM, mark as finalized either after checkbox has been checked, or...
 }
 
 /**
@@ -798,7 +797,7 @@ function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
   dsm($form_state['values'][476], 'Process & post 476 to UCM');
   dsm($form_state['values'][477], 'Process & post 477 to UCM');
   
-  
+  // @TODO Store Maiden Name for future use
 }
 
 /**
@@ -1098,8 +1097,12 @@ function oa_portal_p3_paycheck_form($form_state) {
  * Form submission callback for Paycheck Method
  */
 function oa_portal_p3_paycheck_form_validate($form, &$form_state) {
-  // @TODO: If rdo_delivery_option == "directdeposit", require verify Direct Deposit fields are complete
-  // @TODO: If rdo_delivery_option == "cashpay", require verify CashPay Enrollment fields are complete
+  if ($form_state['values']['rdo_delivery_option'] == "directdeposit") { 
+    // @TODO: require verify Direct Deposit fields are complete
+  }
+  if ($form_state['values']['rdo_delivery_option' == 'cashpay') {
+    // @TODO: require verify CashPay Enrollment fields are complete
+  }
 }
 
 /**
@@ -1108,7 +1111,7 @@ function oa_portal_p3_paycheck_form_validate($form, &$form_state) {
 function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
   if ($form_state['values']['rdo_delivery_option'] == 'directdeposit') {
     /**
-     * @TODO Post Direct Deposit to UCM
+     * @TODO Post 536 Direct Deposit to UCM
      * @TODO needs PDF fields
      * 
      */
@@ -1177,9 +1180,6 @@ function oa_portal_p3_w4_form_submit($form, &$form_state) {
 function oa_portal_p3_i9_form($form_state) {
   $form = array();
   $form[461] = fieldset('I9');
-  // Note: Maiden name is not in the UX doc, but seems important on the PDF -rp
-  $form[461]['maiden'] = textfield('Maiden Name');
-  $form[461]['maiden']['#required'] = FALSE;
   $form[461]['citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
     array('citizen' => t('A citizen of the United States'), 'national' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
   $form[461]['expiry'] = date_popup('Until (expiration date if applicable)');
@@ -1199,7 +1199,7 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
    * lastname - From Profile
    * firstname - From Profile
    * initial - From Profile
-   * maiden - From ?
+   * maiden - From Background Check form
    * address - From Profile
    * apt - From Profile
    * dob - From Profile
@@ -1223,16 +1223,16 @@ function oa_portal_p3_eeo_form($form_state) {
   $form = array();
   $form['#description'] = t('');
   
-  $form['eeo'] = fieldset('EEO');
-  $form['eeo']['#description'] = t('Please fill out the Affirmative Action date below. To ensure that On Assignment complies with pertinent hiring practices, On Assignment must keep records about our applicants for employment.  This questionnaire will be kept in a confidential file, seperate from the application for employment.  Failure to provide this information will in no way adversely affect your candidacy for this position.  However, we would greatly appreciate your willingness to submit this information for our commitment to equal opportunity.<br/><br/><small><em>Note that all definitions as listed below were provuded by the U.S. Federal Government Equal Employment Opportunity Commission (EEOC)</em></small>');
-  $form['eeo']['rdo_ethnicity'] = radios('Ethnicity Code', array('hispanic' => t('Hispanic or Latino'),'asian' => t('Asian'),'white' => t('White'),'american_indian' => t('American Indian or Alaskan Native'),'black' => t('Black'),'two_more' => t('Two or more races'),'hawaiian' => t('Native Hawaiian or Pacific Islander') ) );
-  $form['eeo']['rdo_gender'] = radios('Gender', array('male' => t('Male'), 'female' => t('Female')));
-  $form['eeo']['rdo_handicap'] = radios_yesno('Handicap Status');
-  $form['eeo']['handicap']['#suffix'] = t('<em><small>(Any person who has a physical or mental impairment that substantially limits one or more major life activities, has a record of such impairments or is regarded as having such impairments)</small></em>');
-  $form['eeo']['chk_veteran'] = checkboxes('Veteran Status', array('armed_forces' => t('Armed Forces Service Medal Veteran'), 'disabled' => t('Disabled Veteran'), 'protected' => t('Other Protected Veteran'), 'seperated' => t('Recently Seperated Veteran')) );
-  $form['eeo']['veteran']['#description'] = t('<small><em>If you are unsure of your Veteran status under these definitions, contact your recruiter.</em></small>');
-  $form['eeo']['rdo_age'] = radios_yesno('Age');
-  $form['eeo']['age']['#description'] = t('<small><em>Are you over age 40 but under age 70?</em></small>');
+  $form[1] = fieldset('EEO');
+  $form[1]['#description'] = t('Please fill out the Affirmative Action date below. To ensure that On Assignment complies with pertinent hiring practices, On Assignment must keep records about our applicants for employment.  This questionnaire will be kept in a confidential file, seperate from the application for employment.  Failure to provide this information will in no way adversely affect your candidacy for this position.  However, we would greatly appreciate your willingness to submit this information for our commitment to equal opportunity.<br/><br/><small><em>Note that all definitions as listed below were provuded by the U.S. Federal Government Equal Employment Opportunity Commission (EEOC)</em></small>');
+  $form[1]['rdo_ethnicity'] = radios('Ethnicity Code', array('hispanic' => t('Hispanic or Latino'),'asian' => t('Asian'),'white' => t('White'),'american_indian' => t('American Indian or Alaskan Native'),'black' => t('Black'),'two_more' => t('Two or more races'),'hawaiian' => t('Native Hawaiian or Pacific Islander') ) );
+  $form[1]['rdo_gender'] = radios('Gender', array('male' => t('Male'), 'female' => t('Female')));
+  $form[1]['rdo_handicap'] = radios_yesno('Handicap Status');
+  $form[1]['handicap']['#suffix'] = t('<em><small>(Any person who has a physical or mental impairment that substantially limits one or more major life activities, has a record of such impairments or is regarded as having such impairments)</small></em>');
+  $form[1]['chk_veteran'] = checkboxes('Veteran Status', array('armed_forces' => t('Armed Forces Service Medal Veteran'), 'disabled' => t('Disabled Veteran'), 'protected' => t('Other Protected Veteran'), 'seperated' => t('Recently Seperated Veteran')) );
+  $form[1]['veteran']['#description'] = t('<small><em>If you are unsure of your Veteran status under these definitions, contact your recruiter.</em></small>');
+  $form[1]['rdo_age'] = radios_yesno('Age');
+  $form[1]['age']['#description'] = t('<small><em>Are you over age 40 but under age 70?</em></small>');
   
   oa_portal_submit($form);
   return $form;
@@ -1242,13 +1242,12 @@ function oa_portal_p3_eeo_form($form_state) {
  * Form submission callback for EEO Form
  */
 function oa_portal_p3_eeo_form_submit($form, &$form_state) {
-  // @TODO Post to UCM/RMax
   /**
-   * @TODO Post EEO to UCM
-   * @TODO needs PDFs & PDF fields
+   * @TODO Post 1 EEO to UCM
+   * @TODO needs PDF fields
    * 
    */
-  dsm($form_state['values']['eeo'], 'Process & post EEO to UCM');
+  dsm($form_state['values'][1], 'Process & post 1 EEO to UCM');
 
 }
 
