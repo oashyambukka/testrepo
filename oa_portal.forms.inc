@@ -54,7 +54,7 @@ function oa_portal_p1_application_form($form_state) {
 
   $edu_fields['school'] = textfield('School', array('#options' => array('opt1' => 'Opt 1')));
   $edu_fields['rdo_grad_status'] = radios('Did you graduate', array(1 => 'Yes', 0 => 'No'));
-  $edu_fields['degree'] = select('Degree Earned', array('Associates'));
+  $edu_fields['degree'] = select('Degree Earned', array('highschool' => 'High school diploma', 'associates' => 'Associates'));
   $edu_fields['city'] = textfield('City', 30);
   $edu_fields['state'] = state();
   $edu_fields['year'] = textfield('Year', 10, 4);
@@ -676,7 +676,7 @@ function oa_portal_p2_licensure_certs_form($form_state) {
   $form['lc']['chk_fax_preference'] = checkbox('Check this box if you prefer to fax copies of your licensures/certifications');
 
   // @TODO Get cover page doc ID
-  $form['lc']['fax'] = markup('<PDF ICON> Please include this cover letter and fax it to (818) 555-5555. <cover page link here>');
+  $form['lc']['fax'] = markup('<PDF ICON> Please include this cover letter and fax it to (818) 555-5555. <a href="/portal/createcoversheet">Cover Letter</a>');
 
   // @TODO Slightly different Finalize mechanism. Form to be submitted potentially more than once.
   oa_portal_submit($form);

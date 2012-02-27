@@ -44,6 +44,14 @@ function oa_portal_menu() {
     'access arguments' => array('administer site configuration'),
     'file' => 'oa_portal.pages.inc'
   );
+  $items['portal/createcoversheet'] = array(
+    'title' => 'OA Portal Download File', 
+    'page callback' => 'oa_portal_ucm_createcoversheet',
+    'page arguments' => array(2),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'oa_portal.pages.inc'
+  );
+
   $items['portal/autosave'] = array(
     'title' => 'OA Portal Autosave', 
     'page callback' => 'oa_portal_autosave',
@@ -385,6 +393,9 @@ function oa_portal_fapi_validation_rules() {
   );
 }
 
+/**
+ * Rule callback for not_none
+ */
 function oa_portal_rule_not_none($value) {
   return !((string) $value == 'none');
 }
@@ -409,4 +420,29 @@ dsm($data, '$data in validate_pass');
   }
   return TRUE;
 */
+}
+
+
+function oa_portal_ucm_oacheckin($rmaxid, $formtype, $fields) {
+  $params = array(
+    'dDocName' => $rmaxid ."_". $formtype,
+    // @TODO When is this Form vs FormSecure?
+    'dSecurityGroup' => 'Form',
+    'dDocAuthor' => 'weblogic',
+    'dDocAccount' => 'Recruit/QA',
+    'dDocType' => 'Rmax',
+    'dDocTitle' => $formtype ."-". $rmaxid,
+    'xContentType' => "Form"
+    'xFormType' => $formtype,
+    'xRM_ID' => $rmaxid,
+    'xStatus' => 'Pending Review',
+    'xComments' => '',
+    'xRejectReason' => '',
+    'xRejectOther' => '',
+    'xSuccessAudit' => '',
+    'primaryFile' => $fields,
+  );
+
+  $results = oa_portal_soap('oacheckin', $params, TRUE);
+  return $results->oacheckinResult;
 }

@@ -62,3 +62,19 @@ function oa_portal_autosave() {
   return drupal_set_message(t('The form has been submitted. name="@first @last", year of birth=@year_of_birth', 
     array('@first' => $form_state['values']['first'], '@last' => $form_state['values']['last'], '@year_of_birth' => $form_state['values']['year_of_birth'])));
 }
+
+function oa_portal_ucm_createcoversheet($formtype = 448) {
+  global $user;
+  // @TODO Populate with actual RMaxID
+  // $rmaxid = $user->profile['rmaxid'];
+  $rmaxid = 20584978;
+  $params = array(
+    'rmaxid' => $rmaxid,
+    'formtype' => $formtype,
+  );
+
+  $results = oa_portal_soap('createcoversheet', $params, TRUE);
+  dsm($results->downloadedFile, 'downloadFile');
+  dsm($results->StatusInfo, 'StatusInfo');
+  return array();
+}

@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:s="http://www.w3.org/2001/XMLSchema"
+	xmlns:s0="http://www.stellent.com/OAServices/"
+	targetNamespace="http://www.stellent.com/OAServices/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
+	<types>
+		<s:schema elementFormDefault="qualified" targetNamespace="http://www.stellent.com/OAServices/">
+			<s:element name="createcoversheet">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="rmaxid" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="formtype" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="createcoversheetResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="createcoversheetResult" type="s0:createcoversheetResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="createcoversheetResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="downloadedFile" type="s0:IdcFile" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="ComplianceCheck">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="doNotUpdate" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="complianceRecordID" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="ComplianceCheckResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="ComplianceCheckResult" type="s0:ComplianceCheckResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="ComplianceCheckResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="OAPhase1MissingFormIDs" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="OAPhase2MissingFormIDs" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="OAPhase3MissingFormIDs" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="phase1ApprovedDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="phase2ApprovedDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="phase3ApprovedDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="complianceApprovedDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="oacheckin">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="dDocName" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocTitle" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocType" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocAuthor" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dSecurityGroup" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="dDocAccount" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="xContentType" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="xFormType" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="xRM_ID" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="xStatus" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="xComments" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="xRejectReason" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="xRejectOther" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="xSuccessAudit" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="primaryFile" type="s0:IdcFile" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="oacheckinResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="oacheckinResult" type="s0:oacheckinResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="oacheckinResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="dID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevisionID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevClassID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevLabel" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="StatusInfo">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="statusCode" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="statusMessage" type="s:string" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="IdcPropertyList">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="unbounded" name="property" type="s0:IdcProperty" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="IdcProperty">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="value" type="s:string" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="IdcFile">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="fileName" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="fileContent" type="s:base64Binary" />
+				</s:sequence>
+			</s:complexType>
+		</s:schema>
+	</types>
+	<message name="createcoversheetSoapIn">
+		<part name="parameters" element="s0:createcoversheet" />
+	</message>
+	<message name="createcoversheetSoapOut">
+		<part name="parameters" element="s0:createcoversheetResponse" />
+	</message>
+	<message name="ComplianceCheckSoapIn">
+		<part name="parameters" element="s0:ComplianceCheck" />
+	</message>
+	<message name="ComplianceCheckSoapOut">
+		<part name="parameters" element="s0:ComplianceCheckResponse" />
+	</message>
+	<message name="oacheckinSoapIn">
+		<part name="parameters" element="s0:oacheckin" />
+	</message>
+	<message name="oacheckinSoapOut">
+		<part name="parameters" element="s0:oacheckinResponse" />
+	</message>
+	<portType name="OAServicesSoap">
+		<operation name="createcoversheet">
+			<input message="s0:createcoversheetSoapIn" />
+			<output message="s0:createcoversheetSoapOut" />
+		</operation>
+		<operation name="ComplianceCheck">
+			<input message="s0:ComplianceCheckSoapIn" />
+			<output message="s0:ComplianceCheckSoapOut" />
+		</operation>
+		<operation name="oacheckin">
+			<input message="s0:oacheckinSoapIn" />
+			<output message="s0:oacheckinSoapOut" />
+		</operation>
+	</portType>
+	<binding name="OAServicesSoap" type="s0:OAServicesSoap">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+		<operation name="createcoversheet">
+			<soap:operation soapAction="http://www.stellent.com/OAServices/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="ComplianceCheck">
+			<soap:operation soapAction="http://www.stellent.com/OAServices/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="oacheckin">
+			<soap:operation soapAction="http://www.stellent.com/OAServices/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="OAServices">
+		<port name="OAServicesSoap" binding="s0:OAServicesSoap">
+			<soap:address location="https://sena-demo.net:46201/_dav/cs/idcplg" />
+		</port>
+	</service>
+</definitions>
