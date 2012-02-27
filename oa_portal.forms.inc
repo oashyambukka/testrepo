@@ -676,7 +676,7 @@ function oa_portal_p2_licensure_certs_form($form_state) {
   $form['lc']['chk_fax_preference'] = checkbox('Check this box if you prefer to fax copies of your licensures/certifications');
 
   // @TODO Get cover page doc ID
-  $form['lc']['fax'] = markup('<PDF ICON> Please include this cover letter and fax it to (818) 555-5555. <a href="/portal/createcoversheet">Cover Letter</a>');
+  $form['lc']['fax'] = markup('<PDF ICON> Please include this cover letter and fax it to (818) 555-5555. <a href="/portal/createcoversheet/999999">Cover Letter</a>');
 
   // @TODO Slightly different Finalize mechanism. Form to be submitted potentially more than once.
   oa_portal_submit($form);
@@ -1097,10 +1097,10 @@ function oa_portal_p3_paycheck_form($form_state) {
  * Form submission callback for Paycheck Method
  */
 function oa_portal_p3_paycheck_form_validate($form, &$form_state) {
-  if ($form_state['values']['rdo_delivery_option'] == "directdeposit") { 
+  if ($form_state['values']['rdo_delivery_option'] == 'directdeposit') { 
     // @TODO: require verify Direct Deposit fields are complete
   }
-  if ($form_state['values']['rdo_delivery_option' == 'cashpay') {
+  if ($form_state['values']['rdo_delivery_option'] == 'cashpay') {
     // @TODO: require verify CashPay Enrollment fields are complete
   }
 }

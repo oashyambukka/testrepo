@@ -18,8 +18,7 @@ $(document).ready(function() {
   });
 
 
-  $('#edit-delivery-rdo-delivery-option-directdeposit-wrapper input, #edit-delivery-rdo-delivery-option-no-wrapper input,
-    #edit-delivery-rdo-delivery-option-cashpay-wrapper input').change(function () { fieldset_change(this); });
+  $('#edit-delivery-rdo-delivery-option-directdeposit-wrapper input, #edit-delivery-rdo-delivery-option-no-wrapper input, #edit-delivery-rdo-delivery-option-cashpay-wrapper input').change(function () { fieldset_change(this); });
 
   function fieldset_change(element) {
     var value = $(element).val();

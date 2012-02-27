@@ -44,7 +44,7 @@ function oa_portal_menu() {
     'access arguments' => array('administer site configuration'),
     'file' => 'oa_portal.pages.inc'
   );
-  $items['portal/createcoversheet'] = array(
+  $items['portal/createcoversheet/%'] = array(
     'title' => 'OA Portal Download File', 
     'page callback' => 'oa_portal_ucm_createcoversheet',
     'page arguments' => array(2),
@@ -307,6 +307,8 @@ function oa_portal_api() {
 function oa_portal_soap($method, $params, $debug = FALSE) {
   ini_set("soap.wsdl_cache_enabled", "0");
   $wsdl = array(
+    'createcoversheet' => 'OAServices.wsdl',
+    'oacheckin' => 'OAServices.wsdl',
     'pingServer' => 'ping.wsdl',
     'CheckInUniversal' => 'CheckIn.wsdl',
     'GetFileByID' => 'GetFile.wsdl',
@@ -432,7 +434,7 @@ function oa_portal_ucm_oacheckin($rmaxid, $formtype, $fields) {
     'dDocAccount' => 'Recruit/QA',
     'dDocType' => 'Rmax',
     'dDocTitle' => $formtype ."-". $rmaxid,
-    'xContentType' => "Form"
+    'xContentType' => "Form",
     'xFormType' => $formtype,
     'xRM_ID' => $rmaxid,
     'xStatus' => 'Pending Review',

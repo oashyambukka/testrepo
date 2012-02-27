@@ -63,18 +63,31 @@ function oa_portal_autosave() {
     array('@first' => $form_state['values']['first'], '@last' => $form_state['values']['last'], '@year_of_birth' => $form_state['values']['year_of_birth'])));
 }
 
-function oa_portal_ucm_createcoversheet($formtype = 448) {
+/**
+ * Page callback for Fax Coverlsheets
+ */
+function oa_portal_ucm_createcoversheet($formtype) {
   global $user;
-  // @TODO Populate with actual RMaxID
-  // $rmaxid = $user->profile['rmaxid'];
-  $rmaxid = 20584978;
+  $account = user_load($user->uid);
   $params = array(
-    'rmaxid' => $rmaxid,
-    'formtype' => $formtype,
+    'rmaxid' => (string) $account->rmaxid,
+    'formtype' => (string) $formtype,
   );
+  $result = oa_portal_soap('createcoversheet', $params, TRUE);
+  if ($result->createcoversheetResult->StatusInfo->statusCode === -1) {
+    drupal_not_found();
+    die();
+  }
 
-  $results = oa_portal_soap('createcoversheet', $params, TRUE);
-  dsm($results->downloadedFile, 'downloadFile');
-  dsm($results->StatusInfo, 'StatusInfo');
-  return array();
+  $headers = array(
+    'Content-Type: application/pdf',
+    'Content-Length: '. strlen($result->createcoversheetResult->downloadedFile->fileContent),
+    'Content-Disposition: attachment; filename="' . $result->createcoversheetResult->downloadedFile->fileName .'"',
+  );
+  foreach ($headers as $header) {
+    $header = preg_replace('/\r?\n(?!\t| )/', '', $header);
+    drupal_set_header($header);
+  }
+  print $result->createcoversheetResult->downloadedFile->fileContent;
+  exit();
 }
