@@ -424,8 +424,10 @@ dsm($data, '$data in validate_pass');
 */
 }
 
-
-function oa_portal_ucm_oacheckin($rmaxid, $formtype, $fields) {
+function oa_portal_ucm_oacheckin($formtype, $fields) {
+  global $user;
+  $account = user_load(array('uid' => $user->uid));
+  $rmaxid = $account->rmaxid;
   $params = array(
     'dDocName' => $rmaxid ."_". $formtype,
     // @TODO When is this Form vs FormSecure?
@@ -442,9 +444,10 @@ function oa_portal_ucm_oacheckin($rmaxid, $formtype, $fields) {
     'xRejectReason' => '',
     'xRejectOther' => '',
     'xSuccessAudit' => '',
-    'primaryFile' => $fields,
+    'fields' => $fields,
   );
-
-  $results = oa_portal_soap('oacheckin', $params, TRUE);
-  return $results->oacheckinResult;
+  return TRUE;
+  
+  $result = oa_portal_soap('oacheckin', $params, TRUE);
+  return ($result->oacheckinResult == 'something') ? TRUE : $result->oacheckinResult;
 }

@@ -5,7 +5,6 @@
  */
 function oa_portal_admin() {
   include_once('oa_portal.forms.inc');
-  include_once('oa_portal.pages.inc');
 
   $output = drupal_get_form('oa_portal_soap_file_form');
   
@@ -15,12 +14,10 @@ function oa_portal_admin() {
     $rows = array();
     foreach ($phase AS $sk => $section) {
       if (substr($sk, 0, 1) !== '#') {
-        $rows[] = array(l($section['#title'], 'portal/'. $pk .'/'. $sk), 'oa_portal_'. $pk .'_'. $sk .'_form', function_exists('oa_portal_'. $pk .'_'. $sk .'_form'), function_exists('oa_portal_'. $pk .'_'. $sk .'_form_validate'), function_exists('oa_portal_'. $pk .'_'. $sk .'_form_submit'));
+        $rows[] = array(l($section['#title'], 'portal/'. $pk .'/'. $sk), 'oa_portal_'. $pk .'_'. $sk .'_form');
       }
     }
-    $output .= theme('table', array('Section', 'Form callback', 'form', 'validation', 'submission'), $rows);
+    $output .= theme('table', array('Section', 'Form callback'), $rows);
   }
-
-  $output .= '<pre>'. $code .'</pre>';
   return $output;
 }

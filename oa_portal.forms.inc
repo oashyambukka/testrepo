@@ -157,7 +157,13 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
    *
    */
   dsm($form_state['values'], 'Process & post 2 to UCM');
-  
+  $fields = $form_state['values'];
+  if ($success = oa_portal_ucm_oacheckin($formtype, $fields)) {
+    $form_state['redirect'] = 'portal/p1/checklist';
+  }
+  else {
+    drupal_set_message('An error occured. Please try again.');
+  }
 }
 
 /**
@@ -192,6 +198,19 @@ function oa_portal_p1_checklist_form_submit($form, &$form_state) {
   dsm($form, '$form in submission');
   // @TODO Post to UCM
   dsm($form_state['values'], '$form_state values');
+  
+  $error = FALSE;
+  foreach ($form['#formtypes'] AS $formtype) {
+    if ($success = oa_portal_ucm_oacheckin($formtype, $form_state['values'][$formtype])) {
+      $error = TRUE;
+    }
+  }  
+  if ($error) {
+    drupal_set_message('An error occured. Please try again.');
+  }
+  else {
+    $form_state['redirect'] = 'portal';
+  }
 }
 
 function oa_portal_p1_checklist_form_480() {
@@ -798,6 +817,20 @@ function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
   dsm($form_state['values'][477], 'Process & post 477 to UCM');
   
   // @TODO Store Maiden Name for future use
+  
+  
+  $error = FALSE;
+  foreach ($form['#formtypes'] AS $formtype) {
+    if (!$success = oa_portal_ucm_oacheckin($formtype, $form_state['values'][$formtype])) {
+      $error = TRUE;
+    }
+  }  
+  if ($error) {
+    drupal_set_message('An error occured. Please try again.');
+  }
+  else {
+    $form_state['redirect'] = 'portal/p2/capabilities';
+  }
 }
 
 /**
@@ -834,7 +867,12 @@ function oa_portal_p2_capabilities_form_submit($form, &$form_state) {
    * @TODO needs PDF fields
    */
   dsm($form_state['values'][5], 'Process & post 5 to UCM');
-
+  if ($success = oa_portal_ucm_oacheckin(5, $form_state['values'][5])) {
+    $form_state['redirect'] = 'portal/p2/policies';
+  }  
+  else {
+    drupal_set_message('An error occured. Please try again.');
+  }  
 }
 
 /**
@@ -923,7 +961,18 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
    */
   dsm($form_state['values'][432], 'Process & post 432 to UCM');
 
-
+  $error = FALSE;
+  foreach ($form['#formtypes'] AS $formtype) {
+    if (!$success = oa_portal_ucm_oacheckin($formtype, $form_state['values'][$formtype])) {
+      $error = TRUE;
+    }
+  }  
+  if ($error) {
+    drupal_set_message('An error occured. Please try again.');
+  }
+  else {
+    $form_state['redirect'] = 'portal/p2/medical';
+  }
 }
 
 /**
@@ -1116,6 +1165,12 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
      * 
      */
     dsm($form_state['values'][536], 'Process & post 536 to UCM');
+    if ($success = oa_portal_ucm_oacheckin(536, $form_state['values'][536])) {
+      $form_state['redirect'] = 'portal/p3/w4';
+    }
+    else {
+      drupal_set_message('An error occured. Please try again.');
+    }
   }
   elseif ($form_state['values']['rdo_delivery_option'] == 'cashpay') {
     /**
@@ -1124,6 +1179,12 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
      * 
      */
     dsm($form_state['values'][537], 'Process & post 537 to UCM');
+    if ($success = oa_portal_ucm_oacheckin(537, $form_state['values'][537])) {
+      $form_state['redirect'] = 'portal/p3/w4';
+    }
+    else {
+      drupal_set_message('An error occured. Please try again.');
+    }
   }
   else {
     // @TODO Mark this section as complete anyway.
@@ -1171,7 +1232,12 @@ function oa_portal_p3_w4_form_submit($form, &$form_state) {
    * exempt
    */
   dsm($form_state['values'][474], 'Process & post 477 to UCM');
-  
+  if ($success = oa_portal_ucm_oacheckin(474, $form_state['values'][474])) {
+    $form_state['redirect'] = 'portal/p3/i9';
+  }
+  else {
+    drupal_set_message('An error occured. Please try again.');
+  }
 }
 
 /**
@@ -1213,7 +1279,12 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
    * apptimestamp - Current date
    */
   dsm($form_state['values'][461], 'Process & post 461 to UCM');
-  
+  if ($success = oa_portal_ucm_oacheckin(461, $form_state['values'][461])) {
+    $form_state['redirect'] = 'portal/p3/eeo';
+  }
+  else {
+    drupal_set_message('An error occured. Please try again.');
+  }
 }
 
 /**
@@ -1248,7 +1319,12 @@ function oa_portal_p3_eeo_form_submit($form, &$form_state) {
    * 
    */
   dsm($form_state['values'][1], 'Process & post 1 EEO to UCM');
-
+  if ($success = oa_portal_ucm_oacheckin(1, $form_state['values'][1])) {
+    $form_state['redirect'] = 'portal/p3/work_policy';
+  }
+  else {
+    drupal_set_message('An error occured. Please try again.');
+  }
 }
 
 /**
@@ -1287,7 +1363,13 @@ function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
    *
    */
   dsm($form_state['values'], 'Process & post 466 to UCM');
-
+  $fields = $form_state['values'];
+  if ($success = oa_portal_ucm_oacheckin(466, $fields)) {
+    $form_state['redirect'] = 'portal';
+  }
+  else {
+    drupal_set_message('An error occured. Please try again.');
+  }  
 }
 
 /**
