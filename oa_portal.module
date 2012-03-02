@@ -190,21 +190,18 @@ function oa_portal_api() {
       '#dependencies' => array(),
       '#status' => 'closed',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'application' => array(
       '#title' => t('Application'),
       '#dependencies' => array(),
       '#status' => 'open',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'checklist' => array(
       '#title' => t('Skills Checklist'),
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
   );
   $p['p2'] = array(
@@ -215,42 +212,36 @@ function oa_portal_api() {
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'licensure_certs' => array(
       '#title' => t('Licensure Certifications'),
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'background_reference' => array(
       '#title' => t('Background/Reference Check'),
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'capabilities' => array(
       '#title' => t('Capabilities Questionnaire'),
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'policies' => array(
       '#title' => t('Policies & Agreements'),
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'medical' => array(
       '#title' => t('Medical Authorization and Disclosures'),
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'competency' => array(
       '#title' => t('Competency Test'),
@@ -266,7 +257,6 @@ function oa_portal_api() {
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'w4' => array(
       '#title' => t('W4'),
@@ -274,28 +264,24 @@ function oa_portal_api() {
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'i9' => array(
       '#title' => t('I-9'),
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'eeo' => array(
       '#title' => t('EEO Form'),
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
     'work_policy' => array(
       '#title' => t('Work Policy'),
       '#dependencies' => array(),
       '#status' => '',
       '#data' => array(),
-      '#docs' => array(),
     ),
   );
   return $p;
@@ -309,9 +295,11 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
   $wsdl = array(
     'createcoversheet' => 'OAServices.wsdl',
     'oacheckin' => 'OAServices.wsdl',
-    'pingServer' => 'ping.wsdl',
+    // 'pingServer' => 'ping.wsdl',
     'CheckInUniversal' => 'CheckIn.wsdl',
+    'DocInfoByName' => 'DocInfo.wsdl',
     'GetFileByID' => 'GetFile.wsdl',
+    'GetFileByName' => 'GetFile.wsdl',
     'ComplianceCheck' => 'Compliance_Check.wsdl',
   );
   ini_set('display_errors', 1);
@@ -450,4 +438,40 @@ function oa_portal_ucm_oacheckin($formtype, $fields) {
   
   $result = oa_portal_soap('oacheckin', $params, TRUE);
   return ($result->oacheckinResult == 'something') ? TRUE : $result->oacheckinResult;
+}
+
+/**
+ * Get file contents by dID
+ */
+function oa_portal_ucm_getfilebyid($dID) {
+  $result = oa_portal_soap('GetFileByID', array('dID' => $dID), TRUE);
+  return $result->GetFileByIDResult;;
+}
+
+/**
+ * Get file contents by formtype (dDocName)
+ */
+function oa_portal_ucm_getfilebyname($formtype) {
+  global $user;
+  $account = user_load(array('uid' => $user->uid));
+  $result = oa_portal_soap('GetFileByName', array('dDocName' => $account->rmaxid .'_'. $formtype), TRUE);
+  return $result->GetFileByNameResult;
+}
+
+/**
+ * Get file info by dID
+ */
+function oa_portal_ucm_docinfobyame($formtype) {
+  $result = oa_portal_soap('DocInfoByID', array('dID' => $dID), TRUE);
+  return $result->DocInfoByIDResult;;
+}
+
+/**
+ * Get file info by formtype (dDocName)
+ */
+function oa_portal_ucm_docinfobyame($formtype) {
+  global $user;
+  $account = user_load(array('uid' => $user->uid));
+  $result = oa_portal_soap('DocInfoByName', array('dDocName' => $account->rmaxid .'_'. $formtype), TRUE);
+  return $result->DocInfoByNameResult;;
 }

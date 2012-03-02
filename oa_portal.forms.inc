@@ -170,7 +170,7 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
  * Form callback for Checklist
  */
 function oa_portal_p1_checklist_form($form_state) {
-  $form = array();
+  $form = array('#formtypes' => array());
   $form['directions'] = markup('<p>Directions: Indicate your level of experience by selecting the numbers below as follows:<br>
     1 = Can Function Independently<br>
     2 = Experienced, but May Need Review<br>
@@ -1441,6 +1441,13 @@ function oa_portal_set($sub_elements, $text, $ct = 2) {
   
   $elements = array();
   for ($i = 1; $i <= $ct; $i++) {
+    if ($i == 2) {
+      foreach ($sub_elements AS $k => $v) {
+        if ($v['#required']) {
+          $sub_elements[$k]['#required'] = FALSE;
+        }
+      }
+    }
     $elements[] = $sub_elements;
   }
 

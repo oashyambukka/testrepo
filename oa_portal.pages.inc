@@ -30,17 +30,20 @@ function oa_portal_page() {
  * Page callback for file downloading per dID
  */
 function oa_portal_download_file($dID) {
-  $result = oa_portal_soap('GetFileByID', array('dID' => $dID), TRUE);
+  $file = oa_portal_ucm_getfilebyid($dID);
+  if (!$file->FileInfo->dFileSize) {
+    drupal_not_found();
+  }
   $headers = array(
-    'Content-Type: ' . $result->GetFileByIDResult->FileInfo->dFormat,
-    'Content-Length: ' . $result->GetFileByIDResult->FileInfo->dFileSize,
-    'Content-Disposition: attachment; filename="' . $result->GetFileByIDResult->FileInfo->dOriginalName .'"',
+    'Content-Type: ' . $file->FileInfo->dFormat,
+    'Content-Length: ' . $file->FileInfo->dFileSize,
+    'Content-Disposition: attachment; filename="' . $file->FileInfo->dOriginalName .'"',
   );
   foreach ($headers as $header) {
     $header = preg_replace('/\r?\n(?!\t| )/', '', $header);
     drupal_set_header($header);
   }
-  print $result->GetFileByIDResult->downloadFile->fileContent;
+  print $file->downloadFile->fileContent;
   exit();
 }
 
