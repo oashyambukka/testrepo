@@ -142,8 +142,6 @@ function oa_portal_p1_application_form($form_state) {
   to On Assignment to any customer of On Assignment for consideration of employment at customer facility.</p>';
   
   $form['terms'] = terms($terms_desc);
-  $docs = array('ucmid123' => 'Doc 123', 'ucmid456' => 'Doc 456');
-  oa_portal_submit($form, $docs);
   return $form;
 }
 
@@ -184,9 +182,6 @@ function oa_portal_p1_checklist_form($form_state) {
     $form[$cft] = $fn();
   }
 
-  $docs = array('ucmid123' => 'Doc 123', 'ucmid456' => 'Doc 456');
-  
-  oa_portal_submit($form, $docs);
   dsm($form, 'Skills Checklist $form');
   return $form;
 }
@@ -667,7 +662,6 @@ function oa_portal_p2_professional_orgs_form($form_state) {
   $form['prof_orgs']['orgs1'] = $proforgs;
   $form['prof_orgs']['orgs2'] = $proforgs;
 
-  oa_portal_submit($form);
   return $form;
 }
 
@@ -698,7 +692,6 @@ function oa_portal_p2_licensure_certs_form($form_state) {
   $form['lc']['fax'] = markup('<PDF ICON> Please include this cover letter and fax it to (818) 555-5555. <a href="/portal/createcoversheet/999999">Cover Letter</a>');
 
   // @TODO Slightly different Finalize mechanism. Form to be submitted potentially more than once.
-  oa_portal_submit($form);
   return $form;
 }
 
@@ -758,7 +751,6 @@ function oa_portal_p2_background_reference_form($form_state) {
   $form[477] = fieldset('Reference Check 2');
   $form[477]['ref'] = $ref;
  
-  oa_portal_submit($form);
   return $form;
 }
 
@@ -854,7 +846,6 @@ function oa_portal_p2_capabilities_form($form_state) {
   $form[5]['allergies']['rdo_latex'] = radios_yesno('Are you allergic to latex gloves?');
   $form[5]['preference'] = cap_yne('Are there any assignments that you cannot or prefer not to do?');
   $form[5]['chk_certify'] = checkbox('I certify this information is correct, and understand that withholding or giving false information will result in refusal to hire or disciplinary action up to, and including, termination.');
-  oa_portal_submit($form);
   return $form;
 }
 
@@ -927,7 +918,6 @@ function oa_portal_p2_policies_form($form_state) {
   $form[432]['relationship'] = acknowledgement('On Assignment Staffing Services...');
   $form['questions'] = markup('If you have any questions..');
 
-  oa_portal_submit($form);
   return $form;
 }
 
@@ -1048,7 +1038,6 @@ function oa_portal_p2_medical_form($form_state) {
     'I acknowledge, understand, and accept this Agreement/Statement. *This is a reg..'
   );
   
-  oa_portal_submit($form);
   return $form;
 }
 
@@ -1138,7 +1127,6 @@ function oa_portal_p3_paycheck_form($form_state) {
     }
   }
 
-  oa_portal_submit($form);
   return $form;
 }
 
@@ -1210,7 +1198,6 @@ function oa_portal_p3_w4_form($form_state) {
   $form[474]['exempt'] = textfield('If you meet both conditions, write "Exempt" here', 6);
   $form[474]['chk_certify'] = checkbox('Under penalties of perjury, I declare that I have examined this certificate and, to the best of my knowledge and belief, it is true, correct, and complete.');
   
-  oa_portal_submit($form);
   return $form;
 }
 
@@ -1251,7 +1238,6 @@ function oa_portal_p3_i9_form($form_state) {
   $form[461]['expiry'] = date_popup('Until (expiration date if applicable)');
   $form[461]['chk_certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');
 
-  oa_portal_submit($form);
   return $form;
 }
 
@@ -1305,7 +1291,6 @@ function oa_portal_p3_eeo_form($form_state) {
   $form[1]['rdo_age'] = radios_yesno('Age');
   $form[1]['age']['#description'] = t('<small><em>Are you over age 40 but under age 70?</em></small>');
   
-  oa_portal_submit($form);
   return $form;
 }
 
@@ -1350,7 +1335,6 @@ function oa_portal_p3_work_policy_form($form_state) {
   $form['stock_plan'] = fieldset('On Assignment, Inc.\'s Employee Stock Purchase Plan');
   $form['stock_plan']['ack'] = acknowledgement('Despite any representations which may have been made to the contrary by any person in any manner, I understand that as of April 1, 2007, I am not eligible for participation in On Assignment, Inc.’s Employee Stock Purchase Plan (“ESPP”). I further agree to hold On Assignment, Inc. and its subsidiaries, along with its employees, agents, directors and representatives, harmless for any representation which may have been made regarding my eligibility for participation in the ESPP.');
 
-  oa_portal_submit($form);
   return $form;
 }
 
@@ -1381,28 +1365,38 @@ function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
  * Implements hook_form_alter().
  */
 function oa_portal_form_alter(&$form, &$form_state, $form_id) {
-  foreach ($form AS $k => $v) {
-    if (is_numeric($k)) {
-      $form['#formtypes'][] = $k;
-    }
-  }
-}
+  if (substr($form_id, 0, 11) == 'oa_portal_p') {
+    $form['#attributes'] = array('class' => 'oaportal');
+    $form['#ajax'] = array('enabled' => TRUE);
+  
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Finalize'),
+      '#weight' => 1998,
+    );
+    // @TODO DO something else to enable the fancy inline form submission
 
-/**
- * Adds portal-wide submission details to every portal form
- */
-function oa_portal_submit(&$form, $docs = array()) {
-  $form['#attributes'] = array('class' => 'oaportal');
-  $form['#ajax'] = array('enabled' => TRUE);
-  $form['docs'] = oa_portal_doc_download($docs);
-  
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Finalize'),
-  );
-  // @TODO DO something else to enable the fancy inline form submission
-  
-  // @TODO Query UCM for existing submitted document
+    foreach ($form AS $k => $v) {
+      if (is_numeric($k)) {
+        $form['#formtypes'][] = $k;
+      }
+    }
+    if (count($form['#formtypes'])) {
+      foreach ($form['#formtypes'] AS $ft) {
+        dsm('Load formtype '. $form['#formtype']);
+        if ($file = oa_portal_ucm_docinfobyame($ft)) {
+          $form['#docs'][] = oa_portal_ucm_docinfobyame($ft);
+        }
+      }
+      if (count($form['#docs'])) {
+        $form['docs'] = array(
+          '#value' => theme('oap_doc_download', $form['#docs']),
+          '#weight' => 1997,
+        );
+      }
+    }
+    dsm($form, 'Completed $form');
+  }
 }
 
 /**
@@ -1418,12 +1412,6 @@ function oa_portal_checklist(&$elements, $skills) {
   }
 }
 
-/**
- * Offer docs to download as a $form element
- */
-function oa_portal_doc_download($docs) {
-  return (count($docs)) ? array('#value' => theme('oap_doc_download', $docs)) : NULL;
-}
 
 /**
  * Multi-Fieldgroup constructor

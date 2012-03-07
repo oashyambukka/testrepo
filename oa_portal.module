@@ -461,9 +461,9 @@ function oa_portal_ucm_getfilebyname($formtype) {
 /**
  * Get file info by dID
  */
-function oa_portal_ucm_docinfobyame($formtype) {
+function oa_portal_ucm_docinfobyid($dID) {
   $result = oa_portal_soap('DocInfoByID', array('dID' => $dID), TRUE);
-  return $result->DocInfoByIDResult;;
+  return (get_class($result) == 'SoapFault') ? FALSE : $result->DocInfoByIDResult;;
 }
 
 /**
@@ -473,5 +473,5 @@ function oa_portal_ucm_docinfobyame($formtype) {
   global $user;
   $account = user_load(array('uid' => $user->uid));
   $result = oa_portal_soap('DocInfoByName', array('dDocName' => $account->rmaxid .'_'. $formtype), TRUE);
-  return $result->DocInfoByNameResult;;
+  return (get_class($result) == 'SoapFault') ? FALSE : $result->DocInfoByNameResult;
 }
