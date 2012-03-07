@@ -34,6 +34,10 @@ function oa_portal_change_password_form_submit($form, &$form_state) {
  * Form callback for Application form
  */
 function oa_portal_p1_application_form($form_state) {
+global $user;
+$account = user_load($user->uid);
+dsm(oa_portal_ucm_profileview($account->rmaxid));
+
   $form = array();
   $form['#formtypes'] = array(1);
 
@@ -1365,6 +1369,7 @@ function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
  * Implements hook_form_alter().
  */
 function oa_portal_form_alter(&$form, &$form_state, $form_id) {
+  global $user;
   if (substr($form_id, 0, 11) == 'oa_portal_p') {
     $form['#attributes'] = array('class' => 'oaportal');
     $form['#ajax'] = array('enabled' => TRUE);
@@ -1382,10 +1387,11 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
       }
     }
     if (count($form['#formtypes'])) {
+      $account = user_load(array('uid' => $user->uid));
       foreach ($form['#formtypes'] AS $ft) {
         dsm('Load formtype '. $form['#formtype']);
-        if ($file = oa_portal_ucm_docinfobyame($ft)) {
-          $form['#docs'][] = oa_portal_ucm_docinfobyame($ft);
+        if ($file = oa_portal_ucm_docinfobyame($account->rmaxid, $ft)) {
+          $form['#docs'][] = oa_portal_ucm_docinfobyame($account->rmaxid, $ft);
         }
       }
       if (count($form['#docs'])) {

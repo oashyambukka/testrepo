@@ -295,6 +295,7 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
   $wsdl = array(
     'createcoversheet' => 'OAServices.wsdl',
     'oacheckin' => 'OAServices.wsdl',
+    'profileview' => 'OAServices.wsdl',
     // 'pingServer' => 'ping.wsdl',
     'CheckInUniversal' => 'CheckIn.wsdl',
     'DocInfoByName' => 'DocInfo.wsdl',
@@ -451,10 +452,8 @@ function oa_portal_ucm_getfilebyid($dID) {
 /**
  * Get file contents by formtype (dDocName)
  */
-function oa_portal_ucm_getfilebyname($formtype) {
-  global $user;
-  $account = user_load(array('uid' => $user->uid));
-  $result = oa_portal_soap('GetFileByName', array('dDocName' => $account->rmaxid .'_'. $formtype), TRUE);
+function oa_portal_ucm_getfilebyname($rmaxid, $formtype) {
+  $result = oa_portal_soap('GetFileByName', array('dDocName' => $rmaxid .'_'. $formtype), TRUE);
   return $result->GetFileByNameResult;
 }
 
@@ -469,9 +468,15 @@ function oa_portal_ucm_docinfobyid($dID) {
 /**
  * Get file info by formtype (dDocName)
  */
-function oa_portal_ucm_docinfobyame($formtype) {
-  global $user;
-  $account = user_load(array('uid' => $user->uid));
-  $result = oa_portal_soap('DocInfoByName', array('dDocName' => $account->rmaxid .'_'. $formtype), TRUE);
+function oa_portal_ucm_docinfobyame($rmaxid, $formtype) {
+  $result = oa_portal_soap('DocInfoByName', array('dDocName' => $rmaxid .'_'. $formtype), TRUE);
   return (get_class($result) == 'SoapFault') ? FALSE : $result->DocInfoByNameResult;
+}
+
+/**
+ * Get RMax profile by RMaxID
+ */
+function oa_portal_ucm_profileview($rmaxid) {
+  $result = oa_portal_soap('profileview', array('schViewName' => 'vOA_Profile', 'whereClause' => "rmaxid='". $rmaxid ."'"), TRUE);
+  return (get_class($result) == 'SoapFault') ? FALSE : $result->profileviewResult;
 }
