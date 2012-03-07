@@ -95,6 +95,47 @@
 					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
 				</s:sequence>
 			</s:complexType>
+			<s:element name="profileview">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="schViewName" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="whereClause" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="profileviewResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="profileviewResult" type="s0:profileviewResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="profileviewResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="unbounded" name="profiledata" type="s0:profiledata" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="profiledata">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="rmaxid" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="fname" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="lname" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="recruitername" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="status" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="branchid" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="addressline1" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="addressline2" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="addressline3" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="city" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="state" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="postal" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="PERSPECTIVEID" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="PEOPLESOFTID" type="s:string" />
+				</s:sequence>
+			</s:complexType>
 			<s:complexType name="StatusInfo">
 				<s:sequence>
 					<s:element minOccurs="0" maxOccurs="1" name="statusCode" type="s:int" />
@@ -138,6 +179,12 @@
 	<message name="oacheckinSoapOut">
 		<part name="parameters" element="s0:oacheckinResponse" />
 	</message>
+	<message name="profileviewSoapIn">
+		<part name="parameters" element="s0:profileview" />
+	</message>
+	<message name="profileviewSoapOut">
+		<part name="parameters" element="s0:profileviewResponse" />
+	</message>
 	<portType name="OAServicesSoap">
 		<operation name="createcoversheet">
 			<input message="s0:createcoversheetSoapIn" />
@@ -150,6 +197,10 @@
 		<operation name="oacheckin">
 			<input message="s0:oacheckinSoapIn" />
 			<output message="s0:oacheckinSoapOut" />
+		</operation>
+		<operation name="profileview">
+			<input message="s0:profileviewSoapIn" />
+			<output message="s0:profileviewSoapOut" />
 		</operation>
 	</portType>
 	<binding name="OAServicesSoap" type="s0:OAServicesSoap">
@@ -173,6 +224,15 @@
 			</output>
 		</operation>
 		<operation name="oacheckin">
+			<soap:operation soapAction="http://www.stellent.com/OAServices/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="profileview">
 			<soap:operation soapAction="http://www.stellent.com/OAServices/" style="document" />
 			<input>
 				<soap:body use="literal" />
