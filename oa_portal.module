@@ -294,6 +294,7 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
   ini_set("soap.wsdl_cache_enabled", "0");
   $wsdl = array(
     'createcoversheet' => 'OAServices.wsdl',
+    'createpdfform' => 'OAServices.wsdl',
     'oacheckin' => 'OAServices.wsdl',
     'profileview' => 'OAServices.wsdl',
     // 'pingServer' => 'ping.wsdl',
@@ -496,16 +497,14 @@ function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
   $params = array(
     'rmaxid' => $rmaxid,
     'formid' => $formtype,
-    'extraProps' => array(
-      array('property' => array(
-        'name' => 'reversename'
-        'value' => 'Ryan Sullivan',
-      )),
-      array('property' => array(
-        'name' => 'city'
-        'value' => 'Saint Louis',
-      )),
-  ));
+    'extraProps' => array(),
+  );
+  foreach ($fields AS $k => $v) {
+    $params['extraProps']['property'][] = array(
+        'name' => $k,
+        'value' => $v,
+    );
+  }
   $result = oa_portal_soap('createpdfform', $params, TRUE);
   return (get_class($result) == 'SoapFault') ? FALSE : $result->createpdfformResult;
 }
