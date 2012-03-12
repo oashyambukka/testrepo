@@ -5,7 +5,7 @@
  */
 function oa_portal_page() {
   global $user;
-  $account = user_load($user);
+  $account = user_load($user->uid);
   $profile = oa_portal_ucm_profileview($account->rmaxid);
   dsm($profile, 'RMax Profile');
 

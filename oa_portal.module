@@ -477,6 +477,16 @@ function oa_portal_ucm_docinfobyame($rmaxid, $formtype) {
  * Get RMax profile by RMaxID
  */
 function oa_portal_ucm_profileview($rmaxid) {
-  $result = oa_portal_soap('profileview', array('schViewName' => 'vOA_Profile', 'whereClause' => "rmaxid='". $rmaxid ."'"), TRUE);
-  return (get_class($result) == 'SoapFault') ? FALSE : $result->profileviewResult->profiledata;
+  $result = oa_portal_soap('profileview', array('schViewName' => 'vOA_Profile', 'whereClause' => "rmaxid='". $rmaxid ."'"));
+  if (get_class($result) == 'SoapFault') {
+    return FALSE;
+  }
+  $profile = $result->profileviewResult->profiledata;
+  $profile->name = $profile->fname .' '. $profile->lname;
+  $address = $profile->addressline1;
+  $address .= ($profile->addressline2) ? ' '. $profile->addressline2 : NULL;
+  $address .= ($profile->addressline3) ? ' '. $profile->addressline3 : NULL;
+  $address .= ' '. $profile->city .', '. $profile->state .' '. $profile->postal;
+  $profile->address = $address;
+  return $profile;
 }
