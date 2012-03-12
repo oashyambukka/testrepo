@@ -189,7 +189,7 @@
 	</binding>
 	<service name="DocInfo">
 		<port name="DocInfoSoap" binding="s0:DocInfoSoap">
-			<soap:address location="https://sena-demo.net:46201/cs/idcplg" />
+			<soap:address location="https://sena-demo.net:46201/_dav/cs/idcplg" />
 		</port>
 	</service>
 </definitions>
