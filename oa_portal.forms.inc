@@ -23,7 +23,7 @@ function oa_portal_change_password_form($form_state) {
  */
 function oa_portal_change_password_form_submit($form, &$form_state) {
   global $user;
-  $account = user_load(array('uid' => $user->uid));
+  $account = user_load($user->uid);
   $account->pass = $form_state['values']['pass'];
   user_save($account, array('pass' => $form_state['values']['pass']));
   drupal_set_message(t('Your password has been updated.'));
@@ -173,7 +173,7 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
     $fields[$pdff] = $profile->{$rmaxf};
   }
 
-  if ($success = oa_portal_ucm_oacheckin($formtype, $fields)) {
+  if ($success = oa_portal_ucm_createpdfform($account->rmaxid, $formtype, $fields)) {
     $form_state['redirect'] = 'portal/p1/checklist';
   }
   else {
@@ -213,7 +213,7 @@ function oa_portal_p1_checklist_form_submit($form, &$form_state) {
   
   $error = FALSE;
   foreach ($form['#formtypes'] AS $formtype) {
-    if ($success = oa_portal_ucm_oacheckin($formtype, $form_state['values'][$formtype])) {
+    if ($success = oa_portal_ucm_createpdfform($account->rmaxid, $formtype, $form_state['values'][$formtype])) {
       $error = TRUE;
     }
   }  
@@ -830,7 +830,7 @@ function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
   
   $error = FALSE;
   foreach ($form['#formtypes'] AS $formtype) {
-    if (!$success = oa_portal_ucm_oacheckin($formtype, $form_state['values'][$formtype])) {
+    if (!$success = oa_portal_ucm_createpdfform($account->rmaxid, $formtype, $form_state['values'][$formtype])) {
       $error = TRUE;
     }
   }  
@@ -870,12 +870,14 @@ function oa_portal_p2_capabilities_form($form_state) {
  * Form submission callback for Capabilities Questionnaire
  */
 function oa_portal_p2_capabilities_form_submit($form, &$form_state) {
+  global $user;
+  $account = user_load($user->uid);
   /**
    * @TODO Post 5 Job Capabilities Questionnaire to UCM
    * @TODO needs PDF fields
    */
   dsm($form_state['values'][5], 'Process & post 5 to UCM');
-  if ($success = oa_portal_ucm_oacheckin(5, $form_state['values'][5])) {
+  if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 5, $form_state['values'][5])) {
     $form_state['redirect'] = 'portal/p2/policies';
   }  
   else {
@@ -942,6 +944,10 @@ function oa_portal_p2_policies_form($form_state) {
  * Form submission callback for Policies & Agreements
  */
 function oa_portal_p2_policies_form_submit($form, &$form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $profile = oa_portal_ucm_profileview($account->rmaxid);
+
   /**
    * @TODO Post 433 Employment Agreement to UCM
    *
@@ -952,7 +958,18 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
    * personneldatesigned - current date
    * personnelinitials
    */
-  dsm($form_state['values'][433], 'Process & post 433 to UCM');
+  // PDF Field => RMax Profile Field
+  $form_state['values'][433]['personnelname'] = $profile->name;
+  $form_state['values'][433]['personneladdress'] = $profile->address;
+  
+  // Others
+  $form_state['values'][433]['personnelsignature'] = 'X Digital signature here';
+  $form_state['values'][433]['personnelphone'] = ''; // @TODO Get phone from previous form?
+  $form_state['values'][433]['personneldatesigned'] = date('Y-m-d');
+dsm($form_state['values'][433], '433 fields');
+//  $success = oa_portal_ucm_createpdfform($account->rmaxid, 433, $form_state['values'][433]);
+  dsm($success, '433 success');
+  return;
   
   /**
    * @TODO Post 256 Substance Abuse Testing Consent to UCM
@@ -970,7 +987,7 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
 
   $error = FALSE;
   foreach ($form['#formtypes'] AS $formtype) {
-    if (!$success = oa_portal_ucm_oacheckin($formtype, $form_state['values'][$formtype])) {
+    if (!$success = oa_portal_ucm_createpdfform($account->rmaxid, $formtype, $form_state['values'][$formtype])) {
       $error = TRUE;
     }
   }  
@@ -1170,7 +1187,7 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
      * 
      */
     dsm($form_state['values'][536], 'Process & post 536 to UCM');
-    if ($success = oa_portal_ucm_oacheckin(536, $form_state['values'][536])) {
+    if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 536, $form_state['values'][536])) {
       $form_state['redirect'] = 'portal/p3/w4';
     }
     else {
@@ -1184,7 +1201,7 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
      * 
      */
     dsm($form_state['values'][537], 'Process & post 537 to UCM');
-    if ($success = oa_portal_ucm_oacheckin(537, $form_state['values'][537])) {
+    if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 537, $form_state['values'][537])) {
       $form_state['redirect'] = 'portal/p3/w4';
     }
     else {
@@ -1236,7 +1253,7 @@ function oa_portal_p3_w4_form_submit($form, &$form_state) {
    * exempt
    */
   dsm($form_state['values'][474], 'Process & post 477 to UCM');
-  if ($success = oa_portal_ucm_oacheckin(474, $form_state['values'][474])) {
+  if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 474, $form_state['values'][474])) {
     $form_state['redirect'] = 'portal/p3/i9';
   }
   else {
@@ -1282,7 +1299,7 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
    * apptimestamp - Current date
    */
   dsm($form_state['values'][461], 'Process & post 461 to UCM');
-  if ($success = oa_portal_ucm_oacheckin(461, $form_state['values'][461])) {
+  if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 461, $form_state['values'][461])) {
     $form_state['redirect'] = 'portal/p3/eeo';
   }
   else {
@@ -1321,7 +1338,7 @@ function oa_portal_p3_eeo_form_submit($form, &$form_state) {
    * 
    */
   dsm($form_state['values'][1], 'Process & post 1 EEO to UCM');
-  if ($success = oa_portal_ucm_oacheckin(1, $form_state['values'][1])) {
+  if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 1, $form_state['values'][1])) {
     $form_state['redirect'] = 'portal/p3/work_policy';
   }
   else {
@@ -1365,7 +1382,7 @@ function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
    */
   dsm($form_state['values'], 'Process & post 466 to UCM');
   $fields = $form_state['values'];
-  if ($success = oa_portal_ucm_oacheckin(466, $fields)) {
+  if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 466, $fields)) {
     $form_state['redirect'] = 'portal';
   }
   else {

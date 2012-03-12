@@ -415,7 +415,7 @@ dsm($data, '$data in validate_pass');
 
 function oa_portal_ucm_oacheckin($formtype, $fields) {
   global $user;
-  $account = user_load(array('uid' => $user->uid));
+  $account = user_load($user->uid);
   $rmaxid = $account->rmaxid;
   $params = array(
     'dDocName' => $rmaxid ."_". $formtype,
@@ -489,4 +489,23 @@ function oa_portal_ucm_profileview($rmaxid) {
   $address .= ' '. $profile->city .', '. $profile->state .' '. $profile->postal;
   $profile->address = $address;
   return $profile;
+}
+
+
+function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
+  $params = array(
+    'rmaxid' => $rmaxid,
+    'formid' => $formtype,
+    'extraProps' => array(
+      array('property' => array(
+        'name' => 'reversename'
+        'value' => 'Ryan Sullivan',
+      )),
+      array('property' => array(
+        'name' => 'city'
+        'value' => 'Saint Louis',
+      )),
+  ));
+  $result = oa_portal_soap('createpdfform', $params, TRUE);
+  return (get_class($result) == 'SoapFault') ? FALSE : $result->createpdfformResult;
 }
