@@ -6,6 +6,9 @@
 function oa_portal_page() {
   global $user;
   $account = user_load($user);
+  $profile = oa_portal_ucm_profileview($account->rmaxid);
+  dsm($profile, 'RMax Profile');
+
   $output .= '<div id="oap-status-legend"><div class="oap-status-icon oap-icon-completed">You Have Completed!</div>';
   $output .= '<div class="oap-status-icon oap-icon-completed">Requires Your Attention!</div></div>';
 
