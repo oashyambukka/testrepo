@@ -959,8 +959,15 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
    * personnelinitials
    */
   // PDF Field => RMax Profile Field
-  $form_state['values'][433]['personnelname'] = $profile->name;
-  $form_state['values'][433]['personneladdress'] = $profile->address;
+  
+  foreach (array(
+    'personnelname' => 'name',
+    'personneladdress1' => 'addressline1',
+    'personneladdress2' => 'addressline2',
+    'personneladdress3' => 'addressline3',
+    ) AS $pdff => $rmaxf) {
+    $form_state['values'][433][$pdff] = $profile->{$rmaxf};
+  }
   
   // Others
   unset($form_state['values'][433]['personelle']);
