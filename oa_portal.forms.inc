@@ -34,10 +34,6 @@ function oa_portal_change_password_form_submit($form, &$form_state) {
  * Form callback for Application form
  */
 function oa_portal_p1_application_form($form_state) {
-global $user;
-$account = user_load($user->uid);
-dsm(oa_portal_ucm_profileview($account->rmaxid));
-
   $form = array();
   $form['#formtypes'] = array(1);
 
@@ -153,13 +149,30 @@ dsm(oa_portal_ucm_profileview($account->rmaxid));
  * Form submission callback for Application
  */
 function oa_portal_p1_application_form_submit($form, &$form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $profile = oa_portal_ucm_profileview($account->rmaxid);
+  
   /**
-   * @TODO Get Contact profile data from RMax
    * @TODO Post all sections in 2 Application to UCM
    *
    */
   dsm($form_state['values'], 'Process & post 2 to UCM');
   $fields = $form_state['values'];
+  // PDF Field => RMax Field
+  foreach (array(
+    'firstname' => 'fname',
+    'lastname' => 'lname',
+    'email' => 'email',
+    'address1' => 'addressline1',
+    'address2' => 'addressline2',
+    'address3' => 'addressline3',
+    'city' => 'city',
+    'state' => 'state',
+    'postal' => 'postal') AS $pdff => $rmaxf) {
+    $fields[$pdff] = $profile->{$rmaxf};
+  }
+
   if ($success = oa_portal_ucm_oacheckin($formtype, $fields)) {
     $form_state['redirect'] = 'portal/p1/checklist';
   }

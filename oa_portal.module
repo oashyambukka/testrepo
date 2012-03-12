@@ -478,5 +478,5 @@ function oa_portal_ucm_docinfobyame($rmaxid, $formtype) {
  */
 function oa_portal_ucm_profileview($rmaxid) {
   $result = oa_portal_soap('profileview', array('schViewName' => 'vOA_Profile', 'whereClause' => "rmaxid='". $rmaxid ."'"), TRUE);
-  return (get_class($result) == 'SoapFault') ? FALSE : $result->profileviewResult;
+  return (get_class($result) == 'SoapFault') ? FALSE : $result->profileviewResult->profiledata;
 }
