@@ -967,7 +967,6 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
   $form_state['values'][433]['signature'] = 'X Digital signature here';
   $form_state['values'][433]['personnelphone'] = '902-123-4567'; // @TODO Get phone from previous form?
   $form_state['values'][433]['timestamp'] = date('Y-m-d');
-dsm($form_state['values'], 'fields');
   $success = oa_portal_ucm_createpdfform($account->rmaxid, 433, $form_state['values'][433]);
   dsm($success, '433 success');
   return;
