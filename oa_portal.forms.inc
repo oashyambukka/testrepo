@@ -1426,7 +1426,6 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
     if (count($form['#formtypes'])) {
       $account = user_load(array('uid' => $user->uid));
       foreach ($form['#formtypes'] AS $ft) {
-        dsm('Load formtype '. $form['#formtype']);
         if ($file = oa_portal_ucm_docinfobyame($account->rmaxid, $ft)) {
           $form['#docs'][] = oa_portal_ucm_docinfobyame($account->rmaxid, $ft);
         }

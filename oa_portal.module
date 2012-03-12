@@ -470,7 +470,7 @@ function oa_portal_ucm_docinfobyid($dID) {
  * Get file info by formtype (dDocName)
  */
 function oa_portal_ucm_docinfobyame($rmaxid, $formtype) {
-  $result = oa_portal_soap('DocInfoByName', array('dDocName' => $rmaxid .'_'. $formtype), TRUE);
+  $result = oa_portal_soap('DocInfoByName', array('dDocName' => $rmaxid .'_'. $formtype));
   return (get_class($result) == 'SoapFault') ? FALSE : $result->DocInfoByNameResult;
 }
 
