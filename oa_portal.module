@@ -297,12 +297,11 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
     'createpdfform' => 'OAServices.wsdl',
     'oacheckin' => 'OAServices.wsdl',
     'profileview' => 'OAServices.wsdl',
-    // 'pingServer' => 'ping.wsdl',
     'CheckInUniversal' => 'CheckIn.wsdl',
     'DocInfoByName' => 'DocInfo.wsdl',
     'GetFileByID' => 'GetFile.wsdl',
     'GetFileByName' => 'GetFile.wsdl',
-    'ComplianceCheck' => 'Compliance_Check.wsdl',
+    'ComplianceCheck' => 'OAServices.wsdl',
   );
   ini_set('display_errors', 1);
   $wsdl = dirname(__FILE__) .'/wsdl/'. $wsdl[$method];
