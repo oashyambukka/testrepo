@@ -302,6 +302,7 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
     'GetFileByID' => 'GetFile.wsdl',
     'GetFileByName' => 'GetFile.wsdl',
     'ComplianceCheck' => 'OAServices.wsdl',
+    'AdvancedSearch' => 'Search.wsdl',
   );
   ini_set('display_errors', 1);
   $wsdl = dirname(__FILE__) .'/wsdl/'. $wsdl[$method];
@@ -506,4 +507,14 @@ function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
   }
   $result = oa_portal_soap('createpdfform', $params, TRUE);
   return (get_class($result) == 'SoapFault') ? FALSE : $result->createpdfformResult;
+}
+
+/**
+ * Get file info by formtype (dDocName)
+ */
+function oa_portal_ucm_advanced_search_docs_not_missing($rmaxid, $formtypes) {
+  $formtypesquery = 'xFormType &lt;matches&gt; `'. implode($formtypes, '` &lt;or&gt; xFormType &lt;matches&gt; `') .'`';
+  $query = 'xRM_ID &lt;matches&gt; `'. $rmaxid .'` &lt;AND&gt; &lt;not&gt;xStatus &lt;matches&gt; `Missing` &lt;AND&gt;('. $formtypesquery .')';
+  $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '20'), TRUE);
+  return (get_class($result) == 'SoapFault') ? FALSE : $result->AdvancedSearchResult;
 }
