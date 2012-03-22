@@ -1425,15 +1425,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
     }
     if (count($form['#formtypes'])) {
       $account = user_load(array('uid' => $user->uid));
-      $search = oa_portal_ucm_advanced_search_docs_not_missing($rmaxid, $form['#formtypes']);
-      dsm($search, '$search');
-/*      
-      foreach ($form['#formtypes'] AS $ft) {
-        if ($file = oa_portal_ucm_docinfobyame($account->rmaxid, $ft)) {
-          $form['#docs'][] = oa_portal_ucm_docinfobyame($account->rmaxid, $ft);
-        }
-      }
-*/
+      $form['#docs'] = oa_portal_ucm_advanced_search_docs_not_missing($account->rmaxid, $form['#formtypes']);
       if (count($form['#docs'])) {
         $form['docs'] = array(
           '#value' => theme('oap_doc_download', $form['#docs']),

@@ -62,7 +62,7 @@ function oa_portal_preprocess_oap_phase_status(&$vars) {
 function oa_portal_preprocess_oap_doc_download(&$vars) {
   $items = array();
   foreach ($vars['docs'] AS $id => $doc) {
-    $items[] = l($doc->ContentInfo->dDocName, 'portal/file/'. $doc->ContentInfo->dID);
+    $items[] = l($doc->dDocName, 'portal/file/'. $doc->dID);
   }
   $vars['items'] = theme('item_list', $items);
 }

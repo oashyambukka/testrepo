@@ -513,8 +513,11 @@ function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
  * Get file info by formtype (dDocName)
  */
 function oa_portal_ucm_advanced_search_docs_not_missing($rmaxid, $formtypes) {
-  $formtypesquery = 'xFormType &lt;matches&gt; `'. implode($formtypes, '` &lt;or&gt; xFormType &lt;matches&gt; `') .'`';
-  $query = 'xRM_ID &lt;matches&gt; `'. $rmaxid .'` &lt;AND&gt; &lt;not&gt;xStatus &lt;matches&gt; `Missing` &lt;AND&gt;('. $formtypesquery .')';
-  $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '20'), TRUE);
-  return (get_class($result) == 'SoapFault') ? FALSE : $result->AdvancedSearchResult;
+  $formtypesquery = 'xFormType <matches> `'. implode($formtypes, '` <or> xFormType <matches> `') .'`';
+  $query = 'xRM_ID <matches> `'. $rmaxid .'` <AND> <not>xStatus <matches> `Missing` <AND>('. $formtypesquery .')';
+  $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '20'));
+  if (get_class($result) == 'SoapFault') {
+    return FALSE;
+  }
+  return (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults : array($result->AdvancedSearchResult->SearchResults);
 }
