@@ -1147,6 +1147,8 @@ function oa_portal_p3_paycheck_form($form_state) {
     }
   }
 
+  // @TODO To be removed. Not collecting Credit Card data.
+  /*
   $form[537] = fieldset('CashPay Enrollment');
   $form[537]['#attributes']['id'] = 'fieldset-cashpay';
   $form[537]['#collapsed'] = TRUE;
@@ -1161,12 +1163,15 @@ function oa_portal_p3_paycheck_form($form_state) {
   $form[537]['cc_number'][] = $cc_num;
   $form[537]['cc_number'][] = $cc_num;
   $form[537]['cc_number'][3]['#suffix'] = '</div>';
+
+
   // No fields required.
   foreach ($form[537] AS $k => $v) {
     if ($v['#type'] == 'textfield' || $v['#type'] == 'radios') {
       $form[537][$k]['#required'] = null;
     }
   }
+  */
 
   return $form;
 }
@@ -1201,12 +1206,13 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
       drupal_set_message('An error occured. Please try again.');
     }
   }
+  /*
   elseif ($form_state['values']['rdo_delivery_option'] == 'cashpay') {
-    /**
+    **
      * @TODO Post 537 Cashpay Enrollment to UCM
      * @TODO needs PDF fields
      * 
-     */
+     *
     dsm($form_state['values'][537], 'Process & post 537 to UCM');
     if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 537, $form_state['values'][537])) {
       $form_state['redirect'] = 'portal/p3/w4';
@@ -1215,6 +1221,7 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
       drupal_set_message('An error occured. Please try again.');
     }
   }
+  */
   else {
     // @TODO Mark this section as complete anyway.
   }
@@ -1427,6 +1434,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
       $account = user_load(array('uid' => $user->uid));
       $form['#docs'] = oa_portal_ucm_advanced_search_docs_not_missing($account->rmaxid, $form['#formtypes']);
       if (count($form['#docs'])) {
+        dsm($form['#docs'], count($form['#docs']));
         $form['docs'] = array(
           '#value' => theme('oap_doc_download', $form['#docs']),
           '#weight' => 1997,

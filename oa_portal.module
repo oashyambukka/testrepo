@@ -315,14 +315,25 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
   );
 
   $client = new SoapClient($wsdl, $soap_params);
-  $result = $client->{$method}($params);
+
+  try {
+    $response = $client->{$method}($params);
+  }
+  catch(SoapFault $e){
+    // handle issues returned by the web service
+    oa_portal_503($e);
+  }
+  catch(Exception $e){
+    // handle PHP issues with the request
+    oa_portal_500($e);
+  }
 
   if ($debug) {
     dsm($params, $method . ' $params');
     dsm($client, $method . ' $client');
-    dsm($result, $method . ' $result');
+    dsm($response, $method . ' $response');
   }
-  return $result;
+  return $response;
 }
 
 /**
@@ -480,6 +491,7 @@ function oa_portal_ucm_docinfobyame($rmaxid, $formtype) {
 function oa_portal_ucm_profileview($rmaxid) {
   $result = oa_portal_soap('profileview', array('schViewName' => 'vOA_Profile', 'whereClause' => "rmaxid='". $rmaxid ."'"));
   if (get_class($result) == 'SoapFault') {
+dsm('Found a SoapFault where we shouldnt have one');
     return FALSE;
   }
   $profile = $result->profileviewResult->profiledata;
@@ -501,8 +513,8 @@ function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
   );
   foreach ($fields AS $k => $v) {
     $params['extraProps']['property'][] = array(
-        'name' => $k,
-        'value' => $v,
+      'name' => $k,
+      'value' => $v,
     );
   }
   $result = oa_portal_soap('createpdfform', $params, TRUE);
@@ -520,4 +532,60 @@ function oa_portal_ucm_advanced_search_docs_not_missing($rmaxid, $formtypes) {
     return FALSE;
   }
   return (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults : array($result->AdvancedSearchResult->SearchResults);
+}
+
+function oa_portal_500($e) {
+dsm($e, '$e');
+  drupal_set_header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
+
+  watchdog('500 internal server error', check_plain($_GET['q']), NULL, WATCHDOG_WARNING);
+
+  // Keep old path for reference, and to allow forms to redirect to it.
+  if (!isset($_REQUEST['destination'])) {
+    $_REQUEST['destination'] = $_GET['q'];
+  }
+
+  $path = drupal_get_normal_path(variable_get('site_500', ''));
+  if ($path && $path != $_GET['q']) {
+    // Set the active item in case there are tabs to display, or other
+    // dependencies on the path.
+    menu_set_active_item($path);
+    $return = menu_execute_active_handler($path);
+  }
+
+  if (empty($return) || $return == MENU_NOT_FOUND || $return == MENU_ACCESS_DENIED) {
+    drupal_set_title(t('Internal Server Error'));
+    $return = t('The requested page could not be delivered. Please try again later.');
+  }
+
+  // To conserve CPU and bandwidth, omit the blocks.
+  print theme('page', $return, FALSE);
+}
+
+function oa_portal_503($e) {
+dsm($e, '$e');
+  drupal_set_header($_SERVER['SERVER_PROTOCOL'] . ' 503 Service Unavailable');
+
+  watchdog('503 service unavailable', check_plain($_GET['q']), NULL, WATCHDOG_WARNING);
+
+  // Keep old path for reference, and to allow forms to redirect to it.
+  if (!isset($_REQUEST['destination'])) {
+    $_REQUEST['destination'] = $_GET['q'];
+  }
+
+  $path = drupal_get_normal_path(variable_get('site_503', ''));
+  if ($path && $path != $_GET['q']) {
+    // Set the active item in case there are tabs to display, or other
+    // dependencies on the path.
+    menu_set_active_item($path);
+    $return = menu_execute_active_handler($path);
+  }
+
+  if (empty($return) || $return == MENU_NOT_FOUND || $return == MENU_ACCESS_DENIED) {
+    drupal_set_title(t('Service Unavailable'));
+    $return = t('The requested page could not be delivered. Please try again later.');
+  }
+
+  // To conserve CPU and bandwidth, omit the blocks.
+  print theme('page', $return, FALSE);
 }
