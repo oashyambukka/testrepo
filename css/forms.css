@@ -296,7 +296,13 @@
 
 /***** POLICIES & AGREEMENTS ****************************************************************/
 #oa-portal-p2-policies-form .field-acknowledgement label {font-weight:bold}
-
+.acknowledgement-description {
+  width: 560px;
+  height: 90px;
+  padding: 10px;
+  overflow-y: scroll;
+  border: 1px solid #000;
+}
 
 
 
