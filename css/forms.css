@@ -113,6 +113,9 @@
   cursor: pointer;
 }
 
+.oaportal #edit-continue {
+  display: none;
+}
 
 /***** CONTACT FORM ********************************************************************/
 

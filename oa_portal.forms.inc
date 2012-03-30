@@ -1416,14 +1416,25 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
   global $user;
   if (substr($form_id, 0, 11) == 'oa_portal_p') {
     $form['#attributes'] = array('class' => 'oaportal');
-    $form['#ajax'] = array('enabled' => TRUE);
+    $form['#ajax'] = array('enabled' => TRUE, 'disable_redirect' => TRUE);
   
-    $form['submit'] = array(
-      '#type' => 'submit',
+    $form['finalize'] = array(
+      '#type' => 'button',
       '#value' => t('Finalize'),
       '#weight' => 1998,
     );
-    // @TODO DO something else to enable the fancy inline form submission
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#prefix' => '<div id="finalize-confirm-box" style="display:none;"><p>Once you finalize your application, you will not be able to edit it anymore.</p><p>Are you sure you want to finalize?</p><div id="finalize-cancel">No, I need to make changes</div>',
+      '#value' => t("Yes, I'm done"),
+      '#suffix' => '</div>',
+      '#weight' => 1999,
+    );
+    $form['continue'] = array(
+      '#type' => 'button',
+      '#value' => t('Continue'),
+      '#weight' => 1998,
+    );
 
     foreach ($form AS $k => $v) {
       if (is_numeric($k)) {
@@ -1434,7 +1445,6 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
       $account = user_load(array('uid' => $user->uid));
       $form['#docs'] = oa_portal_ucm_advanced_search_docs_not_missing($account->rmaxid, $form['#formtypes']);
       if (count($form['#docs'])) {
-        dsm($form['#docs'], count($form['#docs']));
         $form['docs'] = array(
           '#value' => theme('oap_doc_download', $form['#docs']),
           '#weight' => 1997,

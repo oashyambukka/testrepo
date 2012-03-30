@@ -315,7 +315,6 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
   );
 
   $client = new SoapClient($wsdl, $soap_params);
-
   try {
     $response = $client->{$method}($params);
   }
