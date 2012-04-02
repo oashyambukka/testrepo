@@ -15,6 +15,40 @@
   zoom: 1;
 }
 
+
+/* Finalize - Cancel/Confirm box */
+
+#finalize-confirm-box {
+	background:#F7BDBC;
+	float:right;
+	width:340px;
+	overflow:auto;
+	font-size:14px;
+	color:#000;
+	border:1px solid #E8797D;
+}
+#finalize-confirm-box input {
+	text-transform:capitalize;
+	background:#499935;
+	color:#000;
+	float:none;
+}
+#finalize-cancel {
+	-moz-border-radius:10px; /* Firefox */
+	-webkit-border-radius:10px; /* Safari, Chrome */
+	-khtml-border-radius:10px; /* KHTML */
+	border-radius:10px; /* CSS3 */
+	padding:5px 10px;
+	background:#EB404A;
+	width:auto;
+	cursor:pointer;
+}
+
+#finalize-confirm-box input, #finalize-cancel {display:inline;margin:2px;font-size:14px;vertical-align:middle}
+#finalize-confirm-box p {clear:both;padding-bottom:20px;padding:10px;}
+
+
+
 /***** GENERAL STYLES FOR ALL FORMS ****************************************************************/
 .oaportal fieldset {
 	clear:both;
