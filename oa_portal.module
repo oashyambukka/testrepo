@@ -62,7 +62,7 @@ function oa_portal_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $p = oa_portal_api();
+  $p = oa_portal_initial_data();
   foreach ($p AS $pk => $phase) {
     foreach ($phase AS $sk => $section) {
       if (substr($sk, 0, 1) !== '#') {
@@ -88,10 +88,8 @@ function oa_portal_menu() {
  */
 function oa_portal_access($phase, $section) {
   global $user;
-return TRUE;
-  // Load portal data for user
-  
-  $p = oa_portal_api();
+  $p = oa_portal_get_candidate_data($user->uid);
+  // @TODO Needs work with new status keys
   // Acceptable s
   // Check if phase is unlocked
   if (in_array($p[$phase]['#status'], array('', 'open'))) {
@@ -182,11 +180,11 @@ function oa_portal_theme($existing, $type, $theme, $path) {
 /**
  * 
  */
-function oa_portal_api() {
+function oa_portal_initial_data() {
   $p = array();
   $p['p1'] = array(
     '#title' => t('Phase 1'),
-    '#status' => '',
+    '#status' => 'open',
     'contact' => array(
       '#title' => t('Contact Information'),
       '#dependencies' => array(),
@@ -202,13 +200,13 @@ function oa_portal_api() {
     'checklist' => array(
       '#title' => t('Skills Checklist'),
       '#dependencies' => array(),
-      '#status' => '',
+      '#status' => 'open',
       '#data' => array(),
     ),
   );
   $p['p2'] = array(
     '#title' => t('Phase 2'),
-    '#status' => '',
+    '#status' => 'locked',
     'professional_orgs' => array(
       '#title' => t('Professional Organizations'),
       '#dependencies' => array(),
@@ -252,7 +250,7 @@ function oa_portal_api() {
   );
   $p['p3'] = array(
     '#title' => t('Phase 3'),
-    '#status' => '',
+    '#status' => 'locked',
     'paycheck' => array(
       '#title' => t('Paycheck Method'),
       '#phase' => 3,
@@ -287,6 +285,35 @@ function oa_portal_api() {
     ),
   );
   return $p;
+}
+
+function oa_portal_get_candidate_data($uid) {
+  $account = user_load($uid);
+  if (!$account->oa_candidate_data) {
+    $account->oa_candidate_data = oa_portal_initial_data();
+    // @TODO Save account
+  }
+  return $account->oa_candidate_data;
+}
+
+function oa_portal_candidate_data_set_status($account, $phase, $step, $status) {
+  // Update applicant's status
+  $account->oa_candidate_data[$phase][$step]['#status'] = $status;
+
+  // Check each phase to see if complete
+  foreach ($account->oa_candidate_data AS $pk => $phase) {
+    $complete = TRUE;
+    foreach ($phase AS $sk => $section) {
+      if (substr($sk, 0, 1) !== '#') {
+        if (!$section['#status'] == 'closed') {
+          $completed = FALSE;
+        }
+      }
+    }
+    $account->oa_candidate_data[$pk]['#status'] = ($completed) ? 'locked' : 'open';
+  }
+
+  // @TODO Save account
 }
 
 /**

@@ -1004,6 +1004,7 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
   else {
     $form_state['redirect'] = 'portal/p2/medical';
   }
+  oa_portal_candidate_data_set_status($account, 'p2', 'policies', 'under-review');
 }
 
 /**

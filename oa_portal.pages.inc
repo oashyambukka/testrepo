@@ -9,22 +9,27 @@ function oa_portal_page() {
   $profile = oa_portal_ucm_profileview($account->rmaxid);
   dsm($profile, 'RMax Profile');
 
-  $output .= '<div id="oap-status-legend"><div class="oap-status-icon oap-icon-completed">You Have Completed!</div>';
-  $output .= '<div class="oap-status-icon oap-icon-completed">Requires Your Attention!</div></div>';
+  $output .= '<div id="oap-status-legend"><div class="oap-status-icon oap-icon-closed">You Have Completed!</div>';
+  $output .= '<div class="oap-status-icon oap-icon-open">Requires Your Attention!</div>';
+  $output .= '<div class="oap-status-icon oap-icon-under-review">Currently Under Review!</div></div>';
 
-  $p = oa_portal_api();
+  $p = oa_portal_get_candidate_data($user->uid);
   foreach ($p AS $pk => $phase) {
     $name = $phase['#title'];
     $rows = array();
     $completed = 0;
     $ct = 0;
+    if ($phase['#status'] == 'completed') {
+      $completed++;
+    }
+
     foreach ($phase AS $sk => $section) {
       if (substr($sk, 0, 1) !== '#') {
         $ct++;
-        $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), 'some-status');
+        $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $section['#status']);
       }
     }
-    $output .= theme('oap_phase', $pk, $phase['#title'], 'some-status', implode("\n", $rows), "$completed of $ct");
+    $output .= theme('oap_phase', $pk, $phase['#title'], $phase['#status'], implode("\n", $rows), "$completed of $ct");
   }
   return $output;
 }

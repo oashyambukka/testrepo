@@ -8,7 +8,7 @@ function oa_portal_admin() {
 
   $output = drupal_get_form('oa_portal_soap_file_form');
   
-  $p = oa_portal_api();
+  $p = oa_portal_initial_data();
   foreach ($p AS $pk => $phase) {
     $output .= '<h3>'. $phase['#title'] .'</h3>';
     $rows = array();

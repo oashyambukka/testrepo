@@ -40,7 +40,8 @@ function oa_portal_preprocess_oap_phase_row(&$vars) {
  * Preprocess function for Phase Status block
  */
 function oa_portal_preprocess_oap_phase_status(&$vars) {
-  $p = oa_portal_api();
+  global $user;
+  $p = oa_portal_get_candidate_data($uid);
   $phase = $p[arg(1)];
   
   $vars['id'] = arg(1);
