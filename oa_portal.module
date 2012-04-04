@@ -6,9 +6,11 @@ include_once('oa_portal.theme.inc');
  * Implements hook_init().
  */
 function oa_portal_init() {
-  drupal_add_css(drupal_get_path('module', 'oa_portal') . '/css/forms.css');
-  drupal_add_css(drupal_get_path('module', 'oa_portal') . '/css/phases.css');
-  drupal_add_js(drupal_get_path('module', 'oa_portal') . '/js/main.js');
+  $path = drupal_get_path('module', 'oa_portal');
+  drupal_add_css($path . '/css/forms.css');
+  drupal_add_css($path . '/css/phases.css');
+  drupal_add_js($path . '/js/jquery.ba-untils.min.js');
+  drupal_add_js($path . '/js/main.js');
 }
 
 /**
@@ -516,7 +518,8 @@ function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
       'value' => $v,
     );
   }
-  $result = oa_portal_soap('createpdfform', $params, TRUE);
+  //$result = oa_portal_soap('createpdfform', $params, TRUE);
+  $result = oa_portal_soap('createpdfform', $params);
   return (get_class($result) == 'SoapFault') ? FALSE : $result->createpdfformResult;
 }
 
@@ -534,10 +537,9 @@ function oa_portal_ucm_advanced_search_docs_not_missing($rmaxid, $formtypes) {
 }
 
 function oa_portal_500($e) {
-dsm($e, '$e');
   drupal_set_header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
 
-  watchdog('500 internal server error', check_plain($_GET['q']), NULL, WATCHDOG_WARNING);
+  watchdog('500 internal server error', check_plain($_GET['q']) .' <pre>'. print_r($e, TRUE) .'</pre>', NULL, WATCHDOG_WARNING);
 
   // Keep old path for reference, and to allow forms to redirect to it.
   if (!isset($_REQUEST['destination'])) {
@@ -555,17 +557,18 @@ dsm($e, '$e');
   if (empty($return) || $return == MENU_NOT_FOUND || $return == MENU_ACCESS_DENIED) {
     drupal_set_title(t('Internal Server Error'));
     $return = t('The requested page could not be delivered. Please try again later.');
+    $return .= '<div class="error-message">'. $e->getMessage() .'</div>';
   }
 
   // To conserve CPU and bandwidth, omit the blocks.
   print theme('page', $return, FALSE);
+  exit();
 }
 
 function oa_portal_503($e) {
-dsm($e, '$e');
   drupal_set_header($_SERVER['SERVER_PROTOCOL'] . ' 503 Service Unavailable');
 
-  watchdog('503 service unavailable', check_plain($_GET['q']), NULL, WATCHDOG_WARNING);
+  watchdog('503 service unavailable', check_plain($_GET['q']) .' <pre>'. print_r($e, TRUE) .'</pre>', NULL, WATCHDOG_WARNING);
 
   // Keep old path for reference, and to allow forms to redirect to it.
   if (!isset($_REQUEST['destination'])) {
@@ -583,8 +586,10 @@ dsm($e, '$e');
   if (empty($return) || $return == MENU_NOT_FOUND || $return == MENU_ACCESS_DENIED) {
     drupal_set_title(t('Service Unavailable'));
     $return = t('The requested page could not be delivered. Please try again later.');
+    $return .= '<div class="error-message">'. $e->getMessage() .'</div>';
   }
 
   // To conserve CPU and bandwidth, omit the blocks.
   print theme('page', $return, FALSE);
+  exit();
 }
