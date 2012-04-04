@@ -66,12 +66,13 @@ $(document).ready(function() {
 
   function prepare_finalize() {
     $('#edit-finalize').hide();
-    $('#finalize-confirm-box').slideDown();
+    $('#finalize-confirm-box').show();
     lock_fields();
   }
   function undo_finalize() {
+    $('#form-throbber').hide();
     $('#finalize-confirm-box').hide();
-    $('#edit-finalize').slideDown();
+    $('#edit-finalize').show();
     unlock_fields();
   } 
 
@@ -86,23 +87,39 @@ $(document).ready(function() {
     });
   }
 
+  var errors_exist = false;
 
   Drupal.Ajax.plugins.oaportal = function(hook, args) {
-    console.log(args);
     if (hook === 'submit') {
+      $('#edit-finalize').hide();
       fieldsets_hide_all();
       unlock_fields();
       $('#finalize-confirm-box').hide();
-      // @TODO show throbber icon? 
+      $('#form-throbber').slideDown();
     }
     if (hook === 'message') {
-      // @TODO Find error fields, expand their fieldsets
-      undo_finalize();
+      if (args.messages_error) {
+        $.each(args.messages_error, function (i, msg) {
+          errors_exist = true;
+          var id = msg.id.replace('[', '-').replace(']', '');
+          var legend = $('#' + id).css('border-color', '#00ff00').parentsUntil('legend', 'fieldset');
+          $('a', legend).click();
+        });
+      }
+    }
+
+    if (hook == 'afterMessage') {
+      if (errors_exist) {
+        undo_finalize();
+      }
     }
     if (hook === 'redirect') {
-      // @TODO Expose Continue button
+      errors_exist = false;
+      $('#form-throbber').hide();
+      $('#edit-finalize').hide();
       fieldsets_hide_all();
       lock_fields();
+      $('.oap-doc-download').show();
       $('#edit-continue').show().click(function() {
         Drupal.Ajax.redirect(args.redirect);
         return false;

@@ -149,10 +149,6 @@
   cursor: pointer;
 }
 
-.oaportal #edit-continue {
-  display: none;
-}
-
 /***** CONTACT FORM ********************************************************************/
 
 #oa-portal-p1-contact-form legend {

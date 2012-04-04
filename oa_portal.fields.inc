@@ -228,7 +228,8 @@ function cap_yne($title, $yn_title = 'If no, explain') {
 
 function acknowledgement($description, $confirm = 'I acknowledge, understand, and accept this Agreement/Statement.') {
   $element = checkbox($confirm);
-  $element['#rules'] = array('chars[1]');
+  $element['#required'] = TRUE;
+  $element['#rules'] = array(array('rule' => 'chars[1]', 'error' => 'You must accept all acknowledgements to continue.'));
   $element['#prefix'] = '<div class="field-acknowledgement"><div class="acknowledgement-description">'. $description .'</div>';
   $element['#suffix'] = '</div>';
   return $element;

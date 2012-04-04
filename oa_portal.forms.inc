@@ -1430,10 +1430,15 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
       '#suffix' => '</div>',
       '#weight' => 1999,
     );
+    $form['throbber'] = array(
+      '#value' => '<div id="form-throbber" class="set-hide">THROBBER GOES HERE.</div>',
+      '#weight' => 1998,
+    );
     $form['continue'] = array(
       '#type' => 'button',
       '#value' => t('Continue'),
       '#weight' => 1998,
+      '#attributes' => array('class' => 'set-hide'),
     );
 
     foreach ($form AS $k => $v) {
