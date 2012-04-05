@@ -98,6 +98,8 @@ function oa_portal_access($phase, $section) {
       return TRUE;
     }
   }
+// Temporary
+return TRUE;
   return FALSE;
 }
 
