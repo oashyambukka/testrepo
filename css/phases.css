@@ -142,12 +142,15 @@
 	background:url(../img/locked.png);
 	background-position:right;
 	background-repeat:no-repeat;
+	color:rgba(255,255,255,.5);
 }
 
 /* Disable links in locked phases */
-.oap-phase-status-locked .oap-phase-form-link {
+.oap-phase-status-locked .oap-phase-form-link,
+.oap-phase-status-locked .oap-phase-form-link a {
    pointer-events: none;
    cursor: default;
+   color:rgba(0,0,0,.5);
 }
 
 	
