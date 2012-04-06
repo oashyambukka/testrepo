@@ -15,6 +15,28 @@
   zoom: 1;
 }
 
+/* PDF Forms */
+.oap-doc-download {
+  background-color:#CCC;
+  background:url(..img/pdf.png);
+  background-repeat:no-repeat;
+  background-position:center left;
+  -webkit-border-radius:10px;
+  -moz-border-radius:10px;
+  border-radius:10px;
+  padding:10px;
+  min-height:70px;
+  padding-left:80px;
+  max-width:200px;
+  width:auto;
+  margin:10px;
+  color:black;
+}
+.oap-doc-download .title {font-weight:bold;width:auto}
+.oap-doc-download a {color:black}
+.oap-doc-download li .first last {width:auto}
+.oap-doc-download ul li {margin:0;width:auto}
+
 
 /* Finalize - Cancel/Confirm submission box */
 #finalize-confirm-box {
@@ -337,6 +359,8 @@
   padding: 10px;
   overflow-y: scroll;
   border: 1px solid #000;
+  clear:both;
+  background:url(file:///Macintosh%20HD/Applications/MAMP/htdocs/onassignment/sites/all/modules/oahealthportal/img/pdf.png)
 }
 
 
