@@ -37,20 +37,18 @@
 
 #oa-phase-1 .oap-phase-form-link,
 #oa-phase-2 .oap-phase-form-link,
-#oa-phase-3 .oap-phase-form-link {padding-top:3px;padding-bottom:3px;}
+#oa-phase-3 .oap-phase-form-link {padding-top:3px;padding-bottom:3px;padding-left:5px}
 
-#oa-phase-1 .oap-phase-form-link a:hover,
-#oa-phase-2 .oap-phase-form-link a:hover,
-#oa-phase-3 .oap-phase-form-link a:hover {font-weight:bold;}
+#oa-phase-1 .oap-phase-form-link:hover,
+#oa-phase-2 .oap-phase-form-link:hover,
+#oa-phase-3 .oap-phase-form-link:hover {background:rgba(255,255,255,.2);cursor:pointer}
 
 #oap-status-legend {padding-bottom:10px}
-#oap-status-legend .oap-status-icon {width:50px;display:inline;padding-right:40px;font-style:italic;}
 
 
 	
 /* Styles for messages */
 #oap-messages {background:#F9F6D5;overflow:hidden;padding:10px}
-#oap-message-count {float:left;padding-right:20px}
 #oap-message-notice {font-weight:bold;padding-bottom:10px;}
 .oap-message-date {float:left;padding-left:30px; padding-right:20px; text-align:right}
 .oap-message-teaser {float:left;font-weight:bold}
@@ -94,3 +92,62 @@
 	clear:both;
 	padding:0 10px;
 }
+
+/* Message icon */
+#oap-message-count {
+	background:red;
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	border-radius:10px;
+	color:white;
+	font-weight:bold;
+	float:left;
+	margin-left:20px;
+	padding:0 4px;
+}
+#oap-message-notice {
+	background:url(../img/messages.png);
+	background-repeat:no-repeat;
+	padding-left:50px;
+}
+
+/* Status icons*/
+#oap-status-legend .oap-status-icon {
+	padding:1px 20px;
+	background-repeat:no-repeat;
+	display:inline;
+	font-style:italic;
+}
+.oap-icon-closed {background:url(../img/closed.png)}
+.oap-icon-open {background:url(../img/open.png)}
+.oap-icon-under-review {background:url(../img/under-review.png)}
+
+.oa-phase-row-status-closed {
+	background:url(../img/closed.png);
+	background-position:right;
+	background-repeat:no-repeat;
+}
+.oa-phase-row-status-open {
+	background:url(../img/open.png);
+	background-position:right;
+	background-repeat:no-repeat;
+}
+.oa-phase-row-status-under-review {
+	background:url(../img/under-review.png);
+	background-position:right;
+	background-repeat:no-repeat;
+}
+
+.oap-phase-status-locked h3 {
+	background:url(../img/locked.png);
+	background-position:right;
+	background-repeat:no-repeat;
+}
+
+/* Disable links in locked phases */
+.oap-phase-status-locked .oap-phase-form-link {
+   pointer-events: none;
+   cursor: default;
+}
+
+	
