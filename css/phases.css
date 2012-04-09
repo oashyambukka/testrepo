@@ -24,7 +24,7 @@
 
 #oa-phase-status-p1 .oap-phase-form-link,
 #oa-phase-status-p2 .oap-phase-form-link,
-#oa-phase-status-p3 .oap-phase-form-link {width:auto;float:left;padding-right:30px;color:#fff;}
+#oa-phase-status-p3 .oap-phase-form-link {width:auto;float:left;margin-right:30px;padding-right:20px;color:#fff;}
 
 #oa-phase-1 .oap-phase-form-link,
 #oa-phase-2 .oap-phase-form-link,
@@ -122,17 +122,20 @@
 .oap-icon-open {background:url(../img/open.png)}
 .oap-icon-under-review {background:url(../img/under-review.png)}
 
-.oa-phase-row-status-closed {
+.oa-phase-row-status-closed,
+.oa-phase-row-status-closed .oap-phase-form-link {
 	background:url(../img/closed.png);
 	background-position:right;
 	background-repeat:no-repeat;
 }
-.oa-phase-row-status-open {
+.oa-phase-row-status-open,
+.oa-phase-row-status-open .oap-phase-form-link {
 	background:url(../img/open.png);
 	background-position:right;
 	background-repeat:no-repeat;
 }
-.oa-phase-row-status-under-review {
+.oa-phase-row-status-under-review,
+.oa-phase-row-status-under-review .oap-phase-form-link {
 	background:url(../img/under-review.png);
 	background-position:right;
 	background-repeat:no-repeat;
