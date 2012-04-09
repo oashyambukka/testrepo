@@ -17,8 +17,8 @@
 
 /* PDF Forms */
 .oap-doc-download {
+  background:url(../img/pdf.png);
   background-color:#CCC;
-  background:url(..img/pdf.png);
   background-repeat:no-repeat;
   background-position:center left;
   -webkit-border-radius:10px;
