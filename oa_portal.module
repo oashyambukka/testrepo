@@ -486,15 +486,15 @@ function oa_portal_ucm_oacheckin($formtype, $fields) {
 /**
  * Get file contents by dID
  */
-function oa_portal_ucm_getfilebyid($dID) {
-  $result = oa_portal_soap('GetFileByID', array('dID' => $dID), TRUE);
-  return $result->GetFileByIDResult;;
+function oa_portal_ucm_getfilebyname($dDocName) {
+  $result = oa_portal_soap('GetFileByName', array('dDocName' => $dDocName, 'revisionSelectionMethod' => 'Latest'), TRUE);
+  return $result->GetFileByNameResult;
 }
 
 /**
  * Get file contents by formtype (dDocName)
  */
-function oa_portal_ucm_getfilebyname($rmaxid, $formtype) {
+function oa_portal_ucm_rmax_getfilebyname($rmaxid, $formtype) {
   $result = oa_portal_soap('GetFileByName', array('dDocName' => $rmaxid .'_'. $formtype), TRUE);
   return $result->GetFileByNameResult;
 }

@@ -35,10 +35,10 @@ function oa_portal_page() {
 }
 
 /**
- * Page callback for file downloading per dID
+ * Page callback for file downloading per dDocName
  */
-function oa_portal_download_file($dID) {
-  $file = oa_portal_ucm_getfilebyid($dID);
+function oa_portal_download_file($dDocName) {
+  $file = oa_portal_ucm_getfilebyname($dDocName);
   if (!$file->FileInfo->dFileSize) {
     drupal_not_found();
   }

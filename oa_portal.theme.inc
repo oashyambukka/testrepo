@@ -45,13 +45,13 @@ function oa_portal_preprocess_oap_phase_status(&$vars) {
   $phase = $p[arg(1)];
   
   $vars['id'] = arg(1);
-  $vars['status'] = 'some-status';
+  $vars['status'] = $phase['#status'];
   $vars['title'] = $phase['#title'];
   
   $items = array();
   foreach ($phase AS $sk => $section) {
     if (substr($sk, 0, 1) !== '#') {
-      $items[] = theme('oap_phase_row', $section['#title'], 'some-status');
+      $items[] = theme('oap_phase_row', $section['#title'], $section['#status']);
     }
   }
   $vars['phases'] = implode("\n", $items);
@@ -63,7 +63,7 @@ function oa_portal_preprocess_oap_phase_status(&$vars) {
 function oa_portal_preprocess_oap_doc_download(&$vars) {
   $items = array();
   foreach ($vars['docs'] AS $id => $doc) {
-    $items[] = l($doc->dDocName, 'portal/file/'. $doc->dID);
+    $items[] = l($doc->dDocName, 'portal/file/'. $doc->dDocName);
   }
   $vars['items'] = theme('item_list', $items);
 }
