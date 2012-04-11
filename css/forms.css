@@ -69,6 +69,11 @@
 #finalize-confirm-box input, #finalize-cancel {display:inline;margin:2px;font-size:14px;vertical-align:middle}
 #finalize-confirm-box p {clear:both;padding-bottom:20px;padding:10px;}
 
+#form-throbber {
+  width: 215px;
+  height: 18px;
+  background-image: url(../img/ajax-loader.gif);
+}
 
 
 /***** GENERAL STYLES FOR ALL FORMS ****************************************************************/
