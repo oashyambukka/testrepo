@@ -1432,7 +1432,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
       '#weight' => 1999,
     );
     $form['throbber'] = array(
-      '#value' => '<div id="form-throbber" class="set-hide">THROBBER GOES HERE.</div>',
+      '#value' => '<div id="form-throbber" class="set-hide"></div>',
       '#weight' => 1998,
     );
     $form['continue'] = array(
@@ -1457,7 +1457,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
         );
       }
     }
-    dsm($form, 'Completed $form');
+//    dsm($form, 'Completed $form');
   }
 }
 
