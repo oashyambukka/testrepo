@@ -1457,6 +1457,25 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
         );
       }
     }
+
+
+    // Add settings for Autosaving
+    $settings['autosave']['url'] = url('portal/autosave');
+    $settings['autosave']['period'] = variable_get('autosave_period', 10);
+    $settings['autosave']['q'] = $_GET['q'];
+    $settings['autosave']['form_id'] = $form_id;
+    $settings['autosave']['form_id_id'] = $form['#id'];
+
+    // If an autosaved version of the form exists, make it available via javascript.
+    if ($autosaved_form = oa_portal_get_autosaved_form($form_id, $_GET['q'], $user->uid)) {
+      dsm($autosaved_form, 'autosaved form');
+      $settings['autosave'] = array_merge($settings['autosave'], array(
+        'serialized' => unserialize($autosaved_form['serialized']),
+        'saved_date' => format_date($autosaved_form['timestamp'], 'medium'),
+      ));
+    }
+    drupal_add_js($settings, 'setting');
+
 //    dsm($form, 'Completed $form');
   }
 }

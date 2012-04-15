@@ -60,7 +60,7 @@ function oa_portal_download_file($dDocName) {
  */
 function oa_portal_autosave() {
   global $user;
-  dsm($_POST, 'autosave $_POST');
+
   // Bad request
   // return drupal_json(array('status' => 400));
 
@@ -70,8 +70,18 @@ function oa_portal_autosave() {
   // Server error
   // return drupal_json(array('status' => 500));
 
-  return drupal_set_message(t('The form has been submitted. name="@first @last", year of birth=@year_of_birth', 
-    array('@first' => $form_state['values']['first'], '@last' => $form_state['values']['last'], '@year_of_birth' => $form_state['values']['year_of_birth'])));
+
+  $path = $_POST['q'];
+  $form_id = $_POST['form_id'];
+
+  unset($_POST['q'], $_POST['op'], $_POST['form_build_id']);
+  $serialized = serialize($_POST);
+
+  // Currently, each user can have only one autosave form at a particular path.
+  db_query("DELETE FROM {autosaved_forms} WHERE form_id = '%s' AND path = '%s' AND uid = %d", $form_id, $path, $user->uid);
+  db_query("INSERT INTO {autosaved_forms} (form_id, path, uid, timestamp, serialized) VALUES ('%s', '%s', %d, %d, '%s')", $form_id, $path, $user->uid, time(), $serialized);
+  watchdog('rpoa', 'Autosave captured from '. $_POST['q'] .'Post: <pre>'. print_r($_POST, TRUE) .'</pre>');
+  exit();
 }
 
 /**

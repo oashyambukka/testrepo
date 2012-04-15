@@ -1,0 +1,56 @@
+<?php
+
+/**
+ * Implementation of hook_install().
+ */
+function oa_portal_install() {
+  drupal_install_schema('oa_portal');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function oa_portal_uninstall() {
+  drupal_uninstall_schema('oa_portal');
+}
+
+/**
+ * Implementation of hook_schema()
+ */
+function oa_portal_schema() {
+  return array(
+    'autosaved_forms' => array(
+      'description' => t("Table to save forms in the database"),
+      'fields' => array(
+        'form_id' => array(
+          'type'        => 'varchar',
+          'length'      => 64,
+          'not null'    => TRUE,
+        ),
+        'path' => array(
+          'type'        => 'varchar',
+          'length'      => 255,
+          'not null'    => TRUE,
+        ),
+        'uid' => array(
+          'type'        => 'int',
+          'length'      => 11,
+          'not null'    => TRUE,
+          'default'     => 0,
+        ),
+        'timestamp' => array(
+          'type'        => 'int',
+          'length'      => 11,
+          'not null'    => TRUE,
+          'default'     => 0,
+        ),
+        'serialized' => array(
+          'type'        => 'text',
+          'not null'    => TRUE,
+          'size'        => 'big',
+        ),
+      ),
+      'primary key' => array('form_id', 'path', 'uid'),
+    ),
+  );
+}

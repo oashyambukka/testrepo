@@ -6,11 +6,15 @@ include_once('oa_portal.theme.inc');
  * Implements hook_init().
  */
 function oa_portal_init() {
-  $path = drupal_get_path('module', 'oa_portal');
-  drupal_add_css($path . '/css/forms.css');
-  drupal_add_css($path . '/css/phases.css');
-  drupal_add_js($path . '/js/jquery.ba-untils.min.js');
-  drupal_add_js($path . '/js/main.js');
+  if (arg(0) == 'portal') {
+    $path = drupal_get_path('module', 'oa_portal');
+    drupal_add_css($path . '/css/forms.css');
+    drupal_add_css($path . '/css/phases.css');
+    drupal_add_js($path . '/js/jquery.ba-untils.min.js');
+    drupal_add_js($path . '/js/jquery.field.min.js');
+    drupal_add_js($path . '/js/main.js');
+    drupal_add_js($path . '/js/autosave.js');
+  }
 }
 
 /**
@@ -622,3 +626,43 @@ function oa_portal_503($e) {
   print theme('page', $return, FALSE);
   exit();
 }
+
+
+/**
+ * Get the autosaved form at a particular path for a user.
+ *
+ * @param string $form_id
+ *   The form_id of the form.
+ * @param string $path
+ *   The the internal Drupal path where the form is located
+ * @param string $uid
+ *   Drupal UID of the user
+ * @return
+ *   An array containing the serialized values of the autosaved form and the timestamp of when the form was autosaved.
+ */
+function oa_portal_get_autosaved_form($form_id, $path, $uid) {
+  $result = db_query("SELECT form_id, serialized, timestamp FROM {autosaved_forms} WHERE form_id = '%s' AND path = '%s' AND uid = %d", $form_id, $path, $uid);
+  while ($data = db_fetch_object($result)) {
+    $form['serialized'] = $data->serialized;
+    $form['timestamp'] = $data->timestamp;
+  }
+  return $form;
+}
+
+/**
+ * Figure out what particular case to delete autosaved forms
+ *
+ * Delete autosave table entry on successful submit
+ *
+ */
+/*
+function oa_portal_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  if ($op == 'presave') {
+      // we remove ALL edits for that page (not just the users) to avoid:
+      //  - user1 asaves but doesnt submit
+      //  - user2 edits same node and submits
+      //  - user1 comes back to edit -> user1 SHOULD lose edits since user2 has precedence
+      db_query("DELETE FROM {autosaved_forms} WHERE form_id = '%s' AND path = '%s'", $node->form_id, $_GET['q']);
+  }
+}
+*/
