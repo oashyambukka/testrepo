@@ -1,19 +1,18 @@
 $(document).ready(function() {
 
-  autosaved = Drupal.settings.autosave;   
+  var timeout;
+  var autosaved = Drupal.settings.autosave;   
 
   // Set form to autosaved values, should they exist
   if (autosaved.serialized) {
-console.log('Autosave recovered');
-console.log(autosaved);
-console.log($('#' + autosaved.form_id_id));
+    console.log('Autosave recovered');
     $('#' + autosaved.form_id_id).formHash(autosaved.serialized);
   }
   
 
   Drupal.sendAutosave = function() {
-console.log('Autosave underway. Autosaved:');
-console.log(autosaved);
+    console.log('Autosave underway.');
+    clearTimeout(timeout);
     var serialized = $('#' + autosaved.form_id_id).formHash();
     serialized['q'] =  Drupal.settings.autosave.q;
     $.ajax({
@@ -29,15 +28,18 @@ console.log(autosaved);
   }
 
   Drupal.displaySaved = function() {
-console.log('Autosave sent');
+    console.log('Autosave sent');
 //    $('#autosave-status #status').html('Form autosaved.');
   }
 
   Drupal.attachAutosave = function() {
-console.log('Autosave queued');
-    setTimeout('Drupal.sendAutosave()', Drupal.settings.autosave.period * 1000);
+    console.log('Autosave queued');
+    timeout = setTimeout('Drupal.sendAutosave()', Drupal.settings.autosave.period * 1000);
   }
 
 //  Drupal.attachAutosave();
-
+  $('form.oaportal input, form.oaportal select, form.oaportal textarea').change(function() {
+    // @TODO Verify change() is the correct event to bind to.
+    Drupal.sendAutosave();
+  });
 });
