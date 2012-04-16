@@ -9,6 +9,8 @@ function oa_portal_page() {
   $profile = oa_portal_ucm_profileview($account->rmaxid);
 //  dsm($profile, 'RMax Profile');
 
+  $output .= theme('oap_messages');
+
   $output .= '<div id="oap-status-legend"><div class="oap-status-icon oap-icon-closed">You Have Completed!</div>';
   $output .= '<div class="oap-status-icon oap-icon-open">Requires Your Attention!</div>';
   $output .= '<div class="oap-status-icon oap-icon-under-review">Currently Under Review!</div></div>';
@@ -111,4 +113,62 @@ function oa_portal_ucm_createcoversheet($formtype) {
   }
   print $result->createcoversheetResult->downloadedFile->fileContent;
   exit();
+}
+
+/**
+ * Page callback for messages page
+ */
+function oa_portal_messages_page($form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $time = time();
+  $form = array();
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete Selected Message(s)'),
+  );
+  $messages = oa_portal_get_messages($rmaxid, 'all');
+  $checkboxes = array();
+  foreach($messages as $message) {
+    $checkboxes[$message->msg_id] = '';
+    $form[$message->msg_id]['date'] = array(
+      '#value' => format_interval($time - $message->date),
+    );
+    $form[$message->msg_id]['subject'] = array(
+      '#value' => $message->subject,
+    );
+    $form[$message->msg_id]['read'] = array(
+      '#value' => $message->read,
+    );
+  }
+
+  $form['checkboxes'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $checkboxes, 
+  );
+  $form['#theme'] = 'oap_messages_page';
+  return $form;
+}
+
+function oa_portal_messages_page_submit($form, &$form_state) {
+  dsm($form_state['values'], '@TODO Delete selected messages from $form_state[values]');
+}
+
+/**
+ * Page callback for individual messages page
+ */
+function oa_portal_message_page($msg_id) {
+  global $user;
+  $account = user_load($user->uid);
+  if ($message = oa_portal_get_message($account->rmaxid, $msg_id)) {
+    // Mark as read if it wasn't previously
+    if (!$message->read) {
+      oa_portal_mark_message_read($msg_id);
+    }
+
+    return theme('oap_message_page', format_interval(time() - $message->timestamp), $message->subject, $message->body);
+  }
+  else {
+    drupal_not_found();
+  }
 }

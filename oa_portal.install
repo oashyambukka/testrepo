@@ -15,6 +15,15 @@ function oa_portal_uninstall() {
 }
 
 /**
+ * Implementation of hook_enable().
+ * @TODO Disable for Production
+ */
+function oa_portal_enable() {
+  drupal_uninstall_schema('oa_portal');
+  drupal_install_schema('oa_portal');
+}
+
+/**
  * Implementation of hook_schema()
  */
 function oa_portal_schema() {
@@ -51,6 +60,50 @@ function oa_portal_schema() {
         ),
       ),
       'primary key' => array('form_id', 'path', 'uid'),
+    ),
+    'ucm_messages' => array(
+      'description' => t("Table to save UCM messages and their read state"),
+      'fields' => array(
+        'msg_id' => array(
+          'type'        => 'int',
+          'length'      => 11,
+          'not null'    => TRUE,
+        ),
+        'rmaxid' => array(
+          'type'        => 'int',
+          'length'      => 11,
+          'not null'    => TRUE,
+        ),
+        'subject' => array(
+          'type'        => 'varchar',
+          'length'      => 255,
+          'not null'    => TRUE,
+        ),
+        'body' => array(
+          'description' => 'The body of the email.',
+          'type' => 'text',
+          'not null' => TRUE,
+          'size' => 'big',
+        ),
+        'timestamp' => array(
+          'type'        => 'int',
+          'length'      => 11,
+          'not null'    => TRUE,
+          'default'     => 0,
+        ),
+        'read' => array(
+          'description' => 'Boolean indicating whether the message has been read by the user.',
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+      ),
+      'indexes' => array(
+        'msg_timestamp' => array('timestamp'),
+        'msg_read' => array('read'),
+        'msg_rmaxid' => array('rmaxid'),
+      ),
+      'primary key' => array('msg_id'),
     ),
   );
 }

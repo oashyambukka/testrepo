@@ -4,16 +4,44 @@
  * Preprocess function for Messages block
  */
 function oa_portal_preprocess_oap_messages(&$vars) {
+  global $user;
+  $account = user_load($user->uid);
+  $time = time();
+
   $vars['tip'] = theme('oap_tooltip', 'some-status', 'Tooltip message goes here. We may want to generalize tooltip markup generation.');
-  $vars['count'] = '2';
-  $vars['messages'] = '';
-  foreach (array(
-      array('date' => 'Today', 'teaser' => 'Please complete the first phase of your application by clicking on...'),
-      array('date' => 'Yesterday', 'teaser' => 'Congratulations and Welcome to On Assignment Healthcare...')
-    ) AS $message) {
-    $vars['messages'] .= theme('oap_message_row', $message['date'], $message['teaser'], l('More', 'messages/messageid'));
+  $vars['messages'] = oa_portal_get_messages($account->rmaxid);
+  $vars['count'] = count($vars['messages']);
+  // array(
+  //   array('date' => 'Today', 'teaser' => 'Please complete the first phase of your application by clicking on...'),
+  //   array('date' => 'Yesterday', 'teaser' => 'Congratulations and Welcome to On Assignment Healthcare...')
+  // )
+
+  foreach ($vars['messages'] AS $message) {
+    $vars['messages'] .= theme('oap_message_row', format_interval(time() - $message->timestamp), $message->subject, $message->body, l('More', 'messages/'. $message->msg_id));
   }
 }
+
+/**
+ * Preprocess function for Messages block
+ */
+function theme_oap_messages_page(&$vars) {
+  global $user;
+  $account = user_load($user->uid);
+  $time = time();
+
+  $rows = array();
+  foreach(element_children($form['checkboxes']) as $uid) {
+    $rows[] = array(drupal_render($form['checkboxes'][$uid]), drupal_render($form[$uid]['first_name']), drupal_render($form[$uid]['last_name']));
+  }
+
+  if (!count($rows)) {
+    // No messages found
+  }
+  
+  $output = theme('table', array(), $rows);
+  return $output . drupal_render($form);
+}
+
 
 /**
  * Preprocess function for Phases

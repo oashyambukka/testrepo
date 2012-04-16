@@ -29,6 +29,20 @@ function oa_portal_menu() {
     'access arguments' => array('administer site configuration'),
     'file' => 'oa_portal.admin.inc'
   );
+  $items['messages'] = array(
+    'title' => 'My Message Center', 
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('oa_portal_messages_page'),
+    'access arguments' => array('access portal'),
+    'file' => 'oa_portal.pages.inc'
+  );
+  $items['messages/%'] = array(
+    'title' => 'My Message Center', 
+    'page callback' => 'oa_portal_message_page',
+    'page arguments' => array(1),
+    'access arguments' => array('access portal'),
+    'file' => 'oa_portal.pages.inc'
+  );
   $items['portal'] = array(
     'title' => 'My OA Healthcare Documents', 
     'page callback' => 'oa_portal_page', 
@@ -164,7 +178,15 @@ function oa_portal_theme($existing, $type, $theme, $path) {
     'oap_message_row' => array(
       'template' => 'oap_message_row',
       'path' => $path . '/templates',
-      'arguments' => array('date' => NULL, 'teaser' => NULL, 'link' => NULL),
+      'arguments' => array('date' => NULL, 'subject' => NULL, 'body' => NULL, 'link' => NULL),
+    ),
+    'oap_message_page' => array(
+      'arguments' => array('date' => NULL, 'subject' => NULL, 'body' => NULL),
+    ),
+    'oap_messages_page' => array(
+      'template' => 'oap_messages_page',
+      'path' => $path . '/templates',
+      'arguments' => array('form' => NULL),
     ),
     'oap_phase_status' => array(
       'template' => 'oap_phase_status',
@@ -666,3 +688,69 @@ function oa_portal_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   }
 }
 */
+
+/**
+ * Get the unread messages for a user.
+ *
+ * @param integer $rmaxid
+ *   The RMax ID of the user.
+ * @param integer/string $read
+ *   The read/unread status of the message (Unread = 0, Has been read = 1, All = 'all')
+ * @param integer $limit
+ *   The Limit for the query
+ * @return
+ *   An array containing the individual read/unread messages
+ */
+function oa_portal_get_messages($rmaxid, $read = 0, $limit = 100) {
+  if ($read == 'all') {
+    $result = db_query("SELECT * FROM {ucm_messages} WHERE rmaxid = %d ORDER BY timestsamp DESC LIMIT $limit", $rmaxid, $limit);
+  }
+  else {
+    $result = db_query("SELECT * FROM {ucm_messages} WHERE rmaxid = %d AND read = %d ORDER BY timestsamp DESC LIMIT $limit", $rmaxid, $read, $limit);
+  }
+  $messages = array();
+  while ($data = db_fetch_object($result)) {
+    $messages[] = $data;
+  }
+  return (count($messages)) ? $messages : NULL;
+}
+
+/**
+ * Get a specific message for a user.
+ *
+ * @param integer $rmaxid
+ *   The RMax ID of the user.
+ * @param integer $msg_id
+ *   The Message ID
+ * @return
+ *   An object containing the individual message
+ */
+function oa_portal_get_message($rmaxid, $msg_id) {
+  $result = db_query("SELECT * FROM {ucm_messages} WHERE rmaxid = %d AND msg_id = %d LIMIT 1", $rmaxid, $msg_id);
+  while ($message = db_fetch_object($result)) {
+    return $message;
+  }
+  return NULL;
+}
+
+/**
+ * Mark a specific message as read for a user.
+ *
+ * @param integer $rmaxid
+ *   The RMax ID of the user.
+ * @param integer $msg_id
+ *   The Message ID
+ * @return
+ *   An object containing the individual message
+ */
+function oa_portal_mark_message_read($msg_id) {
+  global $user;
+  $account = user_load($user->uid);
+  db_query("UPDATE {ucm_messages} SET read = 1 WHERE rmaxid = %d AND msg_id = %d LIMIT 1", $account->rmaxid, $msg_id);
+
+  // @TODO
+  if ($this_was_ajax) {
+    drupal_json('200');
+    exit();
+  }
+}
