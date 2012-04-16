@@ -74,7 +74,7 @@ function oa_portal_autosave() {
   $path = $_POST['q'];
   $form_id = $_POST['form_id'];
 
-  unset($_POST['q'], $_POST['op'], $_POST['form_build_id']);
+  unset($_POST['q'], $_POST['op'], $_POST['form_build_id'], $_POST['form_id'], $_POST['form_token']);
   $serialized = serialize($_POST);
 
   // Currently, each user can have only one autosave form at a particular path.

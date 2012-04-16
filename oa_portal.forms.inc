@@ -1460,6 +1460,9 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
 
 
     // Add settings for Autosaving
+    drupal_add_js($path . '/js/jquery.field.js');
+    drupal_add_js($path . '/js/autosave.js');
+    
     $settings['autosave']['url'] = url('portal/autosave');
     $settings['autosave']['period'] = variable_get('autosave_period', 120);
     $settings['autosave']['q'] = $_GET['q'];
