@@ -16,7 +16,7 @@ function oa_portal_page() {
   $output .= '<div class="oap-status-icon oap-icon-under-review">Currently Under Review!</div></div>';
 
   $p = oa_portal_get_candidate_data($user->uid);
-  foreach ($p AS $pk => $phase) {
+  foreach (element_children($p) AS $pk => $phase) {
     $name = $phase['#title'];
     $rows = array();
     $completed = 0;
@@ -25,11 +25,9 @@ function oa_portal_page() {
       $completed++;
     }
 
-    foreach ($phase AS $sk => $section) {
-      if (substr($sk, 0, 1) !== '#') {
-        $ct++;
-        $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $section['#status']);
-      }
+    foreach (element_children($phase) AS $sk => $section) {
+      $ct++;
+      $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $section['#status']);
     }
     $output .= theme('oap_phase', $pk, $phase['#title'], $phase['#status'], implode("\n", $rows), "$completed of $ct");
   }

@@ -81,22 +81,20 @@ function oa_portal_menu() {
   );
 
   $p = oa_portal_initial_data();
-  foreach ($p AS $pk => $phase) {
-    foreach ($phase AS $sk => $section) {
-      if (substr($sk, 0, 1) !== '#') {
-        $items['portal/'. $pk .'/'. $sk] = array(
-          'type' => MENU_CALLBACK,
-          'title' => $section['#title'],
-          'page callback' => 'drupal_get_form',
-          'page arguments' => array('oa_portal_'. $pk .'_'. $sk .'_form'),
-          'access callback' => 'oa_portal_access',
-          'access arguments' => array($pk, $sk),
-          'file' => 'oa_portal.forms.inc',
-        );
-      }
+  foreach (element_children($p) AS $pk => $phase) {
+    foreach (element_children($phase) AS $sk => $section) {
+      $items['portal/'. $pk .'/'. $sk] = array(
+        'type' => MENU_CALLBACK,
+        'title' => $section['#title'],
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('oa_portal_'. $pk .'_'. $sk .'_form'),
+        'access callback' => 'oa_portal_access',
+        'access arguments' => array($pk, $sk),
+        'file' => 'oa_portal.forms.inc',
+      );
     }
   }
-
+  dsm($items, '@TODO Verify use of element_children');
   return $items;
 }
 
