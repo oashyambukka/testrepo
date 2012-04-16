@@ -346,11 +346,12 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
     'login' => 'weblogic',
     'password' => '0ATraining',
     'trace' => 1,
-    'exceptions' => 0
+//    'exceptions' => 0
   );
 
-  $client = new SoapClient($wsdl, $soap_params);
   try {
+    ini_set('default_socket_timeout', 5);
+    $client = @new SoapClient($wsdl, $soap_params);
     $response = $client->{$method}($params);
   }
   catch(SoapFault $e){
