@@ -11,7 +11,7 @@ function oa_portal_init() {
     drupal_add_css($path . '/css/forms.css');
     drupal_add_css($path . '/css/phases.css');
     drupal_add_js($path . '/js/jquery.ba-untils.min.js');
-    drupal_add_js($path . '/js/jquery.field.min.js');
+    drupal_add_js($path . '/js/jquery.field.js');
     drupal_add_js($path . '/js/main.js');
     drupal_add_js($path . '/js/autosave.js');
   }
