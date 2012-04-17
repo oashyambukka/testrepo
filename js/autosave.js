@@ -40,6 +40,14 @@ $(document).ready(function() {
 //  Drupal.attachAutosave();
   $('form.oaportal input, form.oaportal select, form.oaportal textarea').change(function() {
     // @TODO Verify change() is the correct event to bind to.
+    console.log('Tick');
     Drupal.sendAutosave();
   });
+
+  Drupal.Ajax.plugins.autosave = function(hook, args) {
+    if (hook === 'submit') {
+      console.log('Clearing timeout');
+      clearTimeout(timeout);
+    }
+  }
 });

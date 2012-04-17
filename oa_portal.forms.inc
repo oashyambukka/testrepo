@@ -1450,7 +1450,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
     if (count($form['#formtypes'])) {
       $account = user_load(array('uid' => $user->uid));
       $form['#docs'] = oa_portal_ucm_advanced_search_docs_not_missing($account->rmaxid, $form['#formtypes']);
-      if (count($form['#docs'])) {
+      if (is_array($form['#docs']) && count($form['#docs'])) {
         $form['docs'] = array(
           '#value' => theme('oap_doc_download', $form['#docs']),
           '#weight' => 1997,
@@ -1460,6 +1460,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
 
 
     // Add settings for Autosaving
+    $path = drupal_get_path('module', 'oa_portal');
     drupal_add_js($path . '/js/jquery.field.js');
     drupal_add_js($path . '/js/autosave.js');
     
@@ -1471,7 +1472,6 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
 
     // If an autosaved version of the form exists, make it available via javascript.
     if ($autosaved_form = oa_portal_get_autosaved_form($form_id, $_GET['q'], $user->uid)) {
-      dsm($autosaved_form, 'autosaved form');
       $settings['autosave'] = array_merge($settings['autosave'], array(
         'serialized' => unserialize($autosaved_form['serialized']),
         'saved_date' => format_date($autosaved_form['timestamp'], 'medium'),
