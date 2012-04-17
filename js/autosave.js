@@ -50,5 +50,29 @@ Drupal.behaviors.autosave = function (context) {
       }
     });
   }
-  
-});
+
+  Drupal.displaySaved = function() {
+    console.log('Autosave sent');
+//    $('#autosave-status #status').html('Form autosaved.');
+  }
+
+  Drupal.attachAutosave = function() {
+    console.log('Autosave queued');
+    timeout = setTimeout('Drupal.sendAutosave()', Drupal.settings.autosave.period * 1000);
+  }
+
+//  Drupal.attachAutosave();
+  $('form.oaportal input, form.oaportal select, form.oaportal textarea').change(function() {
+    // @TODO Verify change() is the correct event to bind to.
+    console.log('Tick');
+    Drupal.sendAutosave();
+  });
+
+  Drupal.Ajax.plugins.autosave = function(hook, args) {
+    if (hook === 'submit') {
+      console.log('Clearing timeout');
+      clearTimeout(timeout);
+    }
+  }
+
+}

@@ -9,14 +9,17 @@ function oa_portal_page() {
   $profile = oa_portal_ucm_profileview($account->rmaxid);
 //  dsm($profile, 'RMax Profile');
 
-  $output .= theme('oap_messages');
+  if ($messages = oa_portal_get_messages($account->rmaxid)) {
+    $output .= theme('oap_messages', $messages);
+  }
 
   $output .= '<div id="oap-status-legend"><div class="oap-status-icon oap-icon-closed">You Have Completed!</div>';
   $output .= '<div class="oap-status-icon oap-icon-open">Requires Your Attention!</div>';
   $output .= '<div class="oap-status-icon oap-icon-under-review">Currently Under Review!</div></div>';
 
   $p = oa_portal_get_candidate_data($user->uid);
-  foreach (element_children($p) AS $pk => $phase) {
+  foreach (element_children($p) AS $pk) {
+    $phase = $p[$pk];
     $name = $phase['#title'];
     $rows = array();
     $completed = 0;
@@ -25,7 +28,8 @@ function oa_portal_page() {
       $completed++;
     }
 
-    foreach (element_children($phase) AS $sk => $section) {
+    foreach (element_children($phase) AS $sk) {
+      $section = $phase[$sk];
       $ct++;
       $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $section['#status']);
     }
@@ -74,7 +78,7 @@ function oa_portal_autosave() {
   $path = $_POST['q'];
   $form_id = $_POST['form_id'];
 
-  unset($_POST['q'], $_POST['op'], $_POST['form_build_id'], $_POST['form_id'], $_POST['form_token']);
+  unset($_POST['q'], $_POST['op'], $_POST['form_build_id']);
   $serialized = serialize($_POST);
 
   // Currently, each user can have only one autosave form at a particular path.
@@ -121,30 +125,33 @@ function oa_portal_messages_page($form_state) {
   $account = user_load($user->uid);
   $time = time();
   $form = array();
-  $form['delete'] = array(
-    '#type' => 'submit',
-    '#value' => t('Delete Selected Message(s)'),
-  );
-  $messages = oa_portal_get_messages($rmaxid, 'all');
   $checkboxes = array();
-  foreach($messages as $message) {
-    $checkboxes[$message->msg_id] = '';
-    $form[$message->msg_id]['date'] = array(
-      '#value' => format_interval($time - $message->date),
+  if ($messages = oa_portal_get_messages($rmaxid, 'all')) {
+    $form['delete'] = array(
+      '#type' => 'submit',
+      '#value' => t('Delete Selected Message(s)'),
     );
-    $form[$message->msg_id]['subject'] = array(
-      '#value' => $message->subject,
+    foreach($messages as $message) {
+      $checkboxes[$message->msg_id] = '';
+      $form[$message->msg_id]['date'] = array(
+        '#value' => format_interval($time - $message->date),
+      );
+      $form[$message->msg_id]['subject'] = array(
+        '#value' => $message->subject,
+      );
+    }
+
+    $form['checkboxes'] = array(
+      '#type' => 'checkboxes',
+      '#options' => $checkboxes, 
     );
-    $form[$message->msg_id]['read'] = array(
-      '#value' => $message->read,
+    $form['#theme'] = 'oap_messages_page';
+  }
+  else {
+    $form['empty'] = array(
+      '#value' => t('There are no messages to display.'),
     );
   }
-
-  $form['checkboxes'] = array(
-    '#type' => 'checkboxes',
-    '#options' => $checkboxes, 
-  );
-  $form['#theme'] = 'oap_messages_page';
   return $form;
 }
 
@@ -160,7 +167,7 @@ function oa_portal_message_page($msg_id) {
   $account = user_load($user->uid);
   if ($message = oa_portal_get_message($account->rmaxid, $msg_id)) {
     // Mark as read if it wasn't previously
-    if (!$message->read) {
+    if (!$message->was_read) {
       oa_portal_mark_message_read($msg_id);
     }
 

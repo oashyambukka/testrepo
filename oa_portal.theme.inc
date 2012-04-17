@@ -9,7 +9,6 @@ function oa_portal_preprocess_oap_messages(&$vars) {
   $time = time();
 
   $vars['tip'] = theme('oap_tooltip', 'some-status', 'Tooltip message goes here. We may want to generalize tooltip markup generation.');
-  $vars['messages'] = oa_portal_get_messages($account->rmaxid);
   $vars['count'] = count($vars['messages']);
   // array(
   //   array('date' => 'Today', 'teaser' => 'Please complete the first phase of your application by clicking on...'),
