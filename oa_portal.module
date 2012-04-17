@@ -79,8 +79,10 @@ function oa_portal_menu() {
   );
 
   $p = oa_portal_initial_data();
-  foreach (element_children($p) AS $pk => $phase) {
-    foreach (element_children($phase) AS $sk => $section) {
+  foreach (element_children($p) AS $pk) {
+    $phase = $p[$pk];
+    foreach (element_children($phase) AS $sk) {
+      $section = $phase[$sk];
       $items['portal/'. $pk .'/'. $sk] = array(
         'type' => MENU_CALLBACK,
         'title' => $section['#title'],
@@ -92,7 +94,6 @@ function oa_portal_menu() {
       );
     }
   }
-  dsm($items, '@TODO Verify use of element_children');
   return $items;
 }
 
@@ -169,7 +170,7 @@ function oa_portal_theme($existing, $type, $theme, $path) {
     'oap_messages' => array(
       'template' => 'oap_messages',
       'path' => $path . '/templates',
-      'arguments' => array('tip' => NULL, 'count' => NULL, 'messages' => NULL),
+      'arguments' => array('messages' => NULL, 'tip' => NULL, 'count' => NULL),
     ),
     'oap_message_row' => array(
       'template' => 'oap_message_row',
@@ -700,10 +701,10 @@ function oa_portal_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
  */
 function oa_portal_get_messages($rmaxid, $read = 0, $limit = 100) {
   if ($read == 'all') {
-    $result = db_query("SELECT * FROM {ucm_messages} WHERE rmaxid = %d ORDER BY timestsamp DESC LIMIT $limit", $rmaxid, $limit);
+    $result = db_query("SELECT * FROM {ucm_messages} WHERE rmaxid = %d ORDER BY timestamp DESC LIMIT $limit", $rmaxid, $limit);
   }
   else {
-    $result = db_query("SELECT * FROM {ucm_messages} WHERE rmaxid = %d AND read = %d ORDER BY timestsamp DESC LIMIT $limit", $rmaxid, $read, $limit);
+    $result = db_query("SELECT * FROM {ucm_messages} WHERE rmaxid = %d AND was_read = %d ORDER BY timestamp DESC LIMIT $limit", $rmaxid, $read, $limit);
   }
   $messages = array();
   while ($data = db_fetch_object($result)) {
@@ -743,7 +744,7 @@ function oa_portal_get_message($rmaxid, $msg_id) {
 function oa_portal_mark_message_read($msg_id) {
   global $user;
   $account = user_load($user->uid);
-  db_query("UPDATE {ucm_messages} SET read = 1 WHERE rmaxid = %d AND msg_id = %d LIMIT 1", $account->rmaxid, $msg_id);
+  db_query("UPDATE {ucm_messages} SET was_read = 1 WHERE rmaxid = %d AND msg_id = %d LIMIT 1", $account->rmaxid, $msg_id);
 
   // @TODO
   if ($this_was_ajax) {

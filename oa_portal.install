@@ -91,7 +91,7 @@ function oa_portal_schema() {
           'not null'    => TRUE,
           'default'     => 0,
         ),
-        'read' => array(
+        'was_read' => array(
           'description' => 'Boolean indicating whether the message has been read by the user.',
           'type' => 'int',
           'not null' => TRUE,
@@ -99,9 +99,9 @@ function oa_portal_schema() {
         ),
       ),
       'indexes' => array(
-        'msg_timestamp' => array('timestamp'),
-        'msg_read' => array('read'),
-        'msg_rmaxid' => array('rmaxid'),
+        'timestamp' => array('timestamp'),
+        'was_read' => array('was_read'),
+        'rmaxid' => array('rmaxid'),
       ),
       'primary key' => array('msg_id'),
     ),
