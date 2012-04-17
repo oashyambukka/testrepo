@@ -1,6 +1,6 @@
-$(document).ready(function() {
-
-  $(".oap-tooltip-trigger").click(
+Drupal.behaviors.tooltips = function (context) {
+  // @TODO Verify operaional
+  $(".oap-tooltip-trigger", context).click(
     function() {
       $(".oap-tooltip").css("display","block");
     },
@@ -8,16 +8,21 @@ $(document).ready(function() {
       $(".oap-tooltip").css("display","none");
   });
 
-  $(".oap-tooltip .close").click(function() {
+  $(".oap-tooltip .close", context).click(function() {
     $(".oap-tooltip").css("display","none");
   });
 
+});
+
+Drupal.behaviors.addAnotherLink = function (context) {
   $(".add-another-link").click(function() {
     $(this).hide();
     $(this).parent().next().slideDown();
   });
+});
 
-
+// @TODO Verify still required
+Drupal.behaviors.paycheckOptions = function (context) {
   $('#edit-delivery-rdo-delivery-option-directdeposit-wrapper input, #edit-delivery-rdo-delivery-option-no-wrapper input, #edit-delivery-rdo-delivery-option-cashpay-wrapper input').change(function () { fieldset_change(this); });
 
   function fieldset_change(element) {
@@ -35,7 +40,9 @@ $(document).ready(function() {
       fieldset_hide('directdeposit');
     }
   }
-  
+}
+ 
+Drupal.behaviors.finalization = function (context) { 
   function fieldset_hide(id) {
     if (!$('#fieldset-' + id).hasClass('collapsed')) {
       $('#fieldset-' + id + ' legend a').click();
@@ -87,9 +94,14 @@ $(document).ready(function() {
     });
   }
 
-  var errors_exist = false;
-
+  // Unbind click events to fieldset anchors
+  $('fieldset.locked > legend a', context).each(function(link) {
+    $(link).unbind('click');
+  });
+  
   Drupal.Ajax.plugins.oaportal = function(hook, args) {
+    var errors_exist = false;
+    
     if (hook === 'submit') {
       $('#edit-finalize').hide();
       fieldsets_hide_all();
@@ -128,5 +140,4 @@ $(document).ready(function() {
       return false;
     }
   }
-
-});
+}
