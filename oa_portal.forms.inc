@@ -971,11 +971,12 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
   
   // Others
   unset($form_state['values'][433]['personelle']);
-  $form_state['values'][433]['signature'] = 'X Digital signature here';
   $form_state['values'][433]['personnelphone'] = '902-123-4567'; // @TODO Get phone from previous form?
   $form_state['values'][433]['timestamp'] = date('Y-m-d');
-  $success = oa_portal_ucm_createpdfform($account->rmaxid, 433, $form_state['values'][433]);
-  dsm($success, '433 success');
+  $submission = oa_portal_ucm_createpdfform($account->rmaxid, 433, $form_state['values'][433]);
+//  dsm($submission, '433 submission');
+  $form_state['redirect'] = 'portal/p2/medical';
+
   return;
   
   /**

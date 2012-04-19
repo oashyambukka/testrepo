@@ -12,14 +12,14 @@ Drupal.behaviors.tooltips = function (context) {
     $(".oap-tooltip").css("display","none");
   });
 
-});
+}
 
 Drupal.behaviors.addAnotherLink = function (context) {
   $(".add-another-link").click(function() {
     $(this).hide();
     $(this).parent().next().slideDown();
   });
-});
+}
 
 // @TODO Verify still required
 Drupal.behaviors.paycheckOptions = function (context) {
