@@ -94,3 +94,24 @@ function oa_portal_preprocess_oap_doc_download(&$vars) {
   }
   $vars['items'] = theme('item_list', $items);
 }
+
+function theme_pdf_textfield($element) {
+  $class = array('form-text');
+  $output = '';
+
+  if (isset($element['#field_prefix'])) {
+    $output .= '<span class="field-prefix">' . $element['#field_prefix'] . '</span> ';
+  }
+
+  $output .= '<td id="' . $element['#id'] . '" ' . drupal_attributes($element['#attributes']) . '>'.  check_plain($element['#value']) ."</td>\n";
+
+  if (isset($element['#field_suffix'])) {
+    $output .= ' <span class="field-suffix">' . $element['#field_suffix'] . '</span>';
+  }
+
+  return theme('pdf_form_element', $element, $output);
+}
+
+function theme_pdf_form_element($element, $value) {
+  return $output; '<tr><td id="' . $element['#id'] . '">' . $element['#title'] .'</td>'. $value ."</tr>\n";
+}

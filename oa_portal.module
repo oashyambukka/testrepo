@@ -78,9 +78,8 @@ function oa_portal_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $p = oa_portal_initial_data();
-  foreach (element_children($p) AS $pk) {
-    $phase = $p[$pk];
+  $p = oa_portal_forms_info();
+  foreach ($p AS $pk => $phase) {
     foreach (element_children($phase) AS $sk) {
       $section = $phase[$sk];
       $items['portal/'. $pk .'/'. $sk] = array(
@@ -103,18 +102,28 @@ function oa_portal_menu() {
  */
 function oa_portal_access($phase, $section) {
   global $user;
-  $p = oa_portal_get_candidate_data($user->uid);
-  // @TODO Needs work with new status keys
-  // Acceptable s
-  // Check if phase is unlocked
-  if (in_array($p[$phase]['#status'], array('', 'open'))) {
-    // Check if section has not yet been finalized
-    if (in_array($p[$phase][$section]['#status'], array('', 'rejected'))) {
-      return TRUE;
-    }
+  $account = user_load($user->uid);
+  $p = oa_portal_forms_info();
+
+  // If phase or section is closed
+  if ($p[$phase]['#status'] == 'closed') || $p[$phase][$section]['#status'] == 'closed')) {
+    return FALSE;
   }
-// Temporary
-return TRUE;
+  // If section is marked as read-only
+  if ($p[$phase][$section]['#status'] == 'read-only')) {
+    return TRUE;
+  }
+
+  return TRUE;
+  
+  $compliance = oa_portal_get_candidate_compliance_data($account->rmaxid);
+  
+  // Check dependencies are met
+  // continue;
+  
+  // Check if docs already submitted, in process, accepted, etc
+  // continue;
+  
   return FALSE;
 }
 
@@ -205,72 +214,67 @@ function oa_portal_theme($existing, $type, $theme, $path) {
 /**
  * 
  */
-function oa_portal_initial_data() {
+function oa_portal_forms_info() {
   $p = array();
+  $p1_formtypes = oa_portal_get_modality_formtypes(1, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
+  $checklist_formtypes = array_intersect(range(480, 532) + array(547), $p1_formtypes);
+  
   $p['p1'] = array(
     '#title' => t('Phase 1'),
     '#status' => 'open',
     'contact' => array(
       '#title' => t('Contact Information'),
-      '#dependencies' => array(),
       '#status' => 'closed',
-      '#data' => array(),
     ),
     'application' => array(
       '#title' => t('Application'),
-      '#dependencies' => array(),
-      '#status' => 'open',
-      '#data' => array(),
+      '#formtypes' => array(1),
     ),
     'checklist' => array(
       '#title' => t('Skills Checklist'),
-      '#dependencies' => array(),
-      '#status' => 'open',
-      '#data' => array(),
+      '#formtypes' => $checklist_formtypes,
     ),
   );
+  
+  // Licensure formtypes:
+  
+  $licensure_formtypes = array();
+  
   $p['p2'] = array(
     '#title' => t('Phase 2'),
-    '#status' => 'locked',
     'professional_orgs' => array(
       '#title' => t('Professional Organizations'),
-      '#dependencies' => array(),
-      '#status' => '',
-      '#data' => array(),
+      '#dependencies' => array(1),
+      '#status' => 'read-only',
+      '#formtypes' => array(),
     ),
     'licensure_certs' => array(
       '#title' => t('Licensure Certifications'),
       '#dependencies' => array(),
-      '#status' => '',
-      '#data' => array(),
+      '#formtypes' => array(),
     ),
     'background_reference' => array(
       '#title' => t('Background/Reference Check'),
       '#dependencies' => array(),
-      '#status' => '',
-      '#data' => array(),
+      '#formtypes' => array(233, 476, 477),
     ),
     'capabilities' => array(
       '#title' => t('Capabilities Questionnaire'),
       '#dependencies' => array(),
-      '#status' => '',
-      '#data' => array(),
+      '#formtypes' => array(5),
     ),
     'policies' => array(
       '#title' => t('Policies & Agreements'),
       '#dependencies' => array(),
-      '#status' => '',
-      '#data' => array(),
+      '#formtypes' => array(256, 433, 432),
     ),
     'medical' => array(
       '#title' => t('Medical Authorization and Disclosures'),
       '#dependencies' => array(),
-      '#status' => '',
-      '#data' => array(),
+      '#formtypes' => array(263,),
     ),
     'competency' => array(
       '#title' => t('Competency Test'),
-      '#status' => '',
     ),
   );
   $p['p3'] = array(
@@ -281,38 +285,38 @@ function oa_portal_initial_data() {
       '#phase' => 3,
       '#dependencies' => array(),
       '#status' => '',
-      '#data' => array(),
+      '#formtypes' => array(),
     ),
     'w4' => array(
       '#title' => t('W4'),
       '#phase' => 3,
       '#dependencies' => array(),
       '#status' => '',
-      '#data' => array(),
+      '#formtypes' => array(),
     ),
     'i9' => array(
       '#title' => t('I-9'),
       '#dependencies' => array(),
       '#status' => '',
-      '#data' => array(),
+      '#formtypes' => array(),
     ),
     'eeo' => array(
       '#title' => t('EEO Form'),
       '#dependencies' => array(),
       '#status' => '',
-      '#data' => array(),
+      '#formtypes' => array(),
     ),
     'work_policy' => array(
       '#title' => t('Work Policy'),
       '#dependencies' => array(),
       '#status' => '',
-      '#data' => array(),
+      '#formtypes' => array(),
     ),
   );
   return $p;
 }
 
-function oa_portal_get_candidate_data($uid) {
+function oa_portal_get_candidate_compliance_data($rmaxid) {
   $account = user_load($uid);
   if (!$account->oa_candidate_data) {
     $account->oa_candidate_data = oa_portal_initial_data();
@@ -462,7 +466,7 @@ function oa_portal_get_modality_formtypes($phase, $id) {
     'complianceRecordID' => $id,
     'doNotUpdate' => 1,
   );
-  $results = oa_portal_soap('ComplianceCheck', $params);
+  $results = oa_portal_soap('ComplianceCheck', $params, TRUE);
   return explode(',', $results->ComplianceCheckResult->{'OAPhase'. $phase .'MissingFormIDs'});
 }
 
@@ -575,6 +579,26 @@ function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
   $result = oa_portal_soap('createpdfform', $params);
   return (get_class($result) == 'SoapFault') ? FALSE : $result->createpdfformResult;
 }
+
+function oa_portal_html_to_pdf_string($rmaxid, $formtype, $values, $form) {
+  $to_render = oa_portal_html_to_pdf_change_type($forms, $values);
+  return drupal_render($to_render);
+}
+
+function oa_portal_html_to_pdf_change_type($felements, $values) {
+  foreach ($felements AS $ek => $element) {
+    if ($children = element_children($elements)) {
+      $child_values = $values[$ek];
+      $children = oa_portal_html_to_pdf_change_type($children, $child_values);
+    }
+    elseif ($felements[$ek]['#type']) {
+      $felements[$ek]['#type'] = 'pdf_'. $felement['#type'];
+      $felements[$ek]['#value'] = $values[$ek];
+    }
+  }
+  return $felements;
+}
+
 
 /**
  * Get file info by formtype (dDocName)

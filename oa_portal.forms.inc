@@ -35,7 +35,6 @@ function oa_portal_change_password_form_submit($form, &$form_state) {
  */
 function oa_portal_p1_application_form($form_state) {
   $form = array();
-  $form['#formtypes'] = array(1);
 
   $form['#description'] = '<p><br>If you are ready to begin working with On Assignment Healthcare Staffing, we\'re ready to start working with you.  Please complete the application and one of our experienced recruiters will contact you soon.</p><br>
   <p>Please be assured that On Assignment maintains a strict privacy policy.  We will not share your information with any third party without your authorization and will only contact you for the specific purpose of serving your request.</p><br><br>';
@@ -177,7 +176,8 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
     $form_state['redirect'] = 'portal/p1/checklist';
   }
   else {
-    drupal_set_message('An error occured. Please try again.');
+    drupal_set_message('An error occured. Please try again later.');
+    $form_state['redirect'] = 'portal';
   }
 }
 
@@ -185,14 +185,12 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
  * Form callback for Checklist
  */
 function oa_portal_p1_checklist_form($form_state) {
-  $form = array('#formtypes' => array());
+  $form = array();
   $form['directions'] = markup('<p>Directions: Indicate your level of experience by selecting the numbers below as follows:<br>
     1 = Can Function Independently<br>
     2 = Experienced, but May Need Review<br>
     3 = Limited Experience<br><br></p>');
 
-  $p1_formtypes = oa_portal_get_modality_formtypes(1, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
-  $checklist_formtypes = array_intersect(range(480, 532) + array(547), $p1_formtypes);
 //  $form['#formtypes'] = array(517);
   foreach ($form['#formtypes'] AS $cft) {
     $fn = 'oa_portal_p1_checklist_form_'. $cft;
@@ -221,6 +219,7 @@ function oa_portal_p1_checklist_form_submit($form, &$form_state) {
     drupal_set_message('An error occured. Please try again.');
   }
   else {
+    // @TODO -- do we need to show a message here?
     $form_state['redirect'] = 'portal';
   }
 }
@@ -663,8 +662,7 @@ function oa_portal_p1_checklist_form_547() {
  * Content is prepopulated from Application submission
  */
 function oa_portal_p2_professional_orgs_form($form_state) {
-  // @TODO Get Formtypes for uploaded/faxed Professional Organizations
-  $form['#formtypes'] = array();
+  $form = array();
 
   $form['prof_orgs'] = fieldset('Professional Organizations');
   $form['prof_orgs']['chk_no_orgs'] = checkbox('I am not a member of any organizations');
@@ -973,11 +971,13 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
   unset($form_state['values'][433]['personelle']);
   $form_state['values'][433]['personnelphone'] = '902-123-4567'; // @TODO Get phone from previous form?
   $form_state['values'][433]['timestamp'] = date('Y-m-d');
-  $submission = oa_portal_ucm_createpdfform($account->rmaxid, 433, $form_state['values'][433]);
-//  dsm($submission, '433 submission');
-  $form_state['redirect'] = 'portal/p2/medical';
 
-  return;
+  $pdf_html_string = oa_portal_html_to_pdf_string($account->rmaxid, 433, $form_state['values'][433], $form);
+  
+  // @TODO Check PDF HTML string
+  
+  $success = oa_portal_ucm_createpdfform($account->rmaxid, 433, $form_state['values'][433]);
+  dsm($success, '433 success');
   
   /**
    * @TODO Post 256 Substance Abuse Testing Consent to UCM
