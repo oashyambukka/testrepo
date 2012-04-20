@@ -17,20 +17,28 @@ function oa_portal_page() {
   $output .= '<div class="oap-status-icon oap-icon-open">Requires Your Attention!</div>';
   $output .= '<div class="oap-status-icon oap-icon-under-review">Currently Under Review!</div></div>';
 
-  $p = oa_portal_get_candidate_data($user->uid);
-  foreach (element_children($p) AS $pk) {
-    $phase = $p[$pk];
-    $name = $phase['#title'];
+
+  // Per-Candidate access checking
+  $compliance = oa_portal_forms_info_candidate($account->rmaxid);
+
+  $p = oa_portal_forms_info();
+  foreach ($p AS $pk => $portal) {
     $rows = array();
     $completed = 0;
     $ct = 0;
-    if ($phase['#status'] == 'completed') {
+    
+    // Check completion date for compliance
+    if ($phase == 'closed') {
       $completed++;
     }
-
     foreach (element_children($phase) AS $sk) {
       $section = $phase[$sk];
       $ct++;
+      $status = oa_portal_candidate_status($compliance, $phase, $section)
+      
+
+      
+      
       $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $section['#status']);
     }
     $output .= theme('oap_phase', $pk, $phase['#title'], $phase['#status'], implode("\n", $rows), "$completed of $ct");

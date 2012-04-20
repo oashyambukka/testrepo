@@ -1005,7 +1005,6 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
   else {
     $form_state['redirect'] = 'portal/p2/medical';
   }
-  oa_portal_candidate_data_set_status($account, 'p2', 'policies', 'under-review');
 }
 
 /**
@@ -1466,7 +1465,6 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
     drupal_add_js($path . '/js/autosave.js');
     
     $settings['autosave']['url'] = url('portal/autosave');
-    $settings['autosave']['period'] = variable_get('autosave_period', 120);
     $settings['autosave']['q'] = $_GET['q'];
     $settings['autosave']['form_id'] = $form_id;
     $settings['autosave']['form_id_id'] = $form['#id'];

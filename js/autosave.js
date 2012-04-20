@@ -15,7 +15,7 @@ Drupal.behaviors.autosave = function (context) {
   var changesNotSaved = function(event) {
     $('.fieldset-autosave-status', $(event.target).parents('fieldset.collapsible')).text('Changes not saved');
     // Wait 2 minutes before autosaving
-    timeout = setTimeout('Drupal.sendAutosave()', Drupal.settings.autosave.period * 1000);
+    timeout = setTimeout('Drupal.sendAutosave()', 120000);
   }
   $('form.oaportal input[type!="hidden"][type!="submit"], form.oaportal textarea').bind('keyup', changesNotSaved);
   $('form.oaportal input[type!="hidden"][type!="submit"], form.oaportal textarea').bind('copy', changesNotSaved);

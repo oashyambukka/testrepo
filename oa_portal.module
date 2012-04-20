@@ -87,7 +87,7 @@ function oa_portal_menu() {
         'title' => $section['#title'],
         'page callback' => 'drupal_get_form',
         'page arguments' => array('oa_portal_'. $pk .'_'. $sk .'_form'),
-        'access callback' => 'oa_portal_access',
+        'access callback' => 'oa_portal_candidate_access',
         'access arguments' => array($pk, $sk),
         'file' => 'oa_portal.forms.inc',
       );
@@ -97,34 +97,65 @@ function oa_portal_menu() {
 }
 
 /**
- * Implements hook_access().
  * Access callback for menu items
  */
-function oa_portal_access($phase, $section) {
+function oa_portal_candidate_access($phase, $section) {
   global $user;
   $account = user_load($user->uid);
-  $p = oa_portal_forms_info();
-
-  // If phase or section is closed
-  if ($p[$phase]['#status'] == 'closed') || $p[$phase][$section]['#status'] == 'closed')) {
-    return FALSE;
-  }
-  // If section is marked as read-only
-  if ($p[$phase][$section]['#status'] == 'read-only')) {
+  if (user_access('administer portal', $account)) {
     return TRUE;
   }
 
-  return TRUE;
-  
-  $compliance = oa_portal_get_candidate_compliance_data($account->rmaxid);
-  
-  // Check dependencies are met
-  // continue;
-  
-  // Check if docs already submitted, in process, accepted, etc
-  // continue;
-  
+  // Per-Candidate access checking
+  $compliance = oa_portal_forms_info_candidate($account->rmaxid);
+
+  if ($section = 'p1' || ($section == 'p2' && $compliance['p1']['approved_date']) || ($section == 'p3' && $compliance['p2']['approved_date'])) {
+    return TRUE;
+  }
   return FALSE;
+}
+
+/**
+ * Status for Portal section items
+ */
+function oa_portal_candidate_status($compliance, $phase, $section) {
+  global $user;
+  $p = oa_portal_forms_info();
+  
+  // If section is marked as read-only, verify phase is open
+  if ($p[$phase][$section]['#status'] == 'read-only')) {
+    if (($section == 'p2' && $compliance['p1']['approved_date']) || ($section == 'p3' && $compliance['p2']['approved_date'])) {
+      return 'open';
+    }
+    return 'closed';
+  }
+
+  // Global access checking - If phase or section is closed
+  if ($p[$phase]['#status'] == 'closed') || $p[$phase][$section]['#status'] == 'closed')) {
+    return 'closed';
+  }
+
+  // Check if dependencies are not met
+  if (count(array_intersect($p[$phase][$section]['#dependencies'], $compliance['missing_all']))) {
+    dsm('Cant open '. $phase .' - '. $section .' due to missing dependencies');
+    return 'closed';
+  }
+
+  if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['open']))) {
+    dsm($phase .' - '. $section .' is open');
+    return 'open';
+  }
+  if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['under-review']))) {
+    dsm($phase .' - '. $section .' is under review');
+    return 'under-review';
+  }
+  if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['closed']))) {
+    dsm($phase .' - '. $section .' is closed');
+    return 'closed';
+  }
+  
+  dsm('Something unexpected happened.');
+  return NULL;
 }
 
 /**
@@ -216,8 +247,6 @@ function oa_portal_theme($existing, $type, $theme, $path) {
  */
 function oa_portal_forms_info() {
   $p = array();
-  $p1_formtypes = oa_portal_get_modality_formtypes(1, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
-  $checklist_formtypes = array_intersect(range(480, 532) + array(547), $p1_formtypes);
   
   $p['p1'] = array(
     '#title' => t('Phase 1'),
@@ -228,11 +257,12 @@ function oa_portal_forms_info() {
     ),
     'application' => array(
       '#title' => t('Application'),
-      '#formtypes' => array(1),
+      '#formtypes' => array(2),
     ),
     'checklist' => array(
       '#title' => t('Skills Checklist'),
-      '#formtypes' => $checklist_formtypes,
+      // Set by candidate req
+      '#formtypes' => NULL,
     ),
   );
   
@@ -244,14 +274,14 @@ function oa_portal_forms_info() {
     '#title' => t('Phase 2'),
     'professional_orgs' => array(
       '#title' => t('Professional Organizations'),
-      '#dependencies' => array(1),
+      '#dependencies' => array(2),
       '#status' => 'read-only',
       '#formtypes' => array(),
     ),
     'licensure_certs' => array(
       '#title' => t('Licensure Certifications'),
-      '#dependencies' => array(),
-      '#formtypes' => array(),
+      // Set by candidate req
+      '#formtypes' => NULL,
     ),
     'background_reference' => array(
       '#title' => t('Background/Reference Check'),
@@ -271,10 +301,12 @@ function oa_portal_forms_info() {
     'medical' => array(
       '#title' => t('Medical Authorization and Disclosures'),
       '#dependencies' => array(),
-      '#formtypes' => array(263,),
+      // Missing others.
+      '#formtypes' => array(263),
     ),
     'competency' => array(
       '#title' => t('Competency Test'),
+      '#status' => 'read-only',
     ),
   );
   $p['p3'] = array(
@@ -316,33 +348,17 @@ function oa_portal_forms_info() {
   return $p;
 }
 
-function oa_portal_get_candidate_compliance_data($rmaxid) {
-  $account = user_load($uid);
-  if (!$account->oa_candidate_data) {
-    $account->oa_candidate_data = oa_portal_initial_data();
-    // @TODO Save account
-  }
-  return $account->oa_candidate_data;
-}
+function oa_portal_forms_info_candidate($rmaxid) {
+  $p = oa_portal_forms_info();
 
-function oa_portal_candidate_data_set_status($account, $phase, $step, $status) {
-  // Update applicant's status
-  $account->oa_candidate_data[$phase][$step]['#status'] = $status;
-
-  // Check each phase to see if complete
-  foreach ($account->oa_candidate_data AS $pk => $phase) {
-    $complete = TRUE;
-    foreach ($phase AS $sk => $section) {
-      if (substr($sk, 0, 1) !== '#') {
-        if (!$section['#status'] == 'closed') {
-          $completed = FALSE;
-        }
-      }
-    }
-    $account->oa_candidate_data[$pk]['#status'] = ($completed) ? 'locked' : 'open';
-  }
-
-  // @TODO Save account
+  $compliance = oa_portal_get_modality_formtypes(($_GET['modality']) ? $_GET['modality'] : 'T004615');
+  $missing_checklists = array_intersect(range(480, 532) + array(547), $compliance[1]['missing']);
+  $pr_checklists = array_intersect(range(480, 532) + array(547), $compliance[1]['pending_review']);
+  $p['p1']['checklists']['#formtypes'] = $missing_checklists;
+  
+  // @TODO Need to filter by file category?
+  $missing_checklists = array(); //array_intersect(range(480, 532) + array(547), $compliance[2]['missing']);
+  $p['p2']['licensure_certs'] = $missing_licensures;
 }
 
 /**
@@ -461,13 +477,21 @@ function oa_portal_rule_not_none($value) {
   return !((string) $value == 'none');
 }
 
-function oa_portal_get_modality_formtypes($phase, $id) {
+function oa_portal_get_modality_formtypes($rmaxid, $modality) {
   $params = array(
+    'rmaxid' => $rmaxid,
     'complianceRecordID' => $id,
-    'doNotUpdate' => 1,
   );
-  $results = oa_portal_soap('ComplianceCheck', $params, TRUE);
-  return explode(',', $results->ComplianceCheckResult->{'OAPhase'. $phase .'MissingFormIDs'});
+  $results = oa_portal_soap('drupalcounts', $params, TRUE);
+  foreach (array(1, 2, 3 AS $k) {
+    $return[$k]['approved_date'] = $results->drupalcountsResult->{'phase'. $k .'ApprovedDate'};
+  }
+  $return['open'] = explode(',', $results->ComplianceCheckResult->expired) + explode(',', $results->ComplianceCheckResult->missing) + explode(',', $results->ComplianceCheckResult->rejected);
+  $return['under-review'] = explode(',', $results->ComplianceCheckResult->inprogress) + explode(',', $results->ComplianceCheckResult->pendingreview);  
+  $return['closed'] = explode(',', $results->ComplianceCheckResult->approved);
+  $return['complianceApprovedDate'] = $results->drupalcountsResult->complianceApprovedDate;
+  $return['drupalcountsResult'] = $results->drupalcountsResult;
+  return $return;
 }
 
 /**
