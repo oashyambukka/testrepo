@@ -68,7 +68,7 @@ function oa_portal_preprocess_oap_phase_row(&$vars) {
  */
 function oa_portal_preprocess_oap_phase_status(&$vars) {
   global $user;
-  $p = oa_portal_get_candidate_data($uid);
+  $p = oa_portal_forms_info();
   $phase = $p[arg(1)];
   
   $vars['id'] = arg(1);
