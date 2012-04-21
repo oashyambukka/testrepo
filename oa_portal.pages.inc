@@ -18,25 +18,30 @@ function oa_portal_page() {
 
 
   // Per-Candidate access checking 
-  $compliance = oa_portal_forms_info_candidate($account->rmaxid, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
+  $compliance = oa_portal_get_modality_formtypes($account->rmaxid, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
+  $p = oa_portal_forms_info_candidate($account->rmaxid, $compliance);
 dsm($compliance, 'compliance');
-  $p = oa_portal_forms_info();
-  foreach ($p AS $pk => $portal) {
+dsm($p, 'p');
+
+  foreach ($p AS $pk => $phase) {
     $rows = array();
     $completed = 0;
     $ct = 0;
     
     // Check completion date for compliance
-    if ($phase == 'closed') {
+    if ($p[$pk]['#status'] == 'locked') {
       $completed++;
     }
     foreach (element_children($phase) AS $sk) {
       $section = $phase[$sk];
       $ct++;
-      $status = oa_portal_candidate_status($compliance, $phase, $section);
-      
-      
-      $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $section['#status']);
+      if ($p[$pk]['#status'] == 'locked') {
+        $rows[] = theme('oap_phase_row', $section['#title'], 'phase-closed');
+      }
+      else {
+        $status = oa_portal_candidate_status($p, $compliance, $pk, $sk);
+        $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $status);
+      }
     }
     $output .= theme('oap_phase', $pk, $phase['#title'], $phase['#status'], implode("\n", $rows), "$completed of $ct");
   }
