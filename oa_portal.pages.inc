@@ -7,7 +7,6 @@ function oa_portal_page() {
   global $user;
   $account = user_load($user->uid);
   $profile = oa_portal_ucm_profileview($account->rmaxid);
-//  dsm($profile, 'RMax Profile');
 
   if ($messages = oa_portal_get_messages($account->rmaxid)) {
     $output .= theme('oap_messages', $messages);
@@ -18,9 +17,9 @@ function oa_portal_page() {
   $output .= '<div class="oap-status-icon oap-icon-under-review">Currently Under Review!</div></div>';
 
 
-  // Per-Candidate access checking
-  $compliance = oa_portal_forms_info_candidate($account->rmaxid);
-
+  // Per-Candidate access checking 
+  $compliance = oa_portal_forms_info_candidate($account->rmaxid, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
+dsm($compliance, 'compliance');
   $p = oa_portal_forms_info();
   foreach ($p AS $pk => $portal) {
     $rows = array();
@@ -34,9 +33,7 @@ function oa_portal_page() {
     foreach (element_children($phase) AS $sk) {
       $section = $phase[$sk];
       $ct++;
-      $status = oa_portal_candidate_status($compliance, $phase, $section)
-      
-
+      $status = oa_portal_candidate_status($compliance, $phase, $section);
       
       
       $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $section['#status']);

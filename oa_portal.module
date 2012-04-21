@@ -123,7 +123,7 @@ function oa_portal_candidate_status($compliance, $phase, $section) {
   $p = oa_portal_forms_info();
   
   // If section is marked as read-only, verify phase is open
-  if ($p[$phase][$section]['#status'] == 'read-only')) {
+  if ($p[$phase][$section]['#status'] == 'read-only') {
     if (($section == 'p2' && $compliance['p1']['approved_date']) || ($section == 'p3' && $compliance['p2']['approved_date'])) {
       return 'open';
     }
@@ -131,7 +131,7 @@ function oa_portal_candidate_status($compliance, $phase, $section) {
   }
 
   // Global access checking - If phase or section is closed
-  if ($p[$phase]['#status'] == 'closed') || $p[$phase][$section]['#status'] == 'closed')) {
+  if ($p[$phase]['#status'] == 'closed' || $p[$phase][$section]['#status'] == 'closed') {
     return 'closed';
   }
 
@@ -348,17 +348,19 @@ function oa_portal_forms_info() {
   return $p;
 }
 
-function oa_portal_forms_info_candidate($rmaxid) {
+function oa_portal_forms_info_candidate($rmaxid, $complianceid) {
   $p = oa_portal_forms_info();
 
-  $compliance = oa_portal_get_modality_formtypes(($_GET['modality']) ? $_GET['modality'] : 'T004615');
+  $compliance = oa_portal_get_modality_formtypes($rmaxid, $complianceid);
   $missing_checklists = array_intersect(range(480, 532) + array(547), $compliance[1]['missing']);
-  $pr_checklists = array_intersect(range(480, 532) + array(547), $compliance[1]['pending_review']);
+  $pr_checklists = array_intersect(range(480, 532) + array(547), $compliance['under-review']);
   $p['p1']['checklists']['#formtypes'] = $missing_checklists;
   
   // @TODO Need to filter by file category?
   $missing_checklists = array(); //array_intersect(range(480, 532) + array(547), $compliance[2]['missing']);
   $p['p2']['licensure_certs'] = $missing_licensures;
+
+  return $p;
 }
 
 /**
@@ -369,6 +371,7 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
   $wsdl = array(
     'createcoversheet' => 'OAServices.wsdl',
     'createpdfform' => 'OAServices.wsdl',
+    'drupalcounts' => 'OAServices.wsdl',
     'oacheckin' => 'OAServices.wsdl',
     'profileview' => 'OAServices.wsdl',
     'CheckInUniversal' => 'CheckIn.wsdl',
@@ -407,6 +410,7 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
     dsm($client, $method . ' $client');
     dsm($response, $method . ' $response');
   }
+
   return $response;
 }
 
@@ -480,17 +484,27 @@ function oa_portal_rule_not_none($value) {
 function oa_portal_get_modality_formtypes($rmaxid, $modality) {
   $params = array(
     'rmaxid' => $rmaxid,
-    'complianceRecordID' => $id,
+    'complianceRecordID' => $modality,
+    'doNotUpdate' => 1,
   );
   $results = oa_portal_soap('drupalcounts', $params, TRUE);
-  foreach (array(1, 2, 3 AS $k) {
+  foreach (array(1, 2, 3) AS $k) {
     $return[$k]['approved_date'] = $results->drupalcountsResult->{'phase'. $k .'ApprovedDate'};
+    $return[$k]['missing'] = explode(',', $results->drupalcountsResult->{'OAPhase'. $k .'MissingFormIDs'});
   }
-  $return['open'] = explode(',', $results->ComplianceCheckResult->expired) + explode(',', $results->ComplianceCheckResult->missing) + explode(',', $results->ComplianceCheckResult->rejected);
-  $return['under-review'] = explode(',', $results->ComplianceCheckResult->inprogress) + explode(',', $results->ComplianceCheckResult->pendingreview);  
-  $return['closed'] = explode(',', $results->ComplianceCheckResult->approved);
+  $return['open'] = array_merge(
+    ($results->ComplianceCheckResult->expired == 0) ? array() : explode(',', $results->ComplianceCheckResult->expired),
+    ($results->ComplianceCheckResult->missing == 0) ? array() : explode(',', $results->ComplianceCheckResult->missing),
+    ($results->ComplianceCheckResult->rejected == 0) ? array() : explode(',', $results->ComplianceCheckResult->rejected)
+  );
+  $return['under-review'] = array_merge(
+    ($results->ComplianceCheckResult->inprogress == 0) ? array() : explode(',', $results->ComplianceCheckResult->inprogress),
+    ($results->ComplianceCheckResult->pendingreview == 0) ? array() : explode(',', $results->ComplianceCheckResult->pendingreview)
+  );
+  $return['closed'] = ($results->ComplianceCheckResult->approved == 0) ? array() : explode(',', $results->ComplianceCheckResult->approved);
   $return['complianceApprovedDate'] = $results->drupalcountsResult->complianceApprovedDate;
   $return['drupalcountsResult'] = $results->drupalcountsResult;
+dsm($return, 'oa_portal_get_modality_formtypes return');
   return $return;
 }
 
@@ -571,7 +585,7 @@ function oa_portal_ucm_docinfobyame($rmaxid, $formtype) {
  * Get RMax profile by RMaxID
  */
 function oa_portal_ucm_profileview($rmaxid) {
-  $result = oa_portal_soap('profileview', array('schViewName' => 'vOA_Profile', 'whereClause' => "rmaxid='". $rmaxid ."'"));
+  $result = oa_portal_soap('profileview', array('schViewName' => 'vOA_Profile', 'whereClause' => "rmaxid='". $rmaxid ."'"), TRUE);
   if (get_class($result) == 'SoapFault') {
 dsm('Found a SoapFault where we shouldnt have one');
     return FALSE;
