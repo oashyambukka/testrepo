@@ -25,6 +25,17 @@ Drupal.behaviors.addAnotherLink = function (context) {
 Drupal.behaviors.paycheckOptions = function (context) {
   $('#edit-delivery-rdo-delivery-option-directdeposit-wrapper input, #edit-delivery-rdo-delivery-option-no-wrapper input, #edit-delivery-rdo-delivery-option-cashpay-wrapper input').change(function () { fieldset_change(this); });
 
+  function fieldset_hide(id) {
+    if (!$('#fieldset-' + id).hasClass('collapsed')) {
+      $('#fieldset-' + id + ' legend a').click();
+    }
+  }
+  function fieldset_show(id) {
+    if ($('#fieldset-' + id).hasClass('collapsed')) {
+      $('#fieldset-' + id + ' legend a').click();
+    }
+  }
+
   function fieldset_change(element) {
     var value = $(element).val();
     if (value == 'cashpay') {
@@ -43,16 +54,6 @@ Drupal.behaviors.paycheckOptions = function (context) {
 }
  
 Drupal.behaviors.finalization = function (context) { 
-  function fieldset_hide(id) {
-    if (!$('#fieldset-' + id).hasClass('collapsed')) {
-      $('#fieldset-' + id + ' legend a').click();
-    }
-  }
-  function fieldset_show(id) {
-    if ($('#fieldset-' + id).hasClass('collapsed')) {
-      $('#fieldset-' + id + ' legend a').click();
-    }
-  }
 
   function fieldsets_hide_all() {
     $('fieldset').each(function() {

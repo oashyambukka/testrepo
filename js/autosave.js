@@ -3,7 +3,7 @@ Drupal.behaviors.autosave = function (context) {
   var autosaved = Drupal.settings.autosave;   
 
   // Fieldset placeholder for Autosave status
-  $('form.oaportal fieldset legend').append('<span class="fieldset-autosave-status">TESTRP</span>');
+  $('form.oaportal fieldset legend').append('<span class="fieldset-autosave-status"></span>');
 
   // Set form to autosaved values, should they exist
   if (autosaved.serialized) {

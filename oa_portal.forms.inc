@@ -1366,7 +1366,6 @@ function oa_portal_p3_eeo_form_submit($form, &$form_state) {
  */
 function oa_portal_p3_work_policy_form($form_state) {
   $form = array();
-  $form['#formtypes'] = array(466);
 
   // All sections on this form submit to Formtype 466
   $form['harassment'] = fieldset('Harassment Policy Acknowledgement');
@@ -1418,7 +1417,10 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
   if (substr($form_id, 0, 11) == 'oa_portal_p') {
     $form['#attributes'] = array('class' => 'oaportal');
     $form['#ajax'] = array('enabled' => TRUE, 'disable_redirect' => TRUE);
-  
+    $p = oa_portal_forms_info();
+    $form['#formtypes'] = $p[arg(1)][arg(2)]['#formtypes'];
+
+
     $form['finalize'] = array(
       '#type' => 'button',
       '#value' => t('Finalize'),
@@ -1478,7 +1480,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
     }
     drupal_add_js($settings, 'setting');
 
-//    dsm($form, 'Completed $form');
+    dsm($form, 'Completed $form');
   }
 }
 

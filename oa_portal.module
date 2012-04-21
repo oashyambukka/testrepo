@@ -272,10 +272,6 @@ function oa_portal_forms_info() {
     ),
   );
   
-  // Licensure formtypes:
-  
-  $licensure_formtypes = array();
-  
   $p['p2'] = array(
     '#title' => t('Phase 2'),
     'professional_orgs' => array(
@@ -323,32 +319,32 @@ function oa_portal_forms_info() {
       '#phase' => 3,
       '#dependencies' => array(),
       '#status' => '',
-      '#formtypes' => array(),
+      '#formtypes' => array(536, 537),
     ),
     'w4' => array(
       '#title' => t('W4'),
       '#phase' => 3,
       '#dependencies' => array(),
       '#status' => '',
-      '#formtypes' => array(),
+      '#formtypes' => array(474),
     ),
     'i9' => array(
       '#title' => t('I-9'),
       '#dependencies' => array(),
       '#status' => '',
-      '#formtypes' => array(),
+      '#formtypes' => array(461),
     ),
     'eeo' => array(
       '#title' => t('EEO Form'),
       '#dependencies' => array(),
       '#status' => '',
-      '#formtypes' => array(),
+      '#formtypes' => array(1),
     ),
     'work_policy' => array(
       '#title' => t('Work Policy'),
       '#dependencies' => array(),
       '#status' => '',
-      '#formtypes' => array(),
+      '#formtypes' => array(466),
     ),
   );
   return $p;
@@ -357,13 +353,15 @@ function oa_portal_forms_info() {
 function oa_portal_forms_info_candidate($rmaxid, $compliance) {
   $p = oa_portal_forms_info();
 
+  // @TODO Use AdvancedSearch or otherwise to filter by file category for checklists, licensures & certs, etc.
   $missing_checklists = array_intersect(range(480, 532) + array(547), $compliance[1]['missing']);
-  $pr_checklists = array_intersect(range(480, 532) + array(547), $compliance['under-review']);
+  // $pr_checklists = array_intersect(range(480, 532) + array(547), $compliance['under-review']);
   $p['p1']['checklist']['#formtypes'] = $missing_checklists;
   
-  // @TODO Need to filter by file category?
+  // @TODO Use AdvancedSearch or otherwise to filter by file category for checklists, licensures & certs, etc.
   $missing_licensures = array(); //array_intersect(range(480, 532) + array(547), $compliance[2]['missing']);
   $p['p2']['licensure_certs']['#formtypes'] = $missing_licensures;
+
 
   $p['p2']['#status'] = 'locked';
   $p['p3']['#status'] = 'locked';
@@ -604,10 +602,7 @@ function oa_portal_ucm_docinfobyame($rmaxid, $formtype) {
  */
 function oa_portal_ucm_profileview($rmaxid) {
   $result = oa_portal_soap('profileview', array('schViewName' => 'vOA_Profile', 'whereClause' => "rmaxid='". $rmaxid ."'"));
-  if (get_class($result) == 'SoapFault') {
-dsm('Found a SoapFault where we shouldnt have one');
-    return FALSE;
-  }
+
   $profile = $result->profileviewResult->profiledata;
   $profile->name = $profile->fname .' '. $profile->lname;
   $address = $profile->addressline1;
