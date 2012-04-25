@@ -42,6 +42,7 @@
 #finalize-confirm-box {
 	background:#F7BDBC;
 	float:right;
+	clear:both;
 	width:340px;
 	overflow:auto;
 	font-size:14px;
@@ -74,6 +75,18 @@
   height: 18px;
   background-image: url(../img/ajax-loader.gif);
 }
+
+
+/*** Autosave ***/
+.fieldset-autosave-status {
+	display:inline;
+	float:right;
+	font-size:10px;
+	margin-top:5px;
+}
+
+/*** Throbber ***/
+#form-throbber {display:block;clear:both;float:right;margin:20px 30px 0 0}
 
 
 /***** GENERAL STYLES FOR ALL FORMS ****************************************************************/
@@ -245,6 +258,7 @@
 	overflow:hidden;
 	padding:5px 25px;
 	margin-right:5%;
+	margin-top:20px;
 	width:500px;
 	float:right;
 	outline: 2px solid #666;
