@@ -16,12 +16,11 @@ function oa_portal_page() {
   $output .= '<div class="oap-status-icon oap-icon-open">Requires Your Attention!</div>';
   $output .= '<div class="oap-status-icon oap-icon-under-review">Currently Under Review!</div></div>';
 
-
   // Per-Candidate access checking 
   $compliance = oa_portal_get_modality_formtypes($account->rmaxid, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
+  dsm($compliance, '$compliance');
   $p = oa_portal_forms_info_candidate($account->rmaxid, $compliance);
-dsm($compliance, 'compliance');
-dsm($p, 'p');
+  dsm($p, '$p');
 
   foreach ($p AS $pk => $phase) {
     $rows = array();

@@ -122,7 +122,7 @@ function oa_portal_candidate_status($p, $compliance, $phase, $section) {
   global $user;
   // If section is marked as read-only, verify phase is open
   if ($p[$phase][$section]['#status'] == 'read-only') {
-    if (($section == 'p2' && $compliance['p1']['approved_date']) || ($section == 'p3' && $compliance['p2']['approved_date'])) {
+    if (($section == 'p2' && $compliance[1]['approved_date']) || ($section == 'p3' && $compliance[2]['approved_date'])) {
       return 'open';
     }
     return 'closed';
@@ -141,15 +141,19 @@ function oa_portal_candidate_status($p, $compliance, $phase, $section) {
     }
   }
 
+  // Counting on #formtypes at this point. 
   if (is_array($p[$phase][$section]['#formtypes'])) {
+    // Check for open forms first. Those are missing
     if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['open']))) {
       dsm($phase .' - '. $section .' is open');
       return 'open';
     }
+    // Otherwise we probably have some files under review
     if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['under-review']))) {
       dsm($phase .' - '. $section .' is under review');
       return 'under-review';
     }
+    // Everything is closed. All clear.
     if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['closed']))) {
       dsm($phase .' - '. $section .' is closed');
       return 'closed';
@@ -354,9 +358,9 @@ function oa_portal_forms_info_candidate($rmaxid, $compliance) {
   $p = oa_portal_forms_info();
 
   // @TODO Use AdvancedSearch or otherwise to filter by file category for checklists, licensures & certs, etc.
-  $missing_checklists = array_intersect(range(480, 532) + array(547), $compliance[1]['missing']);
+  $all_checklists = array_intersect(range(480, 532) + array(547), array_merge($compliance['open'], $compliance['under-review'], $compliance['closed']));
   // $pr_checklists = array_intersect(range(480, 532) + array(547), $compliance['under-review']);
-  $p['p1']['checklist']['#formtypes'] = $missing_checklists;
+  $p['p1']['checklist']['#formtypes'] = $all_checklists;
   
   // @TODO Use AdvancedSearch or otherwise to filter by file category for checklists, licensures & certs, etc.
   $missing_licensures = array(); //array_intersect(range(480, 532) + array(547), $compliance[2]['missing']);
@@ -506,7 +510,7 @@ function oa_portal_get_modality_formtypes($rmaxid, $modality) {
   $dcr = $results->drupalcountsResult;
   foreach (array(1, 2, 3) AS $k) {
     $return[$k]['approved_date'] = $dcr->{'phase'. $k .'ApprovedDate'};
-    $return[$k]['missing'] = explode(',', $dcr->{'OAPhase'. $k .'MissingFormIDs'});
+//    $return[$k]['missing'] = explode(',', $dcr->{'OAPhase'. $k .'MissingFormIDs'});
   }
   $return['open'] = array_merge(
     ($dcr->expired == 0) ? array() : explode(',', $dcr->expired),
