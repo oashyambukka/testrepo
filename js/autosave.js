@@ -8,19 +8,20 @@ Drupal.behaviors.autosave = function (context) {
   // Set form to autosaved values, should they exist
   if (autosaved.serialized) {
     $('#' + autosaved.form_id_id).formHash(autosaved.serialized);
-    $('form.oaportal fieldset legend .fieldset-autosave-status').text('Autosave recovered');
+    $('form.oaportal fieldset legend .fieldset-autosave-status').text('Autosave recovered').addClass('autosaved-recovered');
   }
 
   // If keypress, copy, paste or cut in any input or textarea, notify that the form has changed but has not been autosaved
   var changesNotSaved = function(event) {
-    $('.fieldset-autosave-status', $(event.target).parents('fieldset.collapsible')).text('Changes not saved');
+    $('.fieldset-autosave-status', $(event.target).parents('fieldset.collapsible')).text('Changes not saved').removeClass('autosaved-recovered').removeClass('changes-saved').addClass('not-saved');
     // Wait 2 minutes before autosaving
     timeout = setTimeout('Drupal.sendAutosave()', 120000);
   }
-  $('form.oaportal input[type!="hidden"][type!="submit"], form.oaportal textarea').bind('keyup', changesNotSaved);
-  $('form.oaportal input[type!="hidden"][type!="submit"], form.oaportal textarea').bind('copy', changesNotSaved);
-  $('form.oaportal input[type!="hidden"][type!="submit"], form.oaportal textarea').bind('paste', changesNotSaved);
-  $('form.oaportal input[type!="hidden"][type!="submit"], form.oaportal textarea').bind('cut', changesNotSaved);
+  var allFields = $('form.oaportal input[type!="hidden"][type!="submit"], form.oaportal textarea');
+  allFields.bind('keyup', changesNotSaved);
+  allFields.bind('copy', changesNotSaved);
+  allFields.bind('paste', changesNotSaved);
+  allFields.bind('cut', changesNotSaved);
 
 
   // If any form element changes, send the Autosave
@@ -39,7 +40,7 @@ Drupal.behaviors.autosave = function (context) {
       dataType: "xml/html/script/json",
       data: serialized,
       complete: function(XMLHttpRequest, textStatus) {
-        $('form.oaportal .fieldset-autosave-status').text('Changes saved');
+        $('form.oaportal .fieldset-autosave-status').text('Changes saved').removeClass('autosaved-recovered').removeClass('not-saved').addClass('changes-saved');
       }
     });
   }
