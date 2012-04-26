@@ -97,6 +97,13 @@ function oa_portal_menu() {
 }
 
 /**
+ * Implements hook_perm()
+ */
+function oa_portal_perm() {
+  return array('administer portal', 'access portal');
+}
+
+/**
  * Access callback for menu items
  */
 function oa_portal_candidate_access($phase, $section) {
