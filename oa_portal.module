@@ -515,7 +515,7 @@ function oa_portal_get_modality_formtypes($rmaxid, $modality) {
   );
   $results = oa_portal_soap('drupalcounts', $params);
   if ($results->drupalcountsResult->StatusInfo->statusCode === -1) {
-    oa_portal_503($e);
+    oa_portal_503();
   }
 
   $dcr = $results->drupalcountsResult;
@@ -679,10 +679,14 @@ function oa_portal_ucm_advanced_search_docs_not_missing($rmaxid, $formtypes) {
   return (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults : array($result->AdvancedSearchResult->SearchResults);
 }
 
-function oa_portal_500($e) {
+function oa_portal_500($e = NULL) {
   drupal_set_header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
-
-  watchdog('500 internal server error', check_plain($_GET['q']) .' <pre>'. print_r($e, TRUE) .'</pre>', NULL, WATCHDOG_WARNING);
+  if ($e) {
+    watchdog('500 internal server error', check_plain($_GET['q']) .' <pre>'. print_r($e, TRUE) .'</pre>', NULL, WATCHDOG_WARNING);
+  }
+  else {
+    watchdog('500 internal server error', check_plain($_GET['q']), NULL, WATCHDOG_WARNING);
+  }
 
   // Keep old path for reference, and to allow forms to redirect to it.
   if (!isset($_REQUEST['destination'])) {
@@ -700,7 +704,9 @@ function oa_portal_500($e) {
   if (empty($return) || $return == MENU_NOT_FOUND || $return == MENU_ACCESS_DENIED) {
     drupal_set_title(t('Internal Server Error'));
     $return = t('The requested page could not be delivered. Please try again later.');
-    $return .= '<div class="error-message">'. $e->getMessage() .'</div>';
+    if ($e) {
+      $return .= '<div class="error-message">'. $e->getMessage() .'</div>';
+    }
   }
 
   // To conserve CPU and bandwidth, omit the blocks.
@@ -708,11 +714,14 @@ function oa_portal_500($e) {
   exit();
 }
 
-function oa_portal_503($e) {
+function oa_portal_503($e = NULL) {
   drupal_set_header($_SERVER['SERVER_PROTOCOL'] . ' 503 Service Unavailable');
-
-  watchdog('503 service unavailable', check_plain($_GET['q']) .' <pre>'. print_r($e, TRUE) .'</pre>', NULL, WATCHDOG_WARNING);
-
+  if ($e) {
+    watchdog('503 service unavailable', check_plain($_GET['q']) .' <pre>'. print_r($e, TRUE) .'</pre>', NULL, WATCHDOG_WARNING);
+  }
+  else {
+    watchdog('503 service unavailable', check_plain($_GET['q']), NULL, WATCHDOG_WARNING);
+  }
   // Keep old path for reference, and to allow forms to redirect to it.
   if (!isset($_REQUEST['destination'])) {
     $_REQUEST['destination'] = $_GET['q'];
@@ -725,11 +734,12 @@ function oa_portal_503($e) {
     menu_set_active_item($path);
     $return = menu_execute_active_handler($path);
   }
-
   if (empty($return) || $return == MENU_NOT_FOUND || $return == MENU_ACCESS_DENIED) {
     drupal_set_title(t('Service Unavailable'));
     $return = t('The requested page could not be delivered. Please try again later.');
-    $return .= '<div class="error-message">'. $e->getMessage() .'</div>';
+    if ($e) {
+      $return .= '<div class="error-message">'. $e->getMessage() .'</div>';
+    }
   }
 
   // To conserve CPU and bandwidth, omit the blocks.
