@@ -514,6 +514,10 @@ function oa_portal_get_modality_formtypes($rmaxid, $modality) {
     'doNotUpdate' => 1,
   );
   $results = oa_portal_soap('drupalcounts', $params);
+  if ($results->drupalcountsResult->StatusInfo->statusCode === -1) {
+    oa_portal_503($e);
+  }
+
   $dcr = $results->drupalcountsResult;
   foreach (array(1, 2, 3) AS $k) {
     $return[$k]['approved_date'] = $dcr->{'phase'. $k .'ApprovedDate'};
