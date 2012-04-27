@@ -175,6 +175,33 @@
 					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
 				</s:sequence>
 			</s:complexType>
+			<s:element name="oasendemail">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="to" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="from" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="cc" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="messagetype" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="rmaxid" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="subject" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="payload" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="processor" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="oasendemailResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="oasendemailResult" type="s0:oasendemailResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="oasendemailResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
 			<s:complexType name="profiledata">
 				<s:sequence>
 					<s:element minOccurs="0" maxOccurs="1" name="rmaxid" type="s:string" />
@@ -255,6 +282,12 @@
 	<message name="drupalcountsSoapOut">
 		<part name="parameters" element="s0:drupalcountsResponse" />
 	</message>
+	<message name="oasendemailSoapIn">
+		<part name="parameters" element="s0:oasendemail" />
+	</message>
+	<message name="oasendemailSoapOut">
+		<part name="parameters" element="s0:oasendemailResponse" />
+	</message>
 	<portType name="OAServicesSoap">
 		<operation name="createcoversheet">
 			<input message="s0:createcoversheetSoapIn" />
@@ -279,6 +312,10 @@
 		<operation name="drupalcounts">
 			<input message="s0:drupalcountsSoapIn" />
 			<output message="s0:drupalcountsSoapOut" />
+		</operation>
+		<operation name="oasendemail">
+			<input message="s0:oasendemailSoapIn" />
+			<output message="s0:oasendemailSoapOut" />
 		</operation>
 	</portType>
 	<binding name="OAServicesSoap" type="s0:OAServicesSoap">
@@ -329,6 +366,15 @@
 			</output>
 		</operation>
 		<operation name="drupalcounts">
+			<soap:operation soapAction="http://www.stellent.com/OAServices/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="oasendemail">
 			<soap:operation soapAction="http://www.stellent.com/OAServices/" style="document" />
 			<input>
 				<soap:body use="literal" />
