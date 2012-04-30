@@ -1,5 +1,6 @@
 <?php
 
+include_once('oa_portal.candidate.class.inc');
 include_once('oa_portal.theme.inc');
 
 /**
@@ -114,66 +115,16 @@ function oa_portal_candidate_access($phase, $section) {
   }
 
   // Per-Candidate access checking
-  $compliance = oa_portal_forms_info_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid);
+  // May require this eventually
+  //$candidate->load_compliance();
 
-  if ($section = 'p1' || ($section == 'p2' && $compliance['p1']['approved_date']) || ($section == 'p3' && $compliance['p2']['approved_date'])) {
+  if ($section = 'p1' || ($section == 'p2' && $candidate->compliance['p1']['approved_date']) || ($section == 'p3' && $candidate->compliance['p2']['approved_date'])) {
     return TRUE;
   }
   return FALSE;
 }
 
-/**
- * Status for Portal section items
- */
-function oa_portal_candidate_status($p, $compliance, $phase, $section) {
-  global $user;
-  // If section is marked as read-only, verify phase is open
-  if ($p[$phase][$section]['#status'] == 'read-only') {
-    if (($section == 'p2' && $compliance[1]['approved_date']) || ($section == 'p3' && $compliance[2]['approved_date'])) {
-      return 'open';
-    }
-    return 'closed';
-  }
-
-  // Global access checking - If phase or section is closed
-  if ($p[$phase]['#status'] == 'closed' || $p[$phase][$section]['#status'] == 'closed') {
-    return 'closed';
-  }
-
-  // Check if dependencies are not met
-  if (is_array($p[$phase][$section]['#dependencies'])) {
-    if (count(array_intersect($p[$phase][$section]['#dependencies'], $compliance['open']))) {
-      dsm('Cant open '. $phase .' - '. $section .' due to missing dependencies');
-      return 'closed';
-    }
-  }
-
-  // Counting on #formtypes at this point. 
-  if (is_array($p[$phase][$section]['#formtypes'])) {
-    // Check for open forms first. Those are missing
-    if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['open']))) {
-      dsm($phase .' - '. $section .' is open');
-      return 'open';
-    }
-    // Otherwise we probably have some files under review
-    if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['under-review']))) {
-      dsm($phase .' - '. $section .' is under review');
-      return 'under-review';
-    }
-    // Everything is closed. All clear.
-    if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['closed']))) {
-      dsm($phase .' - '. $section .' is closed');
-      return 'closed';
-    }
-  }  
-  if (!is_array($p[$phase][$section]['#formtypes'])) {
-    dsm('Cant give a status for '. $phase .' - '. $section .' due to missing formtypes');
-  }
-  else {
-    dsm('Something unexpected happened.');
-  }
-  return NULL;
-}
 
 /**
  * Implements hook_block().
@@ -361,30 +312,6 @@ function oa_portal_forms_info() {
   return $p;
 }
 
-function oa_portal_forms_info_candidate($rmaxid, $compliance) {
-  $p = oa_portal_forms_info();
-
-  // @TODO Use AdvancedSearch or otherwise to filter by file category for checklists, licensures & certs, etc.
-  $all_checklists = array_intersect(range(480, 532) + array(547), array_merge($compliance['open'], $compliance['under-review'], $compliance['closed']));
-  // $pr_checklists = array_intersect(range(480, 532) + array(547), $compliance['under-review']);
-  $p['p1']['checklist']['#formtypes'] = $all_checklists;
-  
-  // @TODO Use AdvancedSearch or otherwise to filter by file category for checklists, licensures & certs, etc.
-  $missing_licensures = array(); //array_intersect(range(480, 532) + array(547), $compliance[2]['missing']);
-  $p['p2']['licensure_certs']['#formtypes'] = $missing_licensures;
-
-
-  $p['p2']['#status'] = 'locked';
-  $p['p3']['#status'] = 'locked';
-  if ($compliance['p1']['approved_date']) {
-    $p['p2']['#status'] = 'open';
-  }
-  if ($compliance['p2']['approved_date']) {
-    $p['p3']['#status'] = 'open';
-  }
-  return $p;
-}
-
 /**
  * SOAP interface
  */
@@ -521,7 +448,6 @@ function oa_portal_get_modality_formtypes($rmaxid, $modality) {
   $dcr = $results->drupalcountsResult;
   foreach (array(1, 2, 3) AS $k) {
     $return[$k]['approved_date'] = $dcr->{'phase'. $k .'ApprovedDate'};
-//    $return[$k]['missing'] = explode(',', $dcr->{'OAPhase'. $k .'MissingFormIDs'});
   }
   $return['open'] = array_merge(
     ($dcr->expired == 0) ? array() : explode(',', $dcr->expired),
@@ -535,7 +461,6 @@ function oa_portal_get_modality_formtypes($rmaxid, $modality) {
   $return['closed'] = ($dcr->approved == 0) ? array() : explode(',', $dcr->approved);
   $return['complianceApprovedDate'] = $dcr->complianceApprovedDate;
   $return['drupalcountsResult'] = $dcr;
-dsm($return, 'oa_portal_get_modality_formtypes return');
   return $return;
 }
 
@@ -610,22 +535,6 @@ function oa_portal_ucm_docinfobyid($dID) {
 function oa_portal_ucm_docinfobyame($rmaxid, $formtype) {
   $result = oa_portal_soap('DocInfoByName', array('dDocName' => $rmaxid .'_'. $formtype));
   return (get_class($result) == 'SoapFault') ? FALSE : $result->DocInfoByNameResult;
-}
-
-/**
- * Get RMax profile by RMaxID
- */
-function oa_portal_ucm_profileview($rmaxid) {
-  $result = oa_portal_soap('profileview', array('schViewName' => 'vOA_Profile', 'whereClause' => "rmaxid='". $rmaxid ."'"));
-
-  $profile = $result->profileviewResult->profiledata;
-  $profile->name = $profile->fname .' '. $profile->lname;
-  $address = $profile->addressline1;
-  $address .= ($profile->addressline2) ? ' '. $profile->addressline2 : NULL;
-  $address .= ($profile->addressline3) ? ' '. $profile->addressline3 : NULL;
-  $address .= ' '. $profile->city .', '. $profile->state .' '. $profile->postal;
-  $profile->address = $address;
-  return $profile;
 }
 
 

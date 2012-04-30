@@ -150,7 +150,7 @@ function oa_portal_p1_application_form($form_state) {
 function oa_portal_p1_application_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
-  $profile = oa_portal_ucm_profileview($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid);
   
   /**
    * @TODO Post all sections in 2 Application to UCM
@@ -169,7 +169,7 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
     'city' => 'city',
     'state' => 'state',
     'postal' => 'postal') AS $pdff => $rmaxf) {
-    $fields[$pdff] = $profile->{$rmaxf};
+    $fields[$pdff] = $candidate->profile->{$rmaxf};
   }
 
   if ($success = oa_portal_ucm_createpdfform($account->rmaxid, $formtype, $fields)) {
@@ -944,7 +944,7 @@ function oa_portal_p2_policies_form($form_state) {
 function oa_portal_p2_policies_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
-  $profile = oa_portal_ucm_profileview($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid);
 
   /**
    * @TODO Post 433 Employment Agreement to UCM
@@ -964,7 +964,7 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
     'personneladdress2' => 'addressline2',
     'personneladdress3' => 'addressline3',
     ) AS $pdff => $rmaxf) {
-    $form_state['values'][433][$pdff] = $profile->{$rmaxf};
+    $form_state['values'][433][$pdff] = $candidate->profile->{$rmaxf};
   }
   
   // Others
@@ -1450,7 +1450,6 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
       }
     }
     if (count($form['#formtypes'])) {
-      $account = user_load(array('uid' => $user->uid));
       $form['#docs'] = oa_portal_ucm_advanced_search_docs_not_missing($account->rmaxid, $form['#formtypes']);
       if (is_array($form['#docs']) && count($form['#docs'])) {
         $form['docs'] = array(

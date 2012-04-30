@@ -68,18 +68,18 @@ function oa_portal_preprocess_oap_phase_row(&$vars) {
  */
 function oa_portal_preprocess_oap_phase_status(&$vars) {
   global $user;
-  $p = oa_portal_forms_info();
-  $phase = $p[arg(1)];
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid);
+  $phase = $candidate->p[arg(1)];
   
   $vars['id'] = arg(1);
   $vars['status'] = $phase['#status'];
   $vars['title'] = $phase['#title'];
   
   $items = array();
-  foreach ($phase AS $sk => $section) {
-    if (substr($sk, 0, 1) !== '#') {
-      $items[] = theme('oap_phase_row', $section['#title'], $section['#status']);
-    }
+  foreach (element_children($phase) AS $sk) {
+    $section = $phase[$sk];
+    $items[] = theme('oap_phase_row', $section['#title'], $candidate->get_section_status(arg(1), $sk));
   }
   $vars['phases'] = implode("\n", $items);
 }

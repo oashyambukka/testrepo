@@ -6,7 +6,6 @@
 function oa_portal_page() {
   global $user;
   $account = user_load($user->uid);
-  $profile = oa_portal_ucm_profileview($account->rmaxid);
 
   if ($messages = oa_portal_get_messages($account->rmaxid)) {
     $output .= theme('oap_messages', $messages);
@@ -16,13 +15,10 @@ function oa_portal_page() {
   $output .= '<div class="oap-status-icon oap-icon-open">Requires Your Attention!</div>';
   $output .= '<div class="oap-status-icon oap-icon-under-review">Currently Under Review!</div></div>';
 
-  // Per-Candidate access checking 
-  $compliance = oa_portal_get_modality_formtypes($account->rmaxid, ($_GET['modality']) ? $_GET['modality'] : 'T004615');
-  dsm($compliance, '$compliance');
-  $p = oa_portal_forms_info_candidate($account->rmaxid, $compliance);
-  dsm($p, '$p');
+  $candidate = get_candidate($account->rmaxid);
+  dsm($candidate, '$candidate object');
 
-  foreach ($p AS $pk => $phase) {
+  foreach ($candidate->p AS $pk => $phase) {
     $rows = array();
     $completed = 0;
     $ct = 0;
@@ -34,11 +30,11 @@ function oa_portal_page() {
     foreach (element_children($phase) AS $sk) {
       $section = $phase[$sk];
       $ct++;
-      if ($p[$pk]['#status'] == 'locked') {
+      if ($candidate->p[$pk]['#status'] == 'locked') {
         $rows[] = theme('oap_phase_row', $section['#title'], 'phase-closed');
       }
       else {
-        $status = oa_portal_candidate_status($p, $compliance, $pk, $sk);
+        $status = $candidate->get_section_status($pk, $sk);
         $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $status);
       }
     }
