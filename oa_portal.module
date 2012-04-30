@@ -367,28 +367,6 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
   return $response;
 }
 
-/**
- * Test ping server
- */
-function oa_portal_soap_ping_server() {
-  $results = oa_portal_soap('pingServer', array());
-  dsm($results, 'SOAP $results');
-}
-
-function oa_portal_soap_file_form($form_state) {
-  $form['#attributes'] = array('enctype' => "multipart/form-data");
-  $form['upload'] = array(
-    '#type' => 'file', 
-    '#title' => t('Post a file to UCM'),
-    '#size' => 40,
-  );
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => 'Upload',
-  );
-  return $form;
-}
-
 function oa_portal_soap_file_form_submit($form, &$form_state) {
   if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['upload'])) {
     $filepath = $_FILES['files']['tmp_name']['upload'];

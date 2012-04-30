@@ -1417,7 +1417,12 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
   if (substr($form_id, 0, 11) == 'oa_portal_p') {
     $form['#attributes'] = array('class' => 'oaportal');
     $form['#ajax'] = array('enabled' => TRUE, 'disable_redirect' => TRUE);
-    $p = oa_portal_forms_info();
+
+    $account = user_load($user->uid);
+    $candidate = get_candidate($account->rmaxid);
+    dsm($candidate, '$candidate object');
+    $p = $candidate->p;
+
     $form['#formtypes'] = $p[arg(1)][arg(2)]['#formtypes'];
 
 

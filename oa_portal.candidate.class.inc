@@ -9,14 +9,16 @@ function get_candidate($rmaxid, $reset = FALSE) {
     return $candidates[$rmaxid];
   }
   $candidates[$rmaxid] = new Candidate($rmaxid);
-  dsm('reloading candidate');
   return $candidates[$rmaxid];
 }
 
 class Candidate {
+  public $compliance;
+  public $compliance_object;
+  public $complianceRecordID;
+  public $modality_name;
   public $p;
   public $profile;
-  public $compliance;
   public $rmaxid;
 
   /**
@@ -46,7 +48,13 @@ class Candidate {
   function load_compliance() {
     // @TODO Use actual compliance ID
     $this->p = $p = oa_portal_forms_info();
-    $this->compliance = $compliance = oa_portal_get_modality_formtypes($this->rmaxid, 'T004615');
+
+    $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> dDocType <matches> `Rmax`  <AND>  dDocAccount <matches> `Recruit/QA`  <AND>  xContentType <matches> `Compliance`';
+    $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dInDate', 'sortOrder' => 'Desc', 'resultCount' => '1'));
+    $this->compliance_object = (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults[0] : $result->AdvancedSearchResult->SearchResults;
+    $this->complianceRecordID = $this->compliance_object->dDocName;
+    $this->modality_name = $this->compliance_object->dDocTitle;
+    $this->compliance = $compliance = oa_portal_get_modality_formtypes($this->rmaxid, $this->complianceRecordID);
 
     // @TODO Use AdvancedSearch or otherwise to filter by file category for checklists, licensures & certs, etc.
     $all_checklists = array_intersect(range(480, 532) + array(547), array_merge($compliance['open'], $compliance['under-review'], $compliance['closed']));
