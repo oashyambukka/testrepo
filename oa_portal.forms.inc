@@ -1532,3 +1532,24 @@ function oa_portal_set($sub_elements, $text, $ct = 2) {
   $elements[($ct - 1)]['end']['#value'] = '</div>';
   return $elements;
 }
+
+function oa_portal_form_user_pass_alter(&$form, &$form_state) {
+  dsm($form, 'Replacing submission callback for password reset form');
+  $form['#submit'] = array('oa_portal_user_pass_submit');
+}
+
+/**
+ * Submission callback for password reset form
+ */
+function oa_portal_user_pass_submit($form, &$form_state) {
+  global $language;
+
+  $account = $form_state['values']['account'];
+  // Mail one time login URL and instructions using current language.
+  oa_portal_user_mail_notify('password_reset', $account, $language);
+  watchdog('user', 'Password reset instructions mailed to %name at %email.', array('%name' => $account->name, '%email' => $account->mail));
+  drupal_set_message(t('Further instructions have been sent to your e-mail address.'));
+
+  $form_state['redirect'] = 'user';
+  return;
+}

@@ -322,6 +322,7 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
     'createpdfform' => 'OAServices.wsdl',
     'drupalcounts' => 'OAServices.wsdl',
     'oacheckin' => 'OAServices.wsdl',
+    'oasendemail' =>  'OAServices.wsdl',
     'profileview' => 'OAServices.wsdl',
     'CheckInUniversal' => 'CheckIn.wsdl',
     'DocInfoByName' => 'DocInfo.wsdl',
@@ -738,4 +739,36 @@ function oa_portal_mark_message_read($msg_id) {
     drupal_json('200');
     exit();
   }
+}
+
+/**
+ * Create and send a notification email when a certain operation happens on the given user account.
+ *
+ * @param $op
+ *  The operation being performed on the account.  Possible values:
+ *  'register_admin_created': Welcome message for user created by the admin
+ *  'password_reset': Password recovery request
+ *
+ * @param $account
+ *  The user object of the account being notified.  Must contain at
+ *  least the fields 'uid', 'name', and 'mail'.
+ */
+function oa_portal_user_mail_notify($op, $account) {
+  $params['account'] = $account;
+  $language = $language ? $language : user_preferred_language($account);
+  $variables = user_mail_tokens($account, $language);
+  $subject = _user_mail_text($op .'_subject', $language, $variables);
+  $body = _user_mail_text($op .'_body', $language, $variables);
+  dsm($message, '$message to send to UCM');
+
+  // Send message via UCM
+  $params = array(
+    'to' => $account->mail,
+    // 'from' => 'test@onassignment.com',
+    'messagetype' => 'BASICSAMPLE',
+    'rmaxid' => $account->rmaxid,
+    'subject' => $subject,
+    'payload' => $body,
+  );
+  $result = oa_portal_soap('oasendemail', $params, TRUE);
 }
