@@ -742,6 +742,27 @@ function oa_portal_mark_message_read($msg_id) {
 }
 
 /**
+ * Implements hook_form_HOOK_alter().
+ */
+function oa_portal_form_user_pass_alter(&$form, &$form_state) {
+  $form['#submit'] = array('oa_portal_user_pass_submit');
+}
+
+/**
+ * Submission callback for password reset form
+ */
+function oa_portal_user_pass_submit($form, &$form_state) {
+  global $language;
+  $account = $form_state['values']['account'];
+  oa_portal_user_mail_notify('password_reset', $account, $language);
+  watchdog('user', 'OAP - Password reset instructions mailed to %name at %email.', array('%name' => $account->name, '%email' => $account->mail));
+  drupal_set_message(t('Further instructions have been sent to your e-mail address.'));
+
+  $form_state['redirect'] = 'user';
+  return;
+}
+
+/**
  * Create and send a notification email when a certain operation happens on the given user account.
  *
  * @param $op
@@ -757,9 +778,6 @@ function oa_portal_user_mail_notify($op, $account) {
   $params['account'] = $account;
   $language = $language ? $language : user_preferred_language($account);
   $variables = user_mail_tokens($account, $language);
-  $subject = _user_mail_text($op .'_subject', $language, $variables);
-  $body = _user_mail_text($op .'_body', $language, $variables);
-  dsm($message, '$message to send to UCM');
 
   // Send message via UCM
   $params = array(
@@ -767,8 +785,9 @@ function oa_portal_user_mail_notify($op, $account) {
     // 'from' => 'test@onassignment.com',
     'messagetype' => 'BASICSAMPLE',
     'rmaxid' => $account->rmaxid,
-    'subject' => $subject,
-    'payload' => $body,
+    'subject' => _user_mail_text($op .'_subject', $language, $variables),
+    'payload' => _user_mail_text($op .'_body', $language, $variables),
+    'processor' => 'smtp',
   );
   $result = oa_portal_soap('oasendemail', $params, TRUE);
 }
