@@ -13,7 +13,7 @@ function get_candidate($rmaxid, $reset = FALSE) {
 }
 
 class Candidate {
-  public $compliance;
+  public $modality_compliance;
   public $compliance_object;
   public $complianceRecordID;
   public $modality_name;
@@ -31,7 +31,7 @@ class Candidate {
     $this->load_compliance();
   }
 
-  function load_profile() {
+  private function load_profile() {
     // Get RMax Profile from UCM
     $result = oa_portal_soap('profileview', array('schViewName' => 'vOA_Profile', 'whereClause' => "rmaxid='". $this->rmaxid ."'"));
     $profile = $result->profileviewResult->profiledata;
@@ -45,51 +45,81 @@ class Candidate {
     return $profile;
   }
 
-  function load_compliance() {
-    // @TODO Use actual compliance ID
-    $this->p = $p = oa_portal_forms_info();
+  private function load_compliance() {
+    $p = oa_portal_forms_info();
 
+    // Get Compliance object
     $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> dDocType <matches> `Rmax`  <AND>  dDocAccount <matches> `Recruit/QA`  <AND>  xContentType <matches> `Compliance`';
     $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dInDate', 'sortOrder' => 'Desc', 'resultCount' => '1'));
     $this->compliance_object = (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults[0] : $result->AdvancedSearchResult->SearchResults;
     $this->complianceRecordID = $this->compliance_object->dDocName;
     $this->modality_name = $this->compliance_object->dDocTitle;
-    $this->compliance = $compliance = oa_portal_get_modality_formtypes($this->rmaxid, $this->complianceRecordID);
 
-    // @TODO Use AdvancedSearch or otherwise to filter by file category for checklists, licensures & certs, etc.
-    $all_checklists = array_intersect(range(480, 532) + array(547), array_merge($compliance['open'], $compliance['under-review'], $compliance['closed']));
-    $open_checklists = array_intersect(range(480, 532) + array(547), $compliance['open']);
-    $p['p1']['checklist']['#formtypes'] = $all_checklists;
-    $p['p1']['checklist']['#formtypes_missing'] = $open_checklists;
-  
-    // @TODO Use AdvancedSearch or otherwise to filter by file category for checklists, licensures & certs, etc.
-    $missing_licensures = array(); //array_intersect(range(480, 532) + array(547), $compliance[2]['missing']);
-    $p['p2']['licensure_certs']['#formtypes'] = $missing_licensures;
+    // Load $modality_compliance document counts
+    $params = array(
+      'rmaxid' => $this->rmaxid,
+      'complianceRecordID' => $this->complianceRecordID,
+      'doNotUpdate' => 1,
+    );
+    $results = oa_portal_soap('drupalcounts', $params);
+    if ($results->drupalcountsResult->StatusInfo->statusCode === -1) {
+      oa_portal_503();
+    }
+
+    $dcr = $results->drupalcountsResult;
+    $modality_compliance = array();
+    foreach (array(1, 2, 3) AS $k) {
+      $modality_compliance[$k]['approved_date'] = $dcr->{'phase'. $k .'ApprovedDate'};
+    }
+    $modality_compliance['open'] = array_merge(
+      ($dcr->expired == 0) ? array() : explode(',', $dcr->expired),
+      ($dcr->missing == 0) ? array() : explode(',', $dcr->missing),
+      ($dcr->rejected == 0) ? array() : explode(',', $dcr->rejected)
+    );
+    $modality_compliance['under-review'] = array_merge(
+      ($dcr->inprogress == 0) ? array() : explode(',', $dcr->inprogress),
+      ($dcr->pendingreview == 0) ? array() : explode(',', $dcr->pendingreview)
+    );
+    $modality_compliance['closed'] = ($dcr->approved == 0) ? array() : explode(',', $dcr->approved);
+    $modality_compliance['complianceApprovedDate'] = $dcr->complianceApprovedDate;
+    $modality_compliance['drupalcountsResult'] = $dcr;
 
 
     $p['p2']['#status'] = 'locked';
     $p['p3']['#status'] = 'locked';
-    if ($compliance['p1']['approved_date']) {
+    if ($modality_compliance['p1']['approved_date']) {
       $p['p2']['#status'] = 'open';
     }
-    if ($compliance['p2']['approved_date']) {
+    if ($modality_compliance['p2']['approved_date']) {
       $p['p3']['#status'] = 'open';
     }
+
+    // Produce counts for open, pr, and closed formids
+    foreach ($p AS $pk => $phase) {
+      foreach (element_children($phase) AS $sk) {
+        $section = $phase[$sk];
+        if (count($p[$pk][$sk]['#formtypes'])) {
+          $p[$pk][$sk]['#formtypes_open'] = array_intersect($p[$pk][$sk]['#formtypes'], $modality_compliance['open']);
+          $p[$pk][$sk]['#formtypes_pr'] = array_intersect($p[$pk][$sk]['#formtypes'], $modality_compliance['under-review']);
+          $p[$pk][$sk]['#formtypes_closed'] = array_intersect($p[$pk][$sk]['#formtypes'], $modality_compliance['closed']);
+        }
+      }
+    }
+    $this->modality_compliance = $modality_compliance;
     $this->p = $p;
-    return $compliance;
   }
 
 
   /**
    * Status for Portal section items
    */
-  function get_section_status($phase, $section) {
+  public function get_section_status($phase, $section) {
     $p = $this->p;
-    $compliance = $this->compliance;
+    $modality_compliance = $this->modality_compliance;
 
     // If section is marked as read-only, verify phase is open
     if ($p[$phase][$section]['#status'] == 'read-only') {
-      if (($section == 'p2' && $compliance[1]['approved_date']) || ($section == 'p3' && $compliance[2]['approved_date'])) {
+      if (($section == 'p2' && $modality_compliance[1]['approved_date']) || ($section == 'p3' && $modality_compliance[2]['approved_date'])) {
         return 'open';
       }
       return 'closed';
@@ -102,7 +132,7 @@ class Candidate {
 
     // Check if dependencies are not met
     if (is_array($p[$phase][$section]['#dependencies'])) {
-      if (count(array_intersect($p[$phase][$section]['#dependencies'], $compliance['open']))) {
+      if (count(array_intersect($p[$phase][$section]['#dependencies'], $modality_compliance['open']))) {
         dsm('Cant open '. $phase .' - '. $section .' due to missing dependencies');
         return 'closed';
       }
@@ -111,15 +141,15 @@ class Candidate {
     // Counting on #formtypes at this point. 
     if (is_array($p[$phase][$section]['#formtypes'])) {
       // Check for open forms first. Those are missing
-      if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['open']))) {
+      if (count(array_intersect($p[$phase][$section]['#formtypes'], $modality_compliance['open']))) {
         return 'open';
       }
       // Otherwise we probably have some files under review
-      if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['under-review']))) {
+      if (count(array_intersect($p[$phase][$section]['#formtypes'], $modality_compliance['under-review']))) {
         return 'under-review';
       }
       // Everything is closed. All clear.
-      if (count(array_intersect($p[$phase][$section]['#formtypes'], $compliance['closed']))) {
+      if (count(array_intersect($p[$phase][$section]['#formtypes'], $modality_compliance['closed']))) {
         return 'closed';
       }
     }  
@@ -131,5 +161,6 @@ class Candidate {
     }
     return NULL;
   }
+
 
 }

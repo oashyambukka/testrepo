@@ -185,6 +185,8 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
  * Form callback for Checklist
  */
 function oa_portal_p1_checklist_form($form_state) {
+  global $user;
+  $account = user_load($user->uid);
   $form = array();
   $form['directions'] = markup('<p>Directions: Indicate your level of experience by selecting the numbers below as follows:<br>
     1 = Can Function Independently<br>
@@ -192,9 +194,15 @@ function oa_portal_p1_checklist_form($form_state) {
     3 = Limited Experience<br><br></p>');
 
 //  $form['#formtypes'] = array(517);
-  foreach ($form['#formtypes'] AS $cft) {
+  $candidate = get_candidate($account->rmaxid);
+  foreach ($candidate->p['p1']['checklist']['#formtypes_open'] AS $cft) {
     $fn = 'oa_portal_p1_checklist_form_'. $cft;
-    $form[$cft] = $fn();
+    if (function_exists($fn)) {
+      $form[$cft] = $fn();
+    }
+    else {
+      dsm('We are missing formtype #'. $cft);
+    }
   }
 
   dsm($form, 'Skills Checklist $form');
@@ -1424,6 +1432,21 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
     $p = $candidate->p;
 
     $form['#formtypes'] = $p[arg(1)][arg(2)]['#formtypes'];
+    $form['#formtypes_open'] = $p[arg(1)][arg(2)]['#formtypes_open'];
+    foreach ($form AS $ek => $element) {
+      if (is_numeric($ek)) {
+        dsm($element, 'found a numeric fieldset');
+        if (!in_array($ek, $form['#formtypes_missing'])) {
+          // Set this fieldset as empty and locked
+          $form[$ek] = array(
+            '#value' => '<fieldset class="collapsed"><legend class="">'. $element['#title'] .' <span class="fieldset-autosave-status locked">Locked</span></legend></fieldset>'
+          );
+        }
+      }
+      elseif (in_array($ek, array(''))) {
+        dsm($element, $ek .' - Special case. Judge accordingly.');
+      }
+    }
 
 
     $form['finalize'] = array(

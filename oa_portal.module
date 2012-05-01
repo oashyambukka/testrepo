@@ -229,10 +229,11 @@ function oa_portal_forms_info() {
     ),
     'checklist' => array(
       '#title' => t('Skills Checklist'),
-      // Set by candidate req
-      '#formtypes' => NULL,
+      '#formtypes' => array_keys(oa_portal_get_category_formids('Skills Checklists')),
     ),
   );
+  $certifications = array_keys(oa_portal_get_category_formids('Certifications'));
+  $licensures = array_keys(oa_portal_get_category_formids('Licensure'));
   
   $p['p2'] = array(
     '#title' => t('Phase 2'),
@@ -240,12 +241,10 @@ function oa_portal_forms_info() {
       '#title' => t('Professional Organizations'),
       '#dependencies' => array(2),
       '#status' => 'read-only',
-      '#formtypes' => array(),
     ),
     'licensure_certs' => array(
       '#title' => t('Licensure Certifications'),
-      // Set by candidate req
-      '#formtypes' => NULL,
+      '#formtypes' => array_merge($certifications, $licensures),
     ),
     'background_reference' => array(
       '#title' => t('Background/Reference Check'),
@@ -318,9 +317,11 @@ function oa_portal_forms_info() {
 function oa_portal_soap($method, $params, $debug = FALSE) {
   ini_set("soap.wsdl_cache_enabled", "0");
   $wsdl = array(
+    'ComplianceCheck' => 'OAServices.wsdl',
     'createcoversheet' => 'OAServices.wsdl',
     'createpdfform' => 'OAServices.wsdl',
     'drupalcounts' => 'OAServices.wsdl',
+    'formview' => 'OAServices.wsdl',
     'oacheckin' => 'OAServices.wsdl',
     'oasendemail' =>  'OAServices.wsdl',
     'profileview' => 'OAServices.wsdl',
@@ -328,7 +329,6 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
     'DocInfoByName' => 'DocInfo.wsdl',
     'GetFileByID' => 'GetFile.wsdl',
     'GetFileByName' => 'GetFile.wsdl',
-    'ComplianceCheck' => 'OAServices.wsdl',
     'AdvancedSearch' => 'Search.wsdl',
   );
   ini_set('display_errors', 1);
@@ -411,36 +411,6 @@ function oa_portal_fapi_validation_rules() {
  */
 function oa_portal_rule_not_none($value) {
   return !((string) $value == 'none');
-}
-
-function oa_portal_get_modality_formtypes($rmaxid, $modality) {
-  $params = array(
-    'rmaxid' => $rmaxid,
-    'complianceRecordID' => $modality,
-    'doNotUpdate' => 1,
-  );
-  $results = oa_portal_soap('drupalcounts', $params);
-  if ($results->drupalcountsResult->StatusInfo->statusCode === -1) {
-    oa_portal_503();
-  }
-
-  $dcr = $results->drupalcountsResult;
-  foreach (array(1, 2, 3) AS $k) {
-    $return[$k]['approved_date'] = $dcr->{'phase'. $k .'ApprovedDate'};
-  }
-  $return['open'] = array_merge(
-    ($dcr->expired == 0) ? array() : explode(',', $dcr->expired),
-    ($dcr->missing == 0) ? array() : explode(',', $dcr->missing),
-    ($dcr->rejected == 0) ? array() : explode(',', $dcr->rejected)
-  );
-  $return['under-review'] = array_merge(
-    ($dcr->inprogress == 0) ? array() : explode(',', $dcr->inprogress),
-    ($dcr->pendingreview == 0) ? array() : explode(',', $dcr->pendingreview)
-  );
-  $return['closed'] = ($dcr->approved == 0) ? array() : explode(',', $dcr->approved);
-  $return['complianceApprovedDate'] = $dcr->complianceApprovedDate;
-  $return['drupalcountsResult'] = $dcr;
-  return $return;
 }
 
 /**
@@ -790,4 +760,24 @@ function oa_portal_user_mail_notify($op, $account) {
     'processor' => 'smtp',
   );
   $result = oa_portal_soap('oasendemail', $params, TRUE);
+}
+
+
+/**
+ * $form_category possible values:
+ *  Certifications
+ *  Skills Checklists
+ *  Licensure
+ */
+function oa_portal_get_category_formids($form_category) {
+  $params = array(
+    'schViewName' => 'vOA_FORMTYPES',
+    'whereClause' => "formcategory = '$form_category'",
+  );
+  $result = oa_portal_soap('formview', $params);
+  $forms = array();
+  foreach ($result->formviewResult->formdata AS $form) {
+    $forms[$form->formid] = $form->formname;
+  }
+  return $forms;
 }
