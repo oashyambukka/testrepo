@@ -132,12 +132,18 @@ function oa_portal_candidate_access($phase, $section) {
 function oa_portal_block($op = 'list', $delta = 0, $edit = array()) {
   switch ($op) {
     case 'list':
+      $blocks['oap_candidate_menu'] = array('info' => t('OA Portal: Candidate Menu'), 'cache' => BLOCK_NO_CACHE);
       $blocks['oap_messages'] = array('info' => t('OA Portal: Messages'), 'cache' => BLOCK_CACHE_PER_USER);
       $blocks['oap_phase_status'] = array('info' => t('OA Portal: Phase status'), 'cache' => BLOCK_CACHE_PER_USER);
       return $blocks;
     break;
     case 'view':
-      return array('content' => oa_portal_block_view($delta));
+      switch ($delta) {
+        case 'oap_candidate_menu':
+          return oa_portal_block_view_oap_candidate_menu();
+        default:
+          return array('content' => oa_portal_block_view($delta));
+      }
     break;
   }
 }
@@ -152,10 +158,23 @@ function oa_portal_block_view($delta) {
   global $user;
   include_once('oa_portal.blocks.inc');
   switch ($delta) {
+    case 'oap_candidate_menu':
     case 'oap_messages':
     case 'oap_phase_status':
       return theme($delta);
     break;
+  }
+}
+
+function oa_portal_block_view_oap_candidate_menu() {
+  global $user;
+  if ($user->uid) {
+    $account = user_load($user->uid);
+    $candidate = get_candidate($account->rmaxid); 
+    return array('subject' => $candidate->profile->name, 'content' => theme('oap_candidate_menu'));
+  }
+  else {
+    return array();
   }
 }
 
@@ -192,6 +211,10 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'template' => 'oap_messages_page',
       'path' => $path . '/templates',
       'arguments' => array('form' => NULL),
+    ),
+    'oap_candidate_menu' => array(
+      'template' => 'oap_candidate_menu',
+      'path' => $path . '/templates',
     ),
     'oap_phase_status' => array(
       'template' => 'oap_phase_status',
@@ -338,11 +361,10 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
     'login' => 'weblogic',
     'password' => '0ATraining',
     'trace' => 1,
-//    'exceptions' => 0
   );
 
   try {
-    ini_set('default_socket_timeout', 5);
+    ini_set('default_socket_timeout', 10);
     $client = @new SoapClient($wsdl, $soap_params);
     $response = $client->{$method}($params);
   }

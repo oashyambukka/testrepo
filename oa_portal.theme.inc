@@ -63,6 +63,28 @@ function oa_portal_preprocess_oap_phase_row(&$vars) {
 }
 
 
+function oa_portal_preprocess_oap_candidate_menu(&$vars) {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid);
+ 
+  $vars['modality_name'] = $candidate->modality_name;
+
+  $links = array();
+  $links[] = array('title' => 'My Documents', 'href' => 'portal');
+
+  $unread_count = $candidate->get_unread_message_count();
+  $count = (count($unread_count)) ? ' ('. $unread_count .')': '';
+  $links[] = array('title' => 'Message Center'. $count, 'href' => 'messages');
+  $links[] = array('title' => 'Events Calendar', 'href' => 'todo');
+  $links[] = array('title' => 'OTC', 'href' => 'todo');
+  $links[] = array('title' => 'Forms', 'href' => 'forms');
+  $links[] = array('title' => 'FAQs/Support', 'href' => 'faq');
+  $links[] = array('title' => 'Log Out', 'href' => 'logout');
+
+  $vars['links'] = theme('links', $links, array('class' => 'menu'));
+}
+
 /**
  * Preprocess function for Phase Status block
  */

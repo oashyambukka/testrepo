@@ -162,5 +162,8 @@ class Candidate {
     return NULL;
   }
 
+  public function get_unread_message_count() {
+    return db_result(db_query("SELECT count(*) FROM {ucm_messages} WHERE rmaxid = %d", $this->rmaxid));
+  }
 
 }
