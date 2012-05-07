@@ -434,7 +434,7 @@
 	</binding>
 	<service name="OAServices">
 		<port name="OAServicesSoap" binding="s0:OAServicesSoap">
-			<soap:address location="https://sena-demo.net:46201/_dav/cs/idcplg" />
+			<soap:address location="https://oa.wccontent.com:16201/_dav/cs/idcplg" />
 		</port>
 	</service>
 </definitions>

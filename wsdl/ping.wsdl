@@ -71,7 +71,7 @@
 	</binding>
 	<service name="ping">
 		<port name="pingSoap" binding="s0:pingSoap">
-			<soap:address location="https://sena-demo.net:46201/_dav/cs/idcplg" />
+			<soap:address location="https://oa.wccontent.com:16201/_dav/cs/idcplg" />
 		</port>
 	</service>
 </definitions>
