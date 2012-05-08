@@ -4,6 +4,12 @@ description = ""
 core = 6.x
 package = "On Assignment"
 
+dependencies[] = ajax
+dependencies[] = ajax_disable_redirect
+dependencies[] = ajax_scroller
+dependencies[] = block
 dependencies[] = devel
-dependencies[] = soapclient
 dependencies[] = fapi_validation
+dependencies[] = jquery_update
+dependencies[] = jquery_plugin
+dependencies[] = profile
