@@ -66,14 +66,14 @@ function oa_portal_menu() {
     'title' => 'OA Portal Download File', 
     'page callback' => 'oa_portal_download_file',
     'page arguments' => array(2),
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
   $items['portal/createcoversheet/%'] = array(
     'title' => 'OA Portal Download File', 
     'page callback' => 'oa_portal_ucm_createcoversheet',
     'page arguments' => array(2),
-    'access arguments' => array('administer site configuration'),
+    'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
 
@@ -125,12 +125,12 @@ function oa_portal_candidate_access($phase, $section) {
   // May require this eventually
   //$candidate->load_compliance();
 
+  // If previous sections are marked as approved, grant access
   if ($section = 'p1' || ($section == 'p2' && $candidate->compliance['p1']['approved_date']) || ($section == 'p3' && $candidate->compliance['p2']['approved_date'])) {
     return TRUE;
   }
   return FALSE;
 }
-
 
 /**
  * Implements hook_block().
@@ -179,9 +179,7 @@ function oa_portal_block_view_oap_candidate_menu() {
     $candidate = get_candidate($account->rmaxid); 
     return array('subject' => $candidate->profile->name, 'content' => theme('oap_candidate_menu'));
   }
-  else {
-    return array();
-  }
+  return array();
 }
 
 /**
@@ -386,6 +384,9 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
   return $response;
 }
 
+/**
+ * Demonstrate how to upload files
+ */
 function oa_portal_soap_file_form_submit($form, &$form_state) {
   if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['upload'])) {
     $filepath = $_FILES['files']['tmp_name']['upload'];
@@ -430,20 +431,8 @@ function oa_portal_fapi_validation_rules() {
 function oa_portal_rule_not_none($value) {
   return !((string) $value == 'none');
 }
-
 /**
- * Implements hook_ajax_validate_pass().
- */
-function oa_portal_ajax_validate_pass(&$form, &$form_state, &$data, &$pass) {
-/*
-  if ($form['form_id']['#value'] == 'oa_portal_p1_checklist_form') {
-dsm($data, '$data in validate_pass');
-    dsm($form, 'oa_portal_ajax_validate_pass $form');
-  }
-  return TRUE;
-*/
-}
-
+ * Not used
 function oa_portal_ucm_oacheckin($formtype, $fields) {
   global $user;
   $account = user_load($user->uid);
@@ -471,9 +460,10 @@ function oa_portal_ucm_oacheckin($formtype, $fields) {
   $result = oa_portal_soap('oacheckin', $params, TRUE);
   return ($result->oacheckinResult == 'something') ? TRUE : $result->oacheckinResult;
 }
+*/
 
 /**
- * Get file contents by dID
+ * Get file contents by dID. Used by oa_portal_download_file($dDocName)
  */
 function oa_portal_ucm_getfilebyname($dDocName) {
   $result = oa_portal_soap('GetFileByName', array('dDocName' => $dDocName, 'revisionSelectionMethod' => 'Latest'), TRUE);
@@ -481,30 +471,34 @@ function oa_portal_ucm_getfilebyname($dDocName) {
 }
 
 /**
- * Get file contents by formtype (dDocName)
- */
+ * Get file contents by formtype (dDocName). Unused.
 function oa_portal_ucm_rmax_getfilebyname($rmaxid, $formtype) {
   $result = oa_portal_soap('GetFileByName', array('dDocName' => $rmaxid .'_'. $formtype), TRUE);
   return $result->GetFileByNameResult;
 }
+*/
 
 /**
- * Get file info by dID
- */
+ * Get file info by dID. Unused.
+ *
 function oa_portal_ucm_docinfobyid($dID) {
   $result = oa_portal_soap('DocInfoByID', array('dID' => $dID), TRUE);
   return (get_class($result) == 'SoapFault') ? FALSE : $result->DocInfoByIDResult;;
 }
+*/
 
 /**
- * Get file info by formtype (dDocName)
- */
+ * Get file info by formtype (dDocName). Unused./
+ *
 function oa_portal_ucm_docinfobyame($rmaxid, $formtype) {
   $result = oa_portal_soap('DocInfoByName', array('dDocName' => $rmaxid .'_'. $formtype));
   return (get_class($result) == 'SoapFault') ? FALSE : $result->DocInfoByNameResult;
 }
+*/
 
-
+/**
+ * Used by many forms to populate PDF templates in UCM
+ */
 function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
   $params = array(
     'rmaxid' => $rmaxid,
@@ -590,6 +584,9 @@ function oa_portal_500($e = NULL) {
   exit();
 }
 
+/**
+ * Custom 503 error page
+ */
 function oa_portal_503($e = NULL) {
   drupal_set_header($_SERVER['SERVER_PROTOCOL'] . ' 503 Service Unavailable');
   if ($e) {
@@ -644,24 +641,6 @@ function oa_portal_get_autosaved_form($form_id, $path, $uid) {
   }
   return $form;
 }
-
-/**
- * Figure out what particular case to delete autosaved forms
- *
- * Delete autosave table entry on successful submit
- *
- */
-/*
-function oa_portal_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
-  if ($op == 'presave') {
-      // we remove ALL edits for that page (not just the users) to avoid:
-      //  - user1 asaves but doesnt submit
-      //  - user2 edits same node and submits
-      //  - user1 comes back to edit -> user1 SHOULD lose edits since user2 has precedence
-      db_query("DELETE FROM {autosaved_forms} WHERE form_id = '%s' AND path = '%s'", $node->form_id, $_GET['q']);
-  }
-}
-*/
 
 /**
  * Get the unread messages for a user.
@@ -770,7 +749,7 @@ function oa_portal_user_mail_notify($op, $account) {
   // Send message via UCM
   $params = array(
     'to' => $account->mail,
-    // 'from' => 'test@onassignment.com',
+    'from' => 'test@onassignment.com',
     'messagetype' => 'BASICSAMPLE',
     'rmaxid' => $account->rmaxid,
     'subject' => _user_mail_text($op .'_subject', $language, $variables),
