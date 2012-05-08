@@ -1476,7 +1476,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
 //      }
 //    }
     if (count($form['#formtypes'])) {
-      $form['#docs'] = oa_portal_ucm_advanced_search_docs_not_missing($account->rmaxid, $form['#formtypes']);
+      $form['#docs'] = $candidate->get_docs_not_missing($form['#formtypes']);
       if (is_array($form['#docs']) && count($form['#docs'])) {
         $form['docs'] = array(
           '#value' => theme('oap_doc_download', $form['#docs']),

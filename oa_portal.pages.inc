@@ -71,9 +71,17 @@ function oa_portal_docs_page() {
  * Page callback for file downloading per dDocName
  */
 function oa_portal_download_file($dDocName) {
+  global $user;
+  $account = user_load($user->uid);
+  // To return this document, the dDocName must begin with their rmaxid
+  if (strpos($dDocName, $account->rmaxid) !== 0) {
+    drupal_access_denied();
+    return;
+  }
   $file = oa_portal_ucm_getfilebyname($dDocName);
   if (!$file->FileInfo->dFileSize) {
     drupal_not_found();
+    return;
   }
   $headers = array(
     'Content-Type: ' . $file->FileInfo->dFormat,

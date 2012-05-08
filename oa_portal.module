@@ -28,6 +28,12 @@ function oa_portal_menu() {
     'access arguments' => array('administer site configuration'),
     'file' => 'oa_portal.admin.inc'
   );
+  $items['portal'] = array(
+    'title' => 'My OA Healthcare Documents', 
+    'page callback' => 'oa_portal_page', 
+    'access arguments' => array('access portal'),
+    'file' => 'oa_portal.pages.inc'
+  );
   $items['portal/docs'] = array(
     'title' => 'My Documents', 
     'page callback' => 'oa_portal_docs_page',
@@ -45,12 +51,6 @@ function oa_portal_menu() {
     'title' => 'My Message Center', 
     'page callback' => 'oa_portal_message_page',
     'page arguments' => array(2),
-    'access arguments' => array('access portal'),
-    'file' => 'oa_portal.pages.inc'
-  );
-  $items['portal'] = array(
-    'title' => 'My OA Healthcare Documents', 
-    'page callback' => 'oa_portal_page', 
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
@@ -535,20 +535,9 @@ function oa_portal_html_to_pdf_change_type($felements, $values) {
   return $felements;
 }
 
-
 /**
- * Get file info by formtype (dDocName)
+ * Custom 500 error page
  */
-function oa_portal_ucm_advanced_search_docs_not_missing($rmaxid, $formtypes) {
-  $formtypesquery = 'xFormType <matches> `'. implode($formtypes, '` <or> xFormType <matches> `') .'`';
-  $query = 'xRM_ID <matches> `'. $rmaxid .'` <AND> <not>xStatus <matches> `Missing` <AND>('. $formtypesquery .')';
-  $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '20'));
-  if (get_class($result) == 'SoapFault') {
-    return FALSE;
-  }
-  return (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults : array($result->AdvancedSearchResult->SearchResults);
-}
-
 function oa_portal_500($e = NULL) {
   drupal_set_header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
   if ($e) {
