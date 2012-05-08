@@ -156,10 +156,7 @@ class Candidate {
     if (!is_array($p[$phase][$section]['#formtypes'])) {
       dsm('Cant give a status for '. $phase .' - '. $section .' due to missing formtypes');
     }
-    else {
-      dsm('Something unexpected happened.');
-    }
-    return NULL;
+    return 'unknown';
   }
 
   public function get_unread_message_count() {

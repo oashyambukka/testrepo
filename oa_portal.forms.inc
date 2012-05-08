@@ -187,14 +187,13 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
 function oa_portal_p1_checklist_form($form_state) {
   global $user;
   $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid);
   $form = array();
   $form['directions'] = markup('<p>Directions: Indicate your level of experience by selecting the numbers below as follows:<br>
     1 = Can Function Independently<br>
     2 = Experienced, but May Need Review<br>
     3 = Limited Experience<br><br></p>');
 
-//  $form['#formtypes'] = array(517);
-  $candidate = get_candidate($account->rmaxid);
   foreach ($candidate->p['p1']['checklist']['#formtypes_open'] AS $cft) {
     $fn = 'oa_portal_p1_checklist_form_'. $cft;
     if (function_exists($fn)) {
@@ -205,7 +204,6 @@ function oa_portal_p1_checklist_form($form_state) {
     }
   }
 
-  dsm($form, 'Skills Checklist $form');
   return $form;
 }
 
@@ -977,16 +975,10 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
   
   // Others
   unset($form_state['values'][433]['personelle']);
-  $form_state['values'][433]['personnelphone'] = '902-123-4567'; // @TODO Get phone from previous form?
   $form_state['values'][433]['timestamp'] = date('Y-m-d');
 
   $pdf_html_string = oa_portal_html_to_pdf_string($account->rmaxid, 433, $form_state['values'][433], $form);
-  
-  // @TODO Check PDF HTML string
-  
-  $success = oa_portal_ucm_createpdfform($account->rmaxid, 433, $form_state['values'][433]);
-  dsm($success, '433 success');
-  
+
   /**
    * @TODO Post 256 Substance Abuse Testing Consent to UCM
    * @TODO needs PDF fields
@@ -1002,8 +994,11 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
   dsm($form_state['values'][432], 'Process & post 432 to UCM');
 
   $error = FALSE;
-  foreach ($form['#formtypes'] AS $formtype) {
-    if (!$success = oa_portal_ucm_createpdfform($account->rmaxid, $formtype, $form_state['values'][$formtype])) {
+  foreach ($form['#formtypes_open'] AS $formtype) {
+    if ($success = oa_portal_ucm_createpdfform($account->rmaxid, $formtype, $form_state['values'][$formtype])) {
+      dsm($success, $formtype .' success');
+    }
+    else {
       $error = TRUE;
     }
   }  
@@ -1433,7 +1428,9 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
 
     $form['#formtypes'] = $p[arg(1)][arg(2)]['#formtypes'];
     $form['#formtypes_open'] = $p[arg(1)][arg(2)]['#formtypes_open'];
-watchdog($form_id, '<pre>'. print_r($form_state, TRUE) .'</pre>');
+    $form['#formtypes_pr'] = $p[arg(1)][arg(2)]['#formtypes_pr'];
+    $form['#formtypes_closed'] = $p[arg(1)][arg(2)]['#formtypes_closed'];
+
     foreach ($form AS $ek => $element) {
       if (is_numeric($ek)) {
         if (!in_array($ek, $form['#formtypes_open'])) {
@@ -1448,7 +1445,6 @@ watchdog($form_id, '<pre>'. print_r($form_state, TRUE) .'</pre>');
         dsm($element, $ek .' - Special case. Judge accordingly.');
       }
     }
-
 
     $form['finalize'] = array(
       '#type' => 'button',
@@ -1473,11 +1469,12 @@ watchdog($form_id, '<pre>'. print_r($form_state, TRUE) .'</pre>');
       '#attributes' => array('class' => 'set-hide'),
     );
 
-    foreach ($form AS $k => $v) {
-      if (is_numeric($k)) {
-        $form['#formtypes'][] = $k;
-      }
-    }
+// No longer required? We know all the formtypes from $p now
+//    foreach ($form AS $k => $v) {
+//      if (is_numeric($k)) {
+//        $form['#formtypes'][] = $k;
+//      }
+//    }
     if (count($form['#formtypes'])) {
       $form['#docs'] = oa_portal_ucm_advanced_search_docs_not_missing($account->rmaxid, $form['#formtypes']);
       if (is_array($form['#docs']) && count($form['#docs'])) {

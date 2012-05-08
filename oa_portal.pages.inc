@@ -18,14 +18,16 @@ function oa_portal_page() {
   $candidate = get_candidate($account->rmaxid);
   dsm($candidate, '$candidate object');
 
+  $p_completed = 0;
+
   foreach ($candidate->p AS $pk => $phase) {
     $rows = array();
-    $completed = 0;
-    $ct = 0;
+    $s_completed = 0;
+    $s_ct = 0;
     
     // Check completion date for compliance
     if ($p[$pk]['#status'] == 'locked') {
-      $completed++;
+      $p_completed++;
     }
     foreach (element_children($phase) AS $sk) {
       $section = $phase[$sk];
@@ -34,12 +36,18 @@ function oa_portal_page() {
         $rows[] = theme('oap_phase_row', $section['#title'], 'phase-closed');
       }
       else {
+      $s_ct++;
         $status = $candidate->get_section_status($pk, $sk);
+        if ($status == 'closed') {
+          $s_completed++;
+        }
         $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $status);
       }
     }
-    $output .= theme('oap_phase', $pk, $phase['#title'], $phase['#status'], implode("\n", $rows), "$completed of $ct");
+
+    $output .= theme('oap_phase', $pk, $phase['#title'], $phase['#status'], implode("\n", $rows), "$s_completed of $s_ct");
   }
+  $output .= '<strong><em>('. $p_completed .' of 3 complete)</em></strong>';
   return $output;
 }
 
