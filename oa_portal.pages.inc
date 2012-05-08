@@ -44,6 +44,22 @@ function oa_portal_page() {
 }
 
 /**
+ * Page callback for PDF docs page
+ */
+function oa_portal_docs_page() {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid);
+  $docs = $candidate->get_all_docs();
+//  dsm($docs, 'docs');
+  $items = array();
+  foreach ($docs AS $doc) {
+    $items[] = l($doc->dDocTitle, 'portal/file/'. $doc->dDocName);
+  }
+  return theme('item_list', $items);
+}
+
+/**
  * Page callback for file downloading per dDocName
  */
 function oa_portal_download_file($dDocName) {

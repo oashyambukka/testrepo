@@ -1433,13 +1433,14 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
 
     $form['#formtypes'] = $p[arg(1)][arg(2)]['#formtypes'];
     $form['#formtypes_open'] = $p[arg(1)][arg(2)]['#formtypes_open'];
+watchdog($form_id, '<pre>'. print_r($form_state, TRUE) .'</pre>');
     foreach ($form AS $ek => $element) {
       if (is_numeric($ek)) {
-        dsm($element, 'found a numeric fieldset');
-        if (!in_array($ek, $form['#formtypes_missing'])) {
+        if (!in_array($ek, $form['#formtypes_open'])) {
+//          dsm($element, 'found a numeric fieldset that should have been locked');
           // Set this fieldset as empty and locked
           $form[$ek] = array(
-            '#value' => '<fieldset class="collapsed"><legend class="">'. $element['#title'] .' <span class="fieldset-autosave-status locked">Locked</span></legend></fieldset>'
+            '#value' => '<fieldset class="collapsed dummy"><legend class="">'. $element['#title'] .' <span class="fieldset-autosave-status locked">Locked</span></legend></fieldset>'
           );
         }
       }

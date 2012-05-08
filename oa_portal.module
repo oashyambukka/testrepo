@@ -28,17 +28,23 @@ function oa_portal_menu() {
     'access arguments' => array('administer site configuration'),
     'file' => 'oa_portal.admin.inc'
   );
-  $items['messages'] = array(
+  $items['portal/docs'] = array(
+    'title' => 'My Documents', 
+    'page callback' => 'oa_portal_docs_page',
+    'access arguments' => array('access portal'),
+    'file' => 'oa_portal.pages.inc'
+  );
+  $items['portal/messages'] = array(
     'title' => 'My Message Center', 
     'page callback' => 'drupal_get_form',
     'page arguments' => array('oa_portal_messages_page'),
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
-  $items['messages/%'] = array(
+  $items['portal/messages/%'] = array(
     'title' => 'My Message Center', 
     'page callback' => 'oa_portal_message_page',
-    'page arguments' => array(1),
+    'page arguments' => array(2),
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
@@ -262,7 +268,6 @@ function oa_portal_forms_info() {
     '#title' => t('Phase 2'),
     'professional_orgs' => array(
       '#title' => t('Professional Organizations'),
-      '#dependencies' => array(2),
       '#status' => 'read-only',
     ),
     'licensure_certs' => array(
@@ -271,22 +276,18 @@ function oa_portal_forms_info() {
     ),
     'background_reference' => array(
       '#title' => t('Background/Reference Check'),
-      '#dependencies' => array(),
       '#formtypes' => array(233, 476, 477),
     ),
     'capabilities' => array(
       '#title' => t('Capabilities Questionnaire'),
-      '#dependencies' => array(),
       '#formtypes' => array(5),
     ),
     'policies' => array(
       '#title' => t('Policies & Agreements'),
-      '#dependencies' => array(),
       '#formtypes' => array(256, 433, 432),
     ),
     'medical' => array(
       '#title' => t('Medical Authorization and Disclosures'),
-      '#dependencies' => array(),
       // Missing others.
       '#formtypes' => array(263),
     ),
@@ -301,32 +302,27 @@ function oa_portal_forms_info() {
     'paycheck' => array(
       '#title' => t('Paycheck Method'),
       '#phase' => 3,
-      '#dependencies' => array(),
       '#status' => '',
       '#formtypes' => array(536, 537),
     ),
     'w4' => array(
       '#title' => t('W4'),
       '#phase' => 3,
-      '#dependencies' => array(),
       '#status' => '',
       '#formtypes' => array(474),
     ),
     'i9' => array(
       '#title' => t('I-9'),
-      '#dependencies' => array(),
       '#status' => '',
       '#formtypes' => array(461),
     ),
     'eeo' => array(
       '#title' => t('EEO Form'),
-      '#dependencies' => array(),
       '#status' => '',
       '#formtypes' => array(1),
     ),
     'work_policy' => array(
       '#title' => t('Work Policy'),
-      '#dependencies' => array(),
       '#status' => '',
       '#formtypes' => array(466),
     ),

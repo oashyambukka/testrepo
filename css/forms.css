@@ -105,6 +105,9 @@
 	font-weight:bold;
 	font-size:100%;
 }
+.oaportal fieldset.dummy legend {
+  padding-left: 15px;
+}
 .oaportal fieldset legend a:link,visited,hover,focus {color:#fff;text-decoration:none;padding:3px 10px;}
 .oaportal fieldset legend {
 	-moz-box-shadow: -2px -2px 2px rgba(0,0,0,.25) inset, 2px 2px 2px rgba(255,255,255,.5) inset;

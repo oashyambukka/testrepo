@@ -71,11 +71,12 @@ function oa_portal_preprocess_oap_candidate_menu(&$vars) {
   $vars['modality_name'] = $candidate->modality_name;
 
   $links = array();
-  $links[] = array('title' => 'My Documents', 'href' => 'portal');
+  $links[] = array('title' => 'My OA Healthcare', 'href' => 'portal');
+  $links[] = array('title' => 'My Documents', 'href' => 'portal/docs');
 
   $unread_count = $candidate->get_unread_message_count();
   $count = (count($unread_count)) ? ' ('. $unread_count .')': '';
-  $links[] = array('title' => 'Message Center'. $count, 'href' => 'messages');
+  $links[] = array('title' => 'Message Center'. $count, 'href' => 'portal/messages');
   $links[] = array('title' => 'Events Calendar', 'href' => 'todo');
   $links[] = array('title' => 'OTC', 'href' => 'todo');
   $links[] = array('title' => 'Forms', 'href' => 'forms');

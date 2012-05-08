@@ -166,4 +166,10 @@ class Candidate {
     return db_result(db_query("SELECT count(*) FROM {ucm_messages} WHERE rmaxid = %d", $this->rmaxid));
   }
 
+  public function get_all_docs() {
+    $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> <not>xStatus <matches> `Missing`';
+    $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '200'));
+    return (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults : array($result->AdvancedSearchResult->SearchResults);
+  }
+
 }
