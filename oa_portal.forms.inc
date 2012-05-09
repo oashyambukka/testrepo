@@ -690,29 +690,53 @@ function oa_portal_p2_professional_orgs_form($form_state) {
  * Form callback for Licensure Certifications
  */
 function oa_portal_p2_licensure_certs_form($form_state) {
+  global $user;
   $form = array();
   $form['#attributes'] = array('enctype' => "multipart/form-data");
 
-  // @TODO Get Formtypes for uploaded/faxed Licensures/Certifications
-  $form['#formtypes'] = array();
-
   $form['lc'] = fieldset('Licensure/Certification');
   $form['lc']['#description'] = t('Upload a copy of your licensure/certification. .pdf, .jpg and .doc are acceptable formats.');
-  // @TODO Get list of Licensures from Application
-  $form['lc']['lc_licensure'] = select('Select which certificate you are uploading', array('item1', 'item2'));
-  $form['lc']['lc_file'] = array(
+
+  $all_cl = oa_portal_get_category_formids('Certifications') + oa_portal_get_category_formids('Licensure');
+
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid);
+
+  $options = array();
+  foreach ($candidate->p['p2']['licensure_certs']['#formtypes_open'] AS $ft) {
+    $options['Required'][$ft] = $all_cl[$ft];
+    unset($all_cl[$ft]);
+  }
+
+  // @TODO Replace with actual formid for Other docs
+  $options['Other'][99999] = t('Other');
+  $options['Other'] = $options['Other'] + $all_cl;
+
+  $form['lc']['lc_licensure'] = select('Select which certificate you are uploading', $options, FALSE);
+  $form['lc']['upload'] = array(
     '#type' => 'file',
     '#title' => t('Upload file'),
-    '#required' => TRUE,
+//    '#required' => TRUE,
     '#size' => 80,
   );
   $form['lc']['uploaded'] = markup('<h3>Uploaded files</h3>');
   $form['lc']['chk_fax_preference'] = checkbox('Check this box if you prefer to fax copies of your licensures/certifications');
 
-  // @TODO Get cover page doc ID
-  $form['lc']['fax'] = markup('<PDF ICON> Please include this cover letter and fax it to (818) 555-5555. <a href="/portal/createcoversheet/999999">Cover Letter</a>');
+  $form['lc']['fax'] = markup('<div id="cover-letter-box" class="oap-doc-download set-hide">Please include this cover letter and fax it to (818) 555-5555. <a href="/portal/createcoversheet/" id="cover-letter-link">Cover Letter</a></div>');
 
-  // @TODO Slightly different Finalize mechanism. Form to be submitted potentially more than once.
+  $form['#docs'] = $candidate->get_docs_not_missing($candidate->p['p2']['licensure_certs']['#formtypes']);
+  if (is_array($form['#docs']) && count($form['#docs'])) {
+    $form['docs'] = array(
+      '#value' => theme('oap_doc_download', $form['#docs']),
+      '#weight' => 1997,
+    );
+  }
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Finalize'),
+    '#weight' => 1998,
+  );
   return $form;
 }
 
@@ -720,7 +744,47 @@ function oa_portal_p2_licensure_certs_form($form_state) {
  * Form submission callback for Licensure Certifications
  */
 function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
-  // @TODO Post individual files to UCM, mark as finalized either after checkbox has been checked, or...
+  global $user;
+  $account = user_load($user->uid);
+  if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['lc'])) {
+    $filepath = $_FILES['files']['tmp_name']['lc'];
+    $filesize = $_FILES['files']['size']['lc'];
+    $filename = $_FILES['files']['name']['lc'];
+    $handle = fopen($filepath, "r");
+    $contents = fread($handle, $filesize);
+    fclose($handle);
+
+    $params = array(
+      'dDocName' => $account->rmaxid .'_'. $form_state['values']['lc']['lc_licensure'],
+      'dDocTitle' => $form_state['values']['lc']['lc_licensure'] .' - '. $account->rmaxid,
+      'dDocType' => 'Rmax',
+      'dDocAuthor' => 'weblogic',
+      'dSecurityGroup' => 'Form',
+      'dDocAccount' => 'Recruit/QA',
+      'xContentType' => 'Form',
+      'xFormType' => $form_state['values']['lc']['lc_licensure'],
+      'xRM_ID' => $account->rmaxid,
+      'xStatus' => 'Pending Review',
+      'xComments' => '',
+      'xRejectReason' => '',
+      'xRejectOther' => '',
+      'xSuccessAudit' => '',
+    );
+
+    $params['primaryFile'] = array(
+      'fileName'=> $_FILES['files']['name']['lc'],
+      'fileContent' => $contents,
+    );
+    $results = oa_portal_soap('oacheckin', $params);
+  }
+
+  $candidate = get_candidate($account->rmaxid, TRUE);
+  if (count($candidate->p['p2']['licensure_certs']['#formtypes_open']) == 0 || $form_state['values']['lc']['chk_fax_preference'] == 1) {
+    $form_state['redirect'] = 'portal/p2/background_reference';
+  }
+  else {
+    $form_state['redirect'] = 'portal/p2/licensure_certs';
+  }
 }
 
 /**
@@ -1417,7 +1481,7 @@ function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
  */
 function oa_portal_form_alter(&$form, &$form_state, $form_id) {
   global $user;
-  if (substr($form_id, 0, 11) == 'oa_portal_p') {
+  if (substr($form_id, 0, 11) == 'oa_portal_p' && $form_id != 'oa_portal_p2_licensure_certs_form') {
     $form['#attributes'] = array('class' => 'oaportal');
     $form['#ajax'] = array('enabled' => TRUE, 'disable_redirect' => TRUE);
 
@@ -1507,6 +1571,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
 
     dsm($form, 'Completed $form');
   }
+
 }
 
 /**

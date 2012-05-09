@@ -68,7 +68,7 @@ function oa_portal_preprocess_oap_candidate_menu(&$vars) {
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid);
  
-  $vars['modality_name'] = $candidate->modality_name;
+  $vars['modality_name'] = substr($candidate->modality_name, strpos($candidate->modality_name, ' - ') + 2);
 
   $links = array();
   $links[] = array('title' => 'My OA Healthcare', 'href' => 'portal');

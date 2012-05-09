@@ -110,11 +110,13 @@ function date_popup($title, $format = 'd-m-Y') {
   return $element;
 }
 
-function select($title, $choices) {
+function select($title, $choices, $map = TRUE) {
+  $choices = ($map) ? drupal_map_assoc($choices) : $choices;
+  $options = array('none' => t('- Select -')) + $choices;
   $element = array(
     '#type' => 'select',
     '#title' => t($title),
-    '#options' => $options = array('none' => t('- Select -')) + drupal_map_assoc($choices),
+    '#options' => $options,
     '#required' => TRUE,
     '#rules' => array('not_none'),
   );

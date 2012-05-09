@@ -142,3 +142,21 @@ Drupal.behaviors.finalization = function (context) {
     }
   }
 }
+
+
+
+
+Drupal.behaviors.licensureCert = function (context) {
+  $('form#oa-portal-p2-licensure-certs-form .oap-doc-download.set-hide:last').show();
+
+  $('#edit-lc-chk-fax-preference').change(function() {
+    $('#cover-letter-box').slideDown();
+  });
+
+  $('#edit-lc-lc-licensure').change(function() {
+    if ($(this).val() != 'none') {
+      $('#cover-letter-link').attr('href', '/portal/createcoversheet/' + $(this).val());
+    }
+  });
+
+}
