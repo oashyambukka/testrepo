@@ -23,39 +23,45 @@ function oa_portal_menu() {
   $items = array();
 
   $items['admin/portal'] = array(
-    'title' => 'OA Portal Admin', 
+    'title' => 'OA Portal Admin',
     'page callback' => 'oa_portal_admin', 
     'access arguments' => array('administer site configuration'),
     'file' => 'oa_portal.admin.inc'
   );
   $items['portal'] = array(
-    'title' => 'My OA Healthcare Documents', 
+    'title' => 'My OA Healthcare Documents',
     'page callback' => 'oa_portal_page', 
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
   $items['portal/docs'] = array(
-    'title' => 'My Documents', 
+    'title' => 'My Documents',
     'page callback' => 'oa_portal_docs_page',
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
+  $items['portal/forms'] = array(
+    'title' => 'Forms Library',
+    'page callback' => 'oa_portal_forms_page',
+    'access arguments' => array('access portal'),
+    'file' => 'oa_portal.pages.inc'
+  );
   $items['portal/messages'] = array(
-    'title' => 'My Message Center', 
+    'title' => 'My Message Center',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('oa_portal_messages_page'),
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
   $items['portal/messages/%'] = array(
-    'title' => 'My Message Center', 
+    'title' => 'My Message Center',
     'page callback' => 'oa_portal_message_page',
     'page arguments' => array(2),
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
   $items['update-password'] = array(
-    'title' => 'Update Password', 
+    'title' => 'Update Password',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('oa_portal_change_password_form'),
     'access arguments' => array('access portal'),
@@ -63,22 +69,21 @@ function oa_portal_menu() {
     'type' => MENU_SUGGESTED_ITEM,
   );
   $items['portal/file/%'] = array(
-    'title' => 'OA Portal Download File', 
+    'title' => 'OA Portal Download File',
     'page callback' => 'oa_portal_download_file',
     'page arguments' => array(2),
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
   $items['portal/createcoversheet/%'] = array(
-    'title' => 'OA Portal Download File', 
+    'title' => 'OA Portal Download Coversheet',
     'page callback' => 'oa_portal_ucm_createcoversheet',
     'page arguments' => array(2),
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
-
   $items['portal/autosave'] = array(
-    'title' => 'OA Portal Autosave', 
+    'title' => 'OA Portal Autosave',
     'page callback' => 'oa_portal_autosave',
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc',

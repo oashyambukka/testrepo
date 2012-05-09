@@ -68,6 +68,23 @@ function oa_portal_docs_page() {
 }
 
 /**
+ * Page callback for Forms page
+ */
+function oa_portal_forms_page() {
+  global $user;
+  $output = '<p>Our self-service forms library lets you download additional documents while on assignment. It also gives you quick access to many of the forms required for the healthcare industry.</p>';
+  $output .= '<p>Note: You will need <a href="http://get.adobe.com/reader/">Acrobat Reader</a>.</p>';
+  $items = array();
+  $items[] = l('Tax Credit Form', 'todo');
+  $items[] = l('Permanent Tax Home Notification', 'todo');
+  $items[] = l('Timesheet', 'todo');
+  foreach ($items AS $item) {
+    $output .= '<li><span class="file-format pdf"></span>'. $item .'<span class="updated">Updated: 12/15/2012</span></li>';
+  }
+  return $output;
+}
+
+/**
  * Page callback for file downloading per dDocName
  */
 function oa_portal_download_file($dDocName) {
