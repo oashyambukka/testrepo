@@ -264,7 +264,7 @@ function oa_portal_theme($existing, $type, $theme, $path) {
  * Implements hook_user().
  */
 function oa_portal_user($op, &$edit, &$account, $category = NULL) {
-  // Catch the first login to redirect them to change their password
+  // Mark new accounts that must change their passwords upon first login
   switch ($op) {
     case 'insert':
       $edit['must_update_pass'] = 1;

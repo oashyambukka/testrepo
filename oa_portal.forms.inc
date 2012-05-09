@@ -771,12 +771,13 @@ function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
       'xRejectOther' => '',
       'xSuccessAudit' => '',
     );
-
     $params['primaryFile'] = array(
       'fileName'=> $_FILES['files']['name']['lc'],
       'fileContent' => $contents,
     );
     $results = oa_portal_soap('oacheckin', $params);
+    // dsm($results, 'SOAP $results for file upload');
+    // TODO? Show success message?
   }
 
   $candidate = get_candidate($account->rmaxid, TRUE);
