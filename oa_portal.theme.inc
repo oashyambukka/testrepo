@@ -8,7 +8,7 @@ function oa_portal_preprocess_oap_messages(&$vars) {
   $account = user_load($user->uid);
   $time = time();
 
-  $vars['tip'] = theme('oap_tooltip', 'messages');
+  $vars['tip'] = theme('oap_tooltip', 'messages', 'Messages tooltip message goes here.');
   $vars['count'] = count($vars['messages']);
   // array(
   //   array('date' => 'Today', 'teaser' => 'Please complete the first phase of your application by clicking on...'),
@@ -120,6 +120,9 @@ function oa_portal_preprocess_oap_tooltip(&$vars) {
     break;
     case 'section-open':
       $vars['body'] = 'Section open body';
+    break;
+    case 'messages':
+      $vars['body'] = 'Messages tooltip body';
     break;
     default:
       $vars['body'] = 'No body set!';
