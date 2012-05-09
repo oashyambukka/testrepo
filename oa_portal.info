@@ -11,5 +11,5 @@ dependencies[] = block
 dependencies[] = devel
 dependencies[] = fapi_validation
 dependencies[] = jquery_update
-dependencies[] = jquery_plugin
+dependencies[] = jquery_ui
 dependencies[] = profile

@@ -8,7 +8,7 @@ function oa_portal_preprocess_oap_messages(&$vars) {
   $account = user_load($user->uid);
   $time = time();
 
-  $vars['tip'] = theme('oap_tooltip', 'some-status', 'Tooltip message goes here. We may want to generalize tooltip markup generation.');
+  $vars['tip'] = theme('oap_tooltip', 'messages');
   $vars['count'] = count($vars['messages']);
   // array(
   //   array('date' => 'Today', 'teaser' => 'Please complete the first phase of your application by clicking on...'),
@@ -46,22 +46,15 @@ function theme_oap_messages_page(&$vars) {
  * Preprocess function for Phases
  */
 function oa_portal_preprocess_oap_phase(&$vars) {
-  switch ($vars['status']) {
-    default:
-      $vars['status_tip'] = theme('oap_tooltip', 'some-status', 'Tooltip message goes here. We may want to generalize tooltip markup generation.');
-  }
+  $vars['status_tip'] = theme('oap_tooltip', 'phase-'. $vars['status']);
 }
 
 /**
  * Preprocess function for Phase rows
  */
 function oa_portal_preprocess_oap_phase_row(&$vars) {
-  switch ($vars['status']) {
-    default:
-      $vars['status_tip'] = theme('oap_tooltip', 'some-status', 'Tooltip message goes here. We may want to generalize tooltip markup generation.');
-  }
+  $vars['status_tip'] = theme('oap_tooltip', 'section-'. $vars['status']);
 }
-
 
 function oa_portal_preprocess_oap_candidate_menu(&$vars) {
   global $user;
@@ -84,7 +77,7 @@ function oa_portal_preprocess_oap_candidate_menu(&$vars) {
     $links[] = array('title' => 'Forms', 'href' => 'portal/forms');
   }
 
-  $links[] = array('title' => 'FAQs/Support', 'href' => 'faq');
+  $links[] = array('title' => 'FAQs/Support', 'href' => 'portal/tutorial');
   $links[] = array('title' => 'Log Out', 'href' => 'logout');
 
   $vars['links'] = theme('links', $links, array('class' => 'menu'));
@@ -109,6 +102,29 @@ function oa_portal_preprocess_oap_phase_status(&$vars) {
     $items[] = theme('oap_phase_row', $section['#title'], $candidate->get_section_status(arg(1), $sk));
   }
   $vars['phases'] = implode("\n", $items);
+}
+
+/**
+ * Preprocess function for Tooltips
+ */
+function oa_portal_preprocess_oap_tooltip(&$vars) {
+  switch ($vars['status']) {
+    case 'phase-locked':
+      $vars['body'] = 'Phase locked body';
+    break;
+    case 'section-closed':
+      $vars['body'] = 'Section closed body';
+    break;
+    case 'section-under-review':
+      $vars['body'] = 'Section under review body';
+    break;
+    case 'section-open':
+      $vars['body'] = 'Section open body';
+    break;
+    default:
+      $vars['body'] = 'No body set!';
+  }
+
 }
 
 /**

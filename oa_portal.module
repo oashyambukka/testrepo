@@ -11,6 +11,7 @@ function oa_portal_init() {
     $path = drupal_get_path('module', 'oa_portal');
     drupal_add_css($path . '/css/forms.css');
     drupal_add_css($path . '/css/phases.css');
+    drupal_add_css($path . '/css/misc.css');
     drupal_add_js($path . '/js/jquery.ba-untils.min.js');
     drupal_add_js($path . '/js/main.js');
   }
@@ -46,6 +47,12 @@ function oa_portal_menu() {
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
+  $items['portal/tutorial'] = array(
+    'title' => 'Tutorial and FAQs',
+    'page callback' => 'oa_portal_tutorial_page',
+    'access arguments' => array('access portal'),
+    'file' => 'oa_portal.pages.inc'
+  );
   $items['portal/messages'] = array(
     'title' => 'My Message Center',
     'page callback' => 'drupal_get_form',
@@ -76,7 +83,7 @@ function oa_portal_menu() {
     'file' => 'oa_portal.pages.inc'
   );
   $items['portal/createcoversheet/%'] = array(
-    'title' => 'OA Portal Download Coversheet',
+    'title' => 'OA Portal Download File',
     'page callback' => 'oa_portal_ucm_createcoversheet',
     'page arguments' => array(2),
     'access arguments' => array('access portal'),
@@ -232,7 +239,7 @@ function oa_portal_theme($existing, $type, $theme, $path) {
     'oap_tooltip' => array(
       'template' => 'oap_tooltip',
       'path' => $path . '/templates',
-      'arguments' => array('status' => NULL, 'string' => NULL),
+      'arguments' => array('status' => NULL, 'body' => NULL),
     ),
     'oap_doc_download' => array(
       'template' => 'oap_doc_download',

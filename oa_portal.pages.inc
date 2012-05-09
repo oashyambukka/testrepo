@@ -85,6 +85,22 @@ function oa_portal_forms_page() {
 }
 
 /**
+ * Page callback for Tutorial FAQs page
+ */
+function oa_portal_tutorial_page() {
+  global $user;
+  jquery_ui_add(array('ui.core', 'ui.tabs'));
+  drupal_add_js("Drupal.behaviors.tutorialTabs = function (context) { $('#tabs > ul').tabs(); }", 'inline');
+  $output = '<p>If you are ready to begin working with On Assignment Healthcare Staffing, we\'re ready to start working with you. See our tutorial below on how our recruiting process works.</p>';
+  $output .= '<p>If our tutorial doesn\'t answer your questions, see the frequently asked questions tab.</p>';
+  $output .= '<div id="tabs"><ul><li><a href="#tutorial"><span>Tutorial</span></a></li><li><a href="#faq"><span>FAQs</span></a></li></ul>';
+  $output .= '  <div id="tutorial"><img src="/sites/oahealth.resonancedev.ca/modules/oahealthportal/img/tutorial.png" /></div>';
+  $output .= '  <div id="faq">FAQ content goes here,</div>';
+  $output .= '</div>';
+  return $output;
+}
+
+/**
  * Page callback for file downloading per dDocName
  */
 function oa_portal_download_file($dDocName) {
