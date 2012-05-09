@@ -26,7 +26,7 @@ function oa_portal_change_password_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
   $account->pass = $form_state['values']['pass'];
-  user_save($account, array('pass' => $form_state['values']['pass']));
+  user_save($account, array('pass' => $form_state['values']['pass'], 'must_update_pass' => 0));
   drupal_set_message(t('Your password has been updated.'));
   $form_state['redirect'] = 'portal';
 }

@@ -4,6 +4,10 @@
  * Factory caching function for Candidate objects
  */
 function get_candidate($rmaxid, $reset = FALSE) {
+  if (!$rmaxid) {
+    dsm('You can\'t access the Portal without an RMaxID.');
+    drupal_goto('');
+  }
   static $candidates = array();
   if (is_object($candidates[$rmaxid]) && !$reset) {
     return $candidates[$rmaxid];

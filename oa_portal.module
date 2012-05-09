@@ -7,6 +7,8 @@ include_once('oa_portal.theme.inc');
  * Implements hook_init().
  */
 function oa_portal_init() {
+  global $user;
+
   if (arg(0) == 'portal') {
     $path = drupal_get_path('module', 'oa_portal');
     drupal_add_css($path . '/css/forms.css');
@@ -14,6 +16,15 @@ function oa_portal_init() {
     drupal_add_css($path . '/css/misc.css');
     drupal_add_js($path . '/js/jquery.ba-untils.min.js');
     drupal_add_js($path . '/js/main.js');
+  }
+
+  if ($user->uid && arg(0) != 'update-password' && !user_access('administer portal')) {
+    $account = user_load($user->uid);
+    $data = unserialize($account->data);
+    if ($data['must_update_pass']) {
+      unset($_REQUEST['destination']);
+      drupal_goto('update-password');
+    }
   }
 }
 
@@ -256,15 +267,7 @@ function oa_portal_user($op, &$edit, &$account, $category = NULL) {
   // Catch the first login to redirect them to change their password
   switch ($op) {
     case 'insert':
-      $edit['first_time_login'] = 1;
-    break;
-    case 'login':
-      $data = unserialize($account->data);
-      if ($data['first_time_login']) {
-        user_save($account, array('first_time_login' => 0));
-        unset($_REQUEST['destination']);
-        drupal_goto('update-password');
-      }
+      $edit['must_update_pass'] = 1;
     break;
   }
 }
