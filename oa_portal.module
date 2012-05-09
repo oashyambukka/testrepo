@@ -250,7 +250,26 @@ function oa_portal_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * 
+ * Implements hook_user().
+ */
+function oa_portal_user($op, &$edit, &$account, $category = NULL) {
+  // Catch the first login to redirect them to change their password
+  switch ($op) {
+    case 'insert':
+      $edit['first_time_login'] = 1;
+    break;
+    case 'login':
+      $data = unserialize($account->data);
+      if ($data['first_time_login']) {
+        user_save($account, array('first_time_login' => 0));
+        drupal_goto('update-password');
+      }
+    break;
+  }
+}
+
+/**
+ * Main source of Portal phase and section defaults
  */
 function oa_portal_forms_info() {
   $p = array();
