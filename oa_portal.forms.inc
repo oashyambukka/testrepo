@@ -6,6 +6,7 @@ include_once('oa_portal.fields.inc');
  * Form callback for Password change form
  */
 function oa_portal_change_password_form($form_state) {
+  _user_password_dynamic_validation();
   $form = array();
   $form['pass'] = array(
     '#type' => 'password_confirm',

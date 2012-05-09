@@ -262,6 +262,7 @@ function oa_portal_user($op, &$edit, &$account, $category = NULL) {
       $data = unserialize($account->data);
       if ($data['first_time_login']) {
         user_save($account, array('first_time_login' => 0));
+        unset($_REQUEST['destination']);
         drupal_goto('update-password');
       }
     break;
