@@ -1,7 +1,0 @@
-; oa.info
-name = "OA RecruitMax"
-description = "Exposes web services for interaction with RecruitMax."
-core = 6.x
-package = "On Assignment"
-dependencies[] = services
-dependencies[] = devel

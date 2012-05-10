@@ -12,7 +12,7 @@ function _accountresource_create($data, $notify) {
   if ($account = user_load(array('mail' => $data['mail']))) {
     return services_error('Invalid attribute "mail". Account already exists.', 406);
   }
-  if ($account = oa_rmax_get_account($data['rmaxid'])) {
+  if ($account = oa_services_get_account($data['rmaxid'])) {
     return services_error('Invalid attribute "rmaxid". Account already exists.', 406);
   }
   // Check for missing required attributes
@@ -78,7 +78,7 @@ function _accountresource_create($data, $notify) {
  */
 function _accountresource_retrieve($rmaxid) {
   return (object)array(
-    'account' => oa_rmax_get_account($rmaxid),
+    'account' => oa_services_get_account($rmaxid),
   );
 }
 
@@ -90,7 +90,7 @@ function _accountresource_retrieve($rmaxid) {
  * @return object
  */
 function _accountresource_update($rmaxid, $data) {
-  $account = oa_rmax_get_account($rmaxid);
+  $account = oa_services_get_account($rmaxid);
   if (!$account->uid) {
     return services_error('No account found to update.', 406);
   }

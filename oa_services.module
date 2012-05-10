@@ -3,7 +3,7 @@
 /**
  * Implements hook_perm().
  */
-function oa_rmax_perm() {
+function oa_services_perm() {
   return array(
     'account resource create an account',
     'account resource view any account',
@@ -17,7 +17,7 @@ function oa_rmax_perm() {
  * @param int $rmaxid
  * @return object
  */
-function oa_rmax_get_account($rmaxid) {
+function oa_services_get_account($rmaxid) {
   $record = db_fetch_array(db_query("SELECT uid FROM {profile_values} WHERE fid = 13 AND value = %d", $rmaxid));
   $account = user_load($record);
   profile_load_profile($account);
@@ -27,12 +27,12 @@ function oa_rmax_get_account($rmaxid) {
 /**
  * Implementation of hook_services_resources().
  */
-function oa_rmax_services_resources() {
+function oa_services_services_resources() {
   return array(
     'account' => array(
       'create' => array(
         'help' => 'Creates a account',
-        'file' => array('file' => 'inc', 'module' => 'oa_rmax'),
+        'file' => array('file' => 'inc', 'module' => 'oa_services'),
         'callback' => '_accountresource_create',
         'access arguments' => array('account resource create an account'),
         'access arguments append' => FALSE,
@@ -56,7 +56,7 @@ function oa_rmax_services_resources() {
       ),
       'retrieve' => array(
         'help' => 'Retrieves an account',
-        'file' => array('file' => 'inc', 'module' => 'oa_rmax'),
+        'file' => array('file' => 'inc', 'module' => 'oa_services'),
         'callback' => '_accountresource_retrieve',
         'access arguments' => array('account resource view any account'),
         'access arguments append' => FALSE,
@@ -72,7 +72,7 @@ function oa_rmax_services_resources() {
       ),
       'update' => array(
         'help' => 'Updates an account',
-        'file' => array('file' => 'inc', 'module' => 'oa_rmax'),
+        'file' => array('file' => 'inc', 'module' => 'oa_services'),
         'callback' => '_accountresource_update',
         'access arguments' => array('account resource update any account'),
         'access arguments append' => FALSE,
