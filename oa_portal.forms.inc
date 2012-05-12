@@ -709,7 +709,6 @@ function oa_portal_p2_licensure_certs_form($form_state) {
     unset($all_cl[$ft]);
   }
 
-  // @TODO Replace with actual formid for Other docs
   $options['Other'][61] = t('Other');
   $options['Other'] = $options['Other'] + $all_cl;
 

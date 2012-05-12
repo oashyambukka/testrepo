@@ -11,7 +11,12 @@ function oa_onboard_menu() {
     'access arguments' => array('OA - Review files'),
     'title' => 'Application Form',
   );
-
+  $items['apply/dupecheck'] = array(
+    'title' => 'Duplicate Email check',
+    'page callback' => 'oa_onboard_dupecheck',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 
@@ -20,6 +25,8 @@ function oa_onboard_menu() {
  */
 function oa_onboard_form($form_state) {
   $form = array();
+  $form['#attributes'] = array('enctype' => "multipart/form-data");
+
   if ($_GET['id']) {
     $form['id'] = array(
       '#type' => 'hidden',
@@ -33,6 +40,18 @@ function oa_onboard_form($form_state) {
   $form['Candidates'] = array(
     '#tree' => TRUE,
   );
+  // Email Address: <fill-in>
+  $form['Candidates']['Email'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Email',
+    '#required' => TRUE,
+  );
+  $form['Candidates']['Email_confirm'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Email Confirmation',
+    '#required' => TRUE,
+  );
+  
   $form['Candidates']['FirstName'] = array(
     '#type' => 'textfield',
     '#title' => 'First Name',
@@ -54,7 +73,7 @@ function oa_onboard_form($form_state) {
   );
   $form['Candidates']['PostalAddress']['AddressLine2'] = array(
     '#type' => 'textfield',
-    '#title' => 'Address 2',
+    '#title' => 'Address',
   );
   $form['Candidates']['PostalAddress']['Municipality'] = array(
     '#type' => 'textfield',
@@ -72,12 +91,6 @@ function oa_onboard_form($form_state) {
     '#required' => TRUE,
   );
   
-  // Email Address: <fill-in>   
-  $form['Candidates']['Email'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Address',
-    '#required' => TRUE,
-  );
 
 
   // Primary Phone Number: <fill-in>
@@ -87,18 +100,12 @@ function oa_onboard_form($form_state) {
   );
   $form['CandidatePhones'][2] = array(
     '#type' => 'textfield',
-    '#title' => 'Primary Phone Number',
+    '#title' => 'Primary Phone',
     '#required' => TRUE,
   );
   $form['CandidatePhones'][1] = array(
     '#type' => 'textfield',
-    '#title' => 'Secondary Phone Number (optional)',
-  );
-  $form['CandidatePhones']['preferred_communication'] = array(
-    '#type' => 'select',
-    '#title' => t('Preferred method of communication:'),
-    '#options' => drupal_map_assoc(array('Phone', 'Email')),
-    '#required' => TRUE,
+    '#title' => 'Cell Phone',
   );
 
   $form['specialty'] = array(
@@ -144,51 +151,13 @@ function oa_onboard_form($form_state) {
 
   $form['referral'] = array(
     '#type' => 'select',
-    '#title' => t('How did you hear about Lab Support:'),
-    '#options' => drupal_map_assoc(array('option 1', 'option 2')),
-    '#required' => TRUE,
-  );
-
-  $form['years_of_experience'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Years of experience:'),
-    '#required' => TRUE,
-  );
-  
-  $form['highest_edu'] = array(
-    '#type' => 'select',
-    '#title' => t('Highest Education:'),
-    '#options' => drupal_map_assoc(array('option 1', 'option 2')),
-    '#required' => TRUE,
-  );
-
-  $form['currently_working'] = array(
-    '#type' => 'radios',
-    '#title' => t('Are you currently working:'),
-    '#options' => drupal_map_assoc(array('yes', 'no')),
-    '#required' => TRUE,
-  );
-
-  $form['geo'] = array(
-    '#type' => 'select',
-    '#title' => t('Geographic Preference:'),
-    '#options' => drupal_map_assoc(array('<drop down of county/major cities>', 'city 1', 'city 2')),
-    '#required' => TRUE,
-  );
-
-  $form['security'] = array(
-    '#type' => 'select',
-    '#title' => t('Security Clearance:'),
+    '#title' => t('Were you referred?'),
     '#options' => drupal_map_assoc(array('option 1', 'option 2')),
     '#required' => TRUE,
   );
 
   $form['resume_file'] = array(
     '#type' => 'file',
-    '#title' => t('Paste your resume in text box below:'),
-  );
-  $form['resume_text'] = array(
-    '#type' => 'textarea',
     '#title' => t('Paste your resume in text box below:'),
   );
 
@@ -198,15 +167,6 @@ function oa_onboard_form($form_state) {
       '<p>I further understand and waive my right of privacy in this investigation and release and hold harmless On Assignment from any liability.</p>'.
       '<p>I agree that any decision to hire me is contingent upon the results of my report, and certify that all statements and answers on my Application, resume, or interview are true and complete to the best of my knowledge. I understand that if any statements are false or that if information has been omitted, this will be cause for disqualification and immediate termination of my employment. I further authorize On Assignment to check my conviction record as needed, on a continuous basis as it relates to my employment.</p>'.
       '<p>I authorize On Assignment to release any employment records, including health records submitted to On Assignment to any customer of On Assignment for consideration of employment at customer facility.</p>',
-  );
-
-  $form['accepted_terms'] = array(
-    '#type' => 'radio',
-    '#options' => array(
-      0 => t('I accept'),
-      1 => t('I do not accept'),
-    ),
-    '#required' => TRUE,
   );
 
   $form['submit'] = array(
@@ -221,10 +181,7 @@ function oa_onboard_form($form_state) {
  * Form validation callback for onboarding form
  */
 function oa_onboard_form_validate($form, &$form_state) {
-  // One of: resume file or text
-  
-  
-  // Accepted terms
+  // Dupe check email address
 
 }
 
@@ -237,4 +194,57 @@ function oa_onboard_form_submit($form, &$form_state) {
   // CandidatePhones method: CandidateID, TypeID (1=Work, 2=Home, 3=Mobile, 72=Other), Phone (strip non-numeric characters)
   
   
+  // Resume file upload
+  if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['resume_file'])) {
+    $filepath = $_FILES['files']['tmp_name']['resume_file'];
+    $filesize = $_FILES['files']['size']['resume_file'];
+    $filename = $_FILES['files']['name']['resume_file'];
+    $handle = fopen($filepath, "r");
+    $contents = fread($handle, $filesize);
+    fclose($handle);
+
+    $params = array(
+      // 'dDocName' => ($form_state['values']['lc']['lc_licensure'] == 61) ? '' : $account->rmaxid .'_'. $form_state['values']['lc']['lc_licensure'],
+      'dDocTitle' => '9999999 - '. $rmaxid,
+      'dDocType' => 'Rmax',
+      'dDocAuthor' => 'weblogic',
+      'dSecurityGroup' => 'Form',
+      'dDocAccount' => 'Recruit/QA',
+      'xContentType' => 'Form',
+      'xFormType' => 999999999,
+      'xRM_ID' => $rmaxid,
+      'xStatus' => 'Pending Review',
+      'xComments' => '',
+      'xRejectReason' => '',
+      'xRejectOther' => '',
+      'xSuccessAudit' => '',
+    );
+    $params['primaryFile'] = array(
+      'fileName'=> $_FILES['files']['name']['resume_file'],
+      'fileContent' => $contents,
+    );
+    $result = oa_portal_soap('oacheckin', $params);
+    if ($result->oacheckinResult->StatusInfo->statusCode === 0) {
+      drupal_set_message(t('Your file upload was successful.'));
+    }
+    else {
+      drupal_set_message(t('An error occured. Please try again.'));
+    }
+  }
+  
+}
+
+/**
+ * Dupe Check menu callback.
+ */
+function oa_onboard_dupecheck() {
+  $Email = $_POST['email'];
+  // @TODO RMax dupe check
+  // http://rmdev-630.rmaxut.oaifield.onasgn.com/com/recruitmax/webservices/candidateLS/candidateGatewayUS.cfc?wsdl
+  // array('Email' => $Email)
+  
+  watchdog('oaonboard', 'Dupe checked email: '. $Email .'. Duplicate? Y/N');
+  // $result-> === 0 means no dupe
+  drupal_json(array('status' => (TRUE) ? 'no-dupe' : 'dupe'));
+  exit();
 }

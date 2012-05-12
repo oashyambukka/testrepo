@@ -52,7 +52,7 @@ function _accountresource_create($data, $notify) {
 
   if ($account = user_save(array(), $data, 'OA Information')) {
     // Not sure why I need this query -rp
-    db_query("INSERT INTO {profile_values} (fid, uid, value) VALUES (%d, %d, '%s')", 13, $account->uid, $account->profile_rmaxid);
+    db_query("INSERT INTO {profile_values} (fid, uid, value) VALUES (%d, %d, '%s')", 13, $account->uid, $account->rmaxid);
 
     // Send notification email
     if ($notify == 'yes') {
@@ -98,16 +98,16 @@ function _accountresource_update($rmaxid, $data) {
   $allowed_keys = array(
     'mail',
     'name',
-    'profile_first_name',
-    'profile_last_name',
-    'profile_middle_initial',
-    'profile_street_address1',
-    'profile_street_address2',
-    'profile_city',
-    'profile_state',
-    'profile_code',
-    'profile_recruiter',
-    'profile_office',
+    // 'profile_first_name',
+    // 'profile_last_name',
+    // 'profile_middle_initial',
+    // 'profile_street_address1',
+    // 'profile_street_address2',
+    // 'profile_city',
+    // 'profile_state',
+    // 'profile_code',
+    // 'profile_recruiter',
+    // 'profile_office',
   );
   foreach ($data AS $k => $v) {
     if (!in_array($k, $allowed_keys)) {
