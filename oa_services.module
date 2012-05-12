@@ -1,0 +1,98 @@
+<?php
+
+/**
+ * Implements hook_perm().
+ */
+function oa_services_perm() {
+  return array(
+    'account resource create an account',
+    'account resource view any account',
+    'account resource update any note',
+    'account resource delete any note',
+  );
+}
+
+/** Gets an account object by rmaxid.
+ *
+ * @param int $rmaxid
+ * @return object
+ */
+function oa_services_get_account($rmaxid) {
+  $record = db_fetch_array(db_query("SELECT uid FROM {profile_values} WHERE fid = 13 AND value = %d", $rmaxid));
+  $account = user_load($record);
+  profile_load_profile($account);
+  return $account;
+}
+
+/**
+ * Implementation of hook_services_resources().
+ */
+function oa_services_services_resources() {
+  return array(
+    'account' => array(
+      'create' => array(
+        'help' => 'Creates a account',
+        'file' => array('file' => 'inc', 'module' => 'oa_services'),
+        'callback' => '_accountresource_create',
+        'access arguments' => array('account resource create an account'),
+        'access arguments append' => FALSE,
+        'args' => array(
+          array(
+            'name' => 'data',
+            'type' => 'struct',
+            'description' => 'The account data array. ',
+            'source' => 'data',
+            'optional' => FALSE,
+          ),
+          array(
+            'name' => 'notify',
+            'type' => 'struct',
+            'description' => 'Whether to send notification email or not. Only "yes" will trigger a notification.',
+            'source' => 'data',
+            'optional' => FALSE,
+          ),
+          
+        ),
+      ),
+      'retrieve' => array(
+        'help' => 'Retrieves an account',
+        'file' => array('file' => 'inc', 'module' => 'oa_services'),
+        'callback' => '_accountresource_retrieve',
+        'access arguments' => array('account resource view any account'),
+        'access arguments append' => FALSE,
+        'args' => array(
+          array(
+            'name' => 'rmaxid',
+            'type' => 'int',
+            'description' => 'The rmaxid of the account to get',
+            'source' => array('path' => '0'),
+            'optional' => FALSE,
+          ),
+        ),
+      ),
+      'update' => array(
+        'help' => 'Updates an account',
+        'file' => array('file' => 'inc', 'module' => 'oa_services'),
+        'callback' => '_accountresource_update',
+        'access arguments' => array('account resource update any account'),
+        'access arguments append' => FALSE,
+        'args' => array(
+          array(
+            'name' => 'rmaxid',
+            'type' => 'int',
+            'description' => 'The rmaxid of the account to update',
+            'source' => array('path' => '0'),
+            'optional' => FALSE,
+          ),
+          array(
+            'name' => 'data',
+            'type' => 'struct',
+            'description' => 'The account data to update. An array of key-value pairs with attributes to update.',
+            'source' => 'data',
+            'optional' => FALSE,
+          ),
+        ),
+      ),
+    ),
+  );
+}

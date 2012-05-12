@@ -1,0 +1,7 @@
+; oa.info
+name = "OA Onboard Forms"
+description = "Exposes web forms for initial registration of Prospects."
+core = 6.x
+package = "On Assignment"
+
+dependencies[] = devel

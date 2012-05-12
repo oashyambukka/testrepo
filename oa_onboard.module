@@ -1,0 +1,240 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function oa_onboard_menu() {
+  $items = array();
+  $items['apply'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('oa_onboard_form'),
+    'access arguments' => array('OA - Review files'),
+    'title' => 'Application Form',
+  );
+
+  return $items;
+}
+
+/**
+ * Form callback for onboarding form
+ */
+function oa_onboard_form($form_state) {
+  $form = array();
+  if ($_GET['id']) {
+    $form['id'] = array(
+      '#type' => 'hidden',
+      '#value' => $_GET['id'],
+    );
+    $form['applying-for'] = array(
+      '#type' => 'markup',
+      '#value' => t('Applying for Job ID ' . $_GET['id']),
+    );
+  }
+  $form['Candidates'] = array(
+    '#tree' => TRUE,
+  );
+  $form['Candidates']['FirstName'] = array(
+    '#type' => 'textfield',
+    '#title' => 'First Name',
+    '#required' => TRUE,
+  );
+  $form['Candidates']['LastName'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Last Name',
+    '#required' => TRUE,
+  );
+  
+  $form['Candidates']['PostalAddress'] = array(
+    '#tree' => TRUE,
+  );
+  $form['Candidates']['PostalAddress']['AddressLine1'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Address',
+    '#required' => TRUE,
+  );
+  $form['Candidates']['PostalAddress']['AddressLine2'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Address 2',
+  );
+  $form['Candidates']['PostalAddress']['Municipality'] = array(
+    '#type' => 'textfield',
+    '#title' => 'City',
+    '#required' => TRUE,
+  );
+  $form['Candidates']['PostalAddress']['RegionID'] = array( // (from Region table)
+    '#type' => 'textfield',
+    '#title' => 'State/Province',
+    '#required' => TRUE,
+  );
+  $form['Candidates']['PostalAddress']['PostalCode'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Zip/Postal Code',
+    '#required' => TRUE,
+  );
+  
+  // Email Address: <fill-in>   
+  $form['Candidates']['Email'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Address',
+    '#required' => TRUE,
+  );
+
+
+  // Primary Phone Number: <fill-in>
+  // Secondary Phone Number (optional): <fill-in>
+  $form['CandidatePhones'] = array(
+    '#tree' => TRUE,
+  );
+  $form['CandidatePhones'][2] = array(
+    '#type' => 'textfield',
+    '#title' => 'Primary Phone Number',
+    '#required' => TRUE,
+  );
+  $form['CandidatePhones'][1] = array(
+    '#type' => 'textfield',
+    '#title' => 'Secondary Phone Number (optional)',
+  );
+  $form['CandidatePhones']['preferred_communication'] = array(
+    '#type' => 'select',
+    '#title' => t('Preferred method of communication:'),
+    '#options' => drupal_map_assoc(array('Phone', 'Email')),
+    '#required' => TRUE,
+  );
+
+  $form['specialty'] = array(
+    '#type' => 'select',
+    '#title' => t('Specialty'),
+    '#options' => drupal_map_assoc(array(
+      'Environmental Experience',
+      'Organic Chemistry Techniques',
+      'Clinical Specialty',
+      'Medical Device Experience',
+      'Clinical Technique',
+      'Quality',
+      'Animal Experience',
+      'Biochemistry Techniques',
+      'Microbiology Techniques',
+      'Clinical Experience',
+      'Food and Fragrance Experience',
+      'Physical Testing Techniques',
+      'Regulatory Affairs',
+      'Material Science Experience',
+      'Computer Skills',
+      'Molecular Biology Techniques',
+      'General Chemistry Techniques',
+      'Clinical Instrumentation',
+      'Instrumentation',
+      'Manufacturing Experience',
+      'Histology Experience',
+      'Formulations',
+    )),
+    '#required' => TRUE,
+  );
+
+  $form['type_of_assignment'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Type of assignment: (check all that apply)'),
+    '#options' => drupal_map_assoc(array(
+      'Contract',
+      'Contract-to-hire',
+      'Direct Hire',
+    )),
+    '#required' => TRUE,
+  );
+
+  $form['referral'] = array(
+    '#type' => 'select',
+    '#title' => t('How did you hear about Lab Support:'),
+    '#options' => drupal_map_assoc(array('option 1', 'option 2')),
+    '#required' => TRUE,
+  );
+
+  $form['years_of_experience'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Years of experience:'),
+    '#required' => TRUE,
+  );
+  
+  $form['highest_edu'] = array(
+    '#type' => 'select',
+    '#title' => t('Highest Education:'),
+    '#options' => drupal_map_assoc(array('option 1', 'option 2')),
+    '#required' => TRUE,
+  );
+
+  $form['currently_working'] = array(
+    '#type' => 'radios',
+    '#title' => t('Are you currently working:'),
+    '#options' => drupal_map_assoc(array('yes', 'no')),
+    '#required' => TRUE,
+  );
+
+  $form['geo'] = array(
+    '#type' => 'select',
+    '#title' => t('Geographic Preference:'),
+    '#options' => drupal_map_assoc(array('<drop down of county/major cities>', 'city 1', 'city 2')),
+    '#required' => TRUE,
+  );
+
+  $form['security'] = array(
+    '#type' => 'select',
+    '#title' => t('Security Clearance:'),
+    '#options' => drupal_map_assoc(array('option 1', 'option 2')),
+    '#required' => TRUE,
+  );
+
+  $form['resume_file'] = array(
+    '#type' => 'file',
+    '#title' => t('Paste your resume in text box below:'),
+  );
+  $form['resume_text'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Paste your resume in text box below:'),
+  );
+
+  $form['terms'] = array(
+    '#markup' => '<p>Lab Support, a division of On Assignment* ("Company") is an Equal Opportunity Employer. All applicants are considered for employment regardless of age, race, gender, religion, national origin, disability, marital status or any other factor prohibited by law.</p>'. 
+      '<p>I certify that the information provided on this Application is accurate. I understand that the withholding of information or the giving of false information on this Application may result in a refusal to hire or disciplinary action including, but not limited to, termination. I understand and agree that if I am offered employment by the company, it will be on an at-will basis. This means that either the Company or I may terminate the employment relationship at any time, for any reason, with or without cause or notice. I also understand and agree that only an officer of the Company can enter into an agreement on any other terms and he/she can only do so in writing signed by the officer and me. I have read the above before signing this Application.</p>'.
+      '<p>I further understand and waive my right of privacy in this investigation and release and hold harmless On Assignment from any liability.</p>'.
+      '<p>I agree that any decision to hire me is contingent upon the results of my report, and certify that all statements and answers on my Application, resume, or interview are true and complete to the best of my knowledge. I understand that if any statements are false or that if information has been omitted, this will be cause for disqualification and immediate termination of my employment. I further authorize On Assignment to check my conviction record as needed, on a continuous basis as it relates to my employment.</p>'.
+      '<p>I authorize On Assignment to release any employment records, including health records submitted to On Assignment to any customer of On Assignment for consideration of employment at customer facility.</p>',
+  );
+
+  $form['accepted_terms'] = array(
+    '#type' => 'radio',
+    '#options' => array(
+      0 => t('I accept'),
+      1 => t('I do not accept'),
+    ),
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Form validation callback for onboarding form
+ */
+function oa_onboard_form_validate($form, &$form_state) {
+  // One of: resume file or text
+  
+  
+  // Accepted terms
+
+}
+
+/**
+ * Form submission callback for onboarding form
+ */
+function oa_onboard_form_submit($form, &$form_state) {
+  // Candidates method: FirstName, LastName, Email, AvailableDate (datetime) 
+  // PostalAddress method: EntityID, AddressLine1, AddressLine2, Municipality, RegionID (from Region table), PostalCode
+  // CandidatePhones method: CandidateID, TypeID (1=Work, 2=Home, 3=Mobile, 72=Other), Phone (strip non-numeric characters)
+  
+  
+}

@@ -1,0 +1,7 @@
+; oa.info
+name = "OA Services"
+description = "Exposes web services for interaction with RecruitMax and UCM."
+core = 6.x
+package = "On Assignment"
+dependencies[] = services
+dependencies[] = devel
