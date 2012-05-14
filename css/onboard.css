@@ -1,0 +1,15 @@
+.oa-terms-field {
+        background:#EEEEEE;
+        overflow:hidden;
+        padding:5px 25px;
+        margin-right:5%;
+        margin-top:20px;
+        width:500px;
+        float:right;
+        outline: 2px solid #666;
+}
+.oa-terms-field p {
+        font-family:Tahoma, Geneva, sans-serif;
+        font-weight:normal;
+        color:#003300;
+}
