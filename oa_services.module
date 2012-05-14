@@ -9,19 +9,8 @@ function oa_services_perm() {
     'account resource view any account',
     'account resource update any note',
     'account resource delete any note',
+    'message resource create an message',
   );
-}
-
-/** Gets an account object by rmaxid.
- *
- * @param int $rmaxid
- * @return object
- */
-function oa_services_get_account($rmaxid) {
-  $record = db_fetch_array(db_query("SELECT uid FROM {profile_values} WHERE fid = 13 AND value = %d", $rmaxid));
-  $account = user_load($record);
-  profile_load_profile($account);
-  return $account;
 }
 
 /**
@@ -40,7 +29,7 @@ function oa_services_services_resources() {
           array(
             'name' => 'data',
             'type' => 'struct',
-            'description' => 'The account data array. ',
+            'description' => 'The account data array.',
             'source' => 'data',
             'optional' => FALSE,
           ),
@@ -64,7 +53,7 @@ function oa_services_services_resources() {
           array(
             'name' => 'rmaxid',
             'type' => 'int',
-            'description' => 'The rmaxid of the account to get',
+            'description' => 'The rmaxid of the account to get.',
             'source' => array('path' => '0'),
             'optional' => FALSE,
           ),
@@ -80,7 +69,7 @@ function oa_services_services_resources() {
           array(
             'name' => 'rmaxid',
             'type' => 'int',
-            'description' => 'The rmaxid of the account to update',
+            'description' => 'The rmaxid of the account to update.',
             'source' => array('path' => '0'),
             'optional' => FALSE,
           ),
@@ -93,6 +82,66 @@ function oa_services_services_resources() {
           ),
         ),
       ),
+
+      'message' => array(
+        'create' => array(
+          'help' => 'Creates a message',
+          'file' => array('file' => 'inc', 'module' => 'oa_services'),
+          'callback' => '_messageresource_create',
+          'access arguments' => array('message resource create an message'),
+          'access arguments append' => FALSE,
+          'args' => array(
+            array(
+              'name' => 'data',
+              'type' => 'struct',
+              'description' => 'The message data array. Must include the following keys: rmaxid, msg_id, subject, body',
+              'source' => 'data',
+              'optional' => FALSE,
+            ),
+          ),
+        ),
+      
     ),
   );
+}
+
+
+/**
+ * Gets an account object by rmaxid.
+ *
+ * @param int $rmaxid
+ * @return object $account
+ */
+function oa_services_account_load($rmaxid) {
+  $record = db_fetch_array(db_query("SELECT uid FROM {profile_values} WHERE fid = 1 AND value = %d", $rmaxid));
+  $account = user_load($record);
+  profile_load_profile($account);
+  return $account;
+}
+
+/**
+ * Gets a message object by msg_id.
+ *
+ * @param int $msg_id
+ * @return object $message
+ */
+function oa_services_message_load($msg_id) {
+  while ($message = db_fetch_object(db_query("SELECT * FROM {ucm_messages} WHERE msg_id = %d LIMIT 1", $msg_id))) {
+    return $message;
+  }
+  return NULL;
+}
+
+/**
+ * Creates a message record.
+ *
+ * @param array $data
+ * @return object $message
+ */
+function oa_services_message_create($data) {
+  if ($result = db_query("INSERT INTO {ucm_messages} (msg_id, rmaxid, subject, body, timestamp, was_read) VALUES (%d, %d, '%s', '%s', %d, %d)",
+    $data['rmaxid'], $data['msg_id'], $data['subject'], $data['body'], $data['timestamp'], $data['was_read'])) {
+    return oa_portal_get_message($data['msg_id']);
+  }
+  return NULL;
 }
