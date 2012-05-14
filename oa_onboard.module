@@ -117,27 +117,18 @@ function oa_onboard_form($form_state) {
     '#required' => TRUE,
   );
 
-  $form['type_of_assignment'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Type of assignment: (check all that apply)'),
-    '#options' => drupal_map_assoc(array(
-      'Contract',
-      'Contract-to-hire',
-      'Direct Hire',
-    )),
-    '#required' => TRUE,
-  );
+  $form['date_available'] = date_popup('Date Available');
 
   $form['referral'] = array(
     '#type' => 'select',
     '#title' => t('Were you referred?'),
-    '#options' => drupal_map_assoc(array('option 1', 'option 2')),
+    '#options' => array('none' => t('- Select -')) + drupal_map_assoc(array('Yes', 'No')),
     '#required' => TRUE,
   );
 
   $form['resume_file'] = array(
     '#type' => 'file',
-    '#title' => t('Paste your resume in text box below:'),
+    '#title' => t('Resume Upload'),
   );
 
   $form['terms'] = array(
