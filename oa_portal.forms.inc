@@ -781,9 +781,13 @@ function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
       'fileName'=> $_FILES['files']['name']['lc'],
       'fileContent' => $contents,
     );
-    $results = oa_portal_soap('oacheckin', $params);
-    // dsm($results, 'SOAP $results for file upload');
-    // TODO? Show success message?
+    $result = oa_portal_soap('oacheckin', $params);
+    if ($result->oacheckinResult->StatusInfo->statusCode === 0) {
+      drupal_set_message(t('Your file upload was successful.'));
+    }
+    else {
+      drupal_set_message(t('An error occured. Please try again.'));
+    }
   }
 
   $candidate = get_candidate($account->rmaxid, TRUE);

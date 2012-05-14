@@ -8,8 +8,8 @@ function oa_onboard_menu() {
   $items['apply'] = array(
     'page callback' => 'drupal_get_form',
     'page arguments' => array('oa_onboard_form'),
-    'access arguments' => array('OA - Review files'),
-    'title' => 'Application Form',
+    'access arguments' => array('access content'),
+    'title' => 'Submit Resume',
   );
   $items['apply/dupecheck'] = array(
     'title' => 'Duplicate Email check',
@@ -24,6 +24,7 @@ function oa_onboard_menu() {
  * Form callback for onboarding form
  */
 function oa_onboard_form($form_state) {
+  include_once('oa_portal.fields.inc');
   $form = array();
   $form['#attributes'] = array('enctype' => "multipart/form-data");
 
@@ -57,40 +58,18 @@ function oa_onboard_form($form_state) {
     '#title' => 'First Name',
     '#required' => TRUE,
   );
+  $form['Candidates']['Middle'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Middle Initial',
+  );
+  
   $form['Candidates']['LastName'] = array(
     '#type' => 'textfield',
     '#title' => 'Last Name',
     '#required' => TRUE,
   );
   
-  $form['Candidates']['PostalAddress'] = array(
-    '#tree' => TRUE,
-  );
-  $form['Candidates']['PostalAddress']['AddressLine1'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Address',
-    '#required' => TRUE,
-  );
-  $form['Candidates']['PostalAddress']['AddressLine2'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Address',
-  );
-  $form['Candidates']['PostalAddress']['Municipality'] = array(
-    '#type' => 'textfield',
-    '#title' => 'City',
-    '#required' => TRUE,
-  );
-  $form['Candidates']['PostalAddress']['RegionID'] = array( // (from Region table)
-    '#type' => 'textfield',
-    '#title' => 'State/Province',
-    '#required' => TRUE,
-  );
-  $form['Candidates']['PostalAddress']['PostalCode'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Zip/Postal Code',
-    '#required' => TRUE,
-  );
-  
+  $form['Candidates']['PostalAddress'] = address();
 
 
   // Primary Phone Number: <fill-in>
@@ -191,6 +170,14 @@ function oa_onboard_form_validate($form, &$form_state) {
 function oa_onboard_form_submit($form, &$form_state) {
   // Candidates method: FirstName, LastName, Email, AvailableDate (datetime) 
   // PostalAddress method: EntityID, AddressLine1, AddressLine2, Municipality, RegionID (from Region table), PostalCode
+  
+  // AddressLine1
+  // AddressLine2
+  // Municipality (City)
+  // RegionID (State)
+  // PostalCode
+  
+  
   // CandidatePhones method: CandidateID, TypeID (1=Work, 2=Home, 3=Mobile, 72=Other), Phone (strip non-numeric characters)
   
   
