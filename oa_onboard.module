@@ -77,15 +77,9 @@ function oa_onboard_form($form_state) {
   $form['CandidatePhones'] = array(
     '#tree' => TRUE,
   );
-  $form['CandidatePhones'][2] = array(
-    '#type' => 'textfield',
-    '#title' => 'Primary Phone',
-    '#required' => TRUE,
-  );
-  $form['CandidatePhones'][1] = array(
-    '#type' => 'textfield',
-    '#title' => 'Cell Phone',
-  );
+  $form['CandidatePhones'][2] = phone('Primary Phone');
+  $form['CandidatePhones'][1] = phone('Cell Phone');
+  $form['CandidatePhones'][1]['#required'] = FALSE;
 
   $form['specialty'] = array(
     '#type' => 'select',
