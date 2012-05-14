@@ -746,6 +746,9 @@ function oa_portal_user_pass_submit($form, &$form_state) {
   global $language;
   $account = $form_state['values']['account'];
   oa_portal_user_mail_notify('password_reset', $account, $language);
+
+  // Must update their password
+  user_save($account, array('must_update_pass' => 1));
   watchdog('user', 'OAP - Password reset instructions mailed to %name at %email.', array('%name' => $account->name, '%email' => $account->mail));
   drupal_set_message(t('Further instructions have been sent to your e-mail address.'));
 
