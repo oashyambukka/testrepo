@@ -25,6 +25,10 @@ function oa_onboard_menu() {
  */
 function oa_onboard_form($form_state) {
   include_once('oa_portal.fields.inc');
+  $path = drupal_get_path('module', 'oa_onboard');
+  drupal_add_css($path . '/css/onboard.css');
+  drupal_add_js($path . '/js/onboard.js');
+
   $form = array();
   $form['#attributes'] = array('enctype' => "multipart/form-data");
 
@@ -47,6 +51,9 @@ function oa_onboard_form($form_state) {
     '#title' => 'Email',
     '#required' => TRUE,
   );
+  $form['Candidates']['Email_dupe'] = array(
+    '#value' => '<div id="email-address-is-dupe" class="set-hide">Your profile already exists.</div>',
+  );
   $form['Candidates']['Email_confirm'] = array(
     '#type' => 'textfield',
     '#title' => 'Email Confirmation',
@@ -57,16 +64,19 @@ function oa_onboard_form($form_state) {
     '#type' => 'textfield',
     '#title' => 'First Name',
     '#required' => TRUE,
+    '#size' => 20,
   );
   $form['Candidates']['Middle'] = array(
     '#type' => 'textfield',
     '#title' => 'Middle Initial',
+    '#size' => 3,
   );
   
   $form['Candidates']['LastName'] = array(
     '#type' => 'textfield',
     '#title' => 'Last Name',
     '#required' => TRUE,
+    '#size' => 20,
   );
   
   $form['Candidates']['PostalAddress'] = address();
@@ -81,10 +91,8 @@ function oa_onboard_form($form_state) {
   $form['CandidatePhones'][1] = phone('Cell Phone');
   $form['CandidatePhones'][1]['#required'] = FALSE;
 
-  $form['specialty'] = array(
-    '#type' => 'select',
-    '#title' => t('Specialty'),
-    '#options' => drupal_map_assoc(array(
+  $form['specialty'] = select('Specialty', 
+    array(
       'Environmental Experience',
       'Organic Chemistry Techniques',
       'Clinical Specialty',
@@ -107,8 +115,7 @@ function oa_onboard_form($form_state) {
       'Manufacturing Experience',
       'Histology Experience',
       'Formulations',
-    )),
-    '#required' => TRUE,
+    )
   );
 
   $form['date_available'] = date_popup('Date Available');
@@ -126,18 +133,13 @@ function oa_onboard_form($form_state) {
   );
 
   $form['terms'] = array(
-    '#markup' => '<p>Lab Support, a division of On Assignment* ("Company") is an Equal Opportunity Employer. All applicants are considered for employment regardless of age, race, gender, religion, national origin, disability, marital status or any other factor prohibited by law.</p>'. 
-      '<p>I certify that the information provided on this Application is accurate. I understand that the withholding of information or the giving of false information on this Application may result in a refusal to hire or disciplinary action including, but not limited to, termination. I understand and agree that if I am offered employment by the company, it will be on an at-will basis. This means that either the Company or I may terminate the employment relationship at any time, for any reason, with or without cause or notice. I also understand and agree that only an officer of the Company can enter into an agreement on any other terms and he/she can only do so in writing signed by the officer and me. I have read the above before signing this Application.</p>'.
-      '<p>I further understand and waive my right of privacy in this investigation and release and hold harmless On Assignment from any liability.</p>'.
-      '<p>I agree that any decision to hire me is contingent upon the results of my report, and certify that all statements and answers on my Application, resume, or interview are true and complete to the best of my knowledge. I understand that if any statements are false or that if information has been omitted, this will be cause for disqualification and immediate termination of my employment. I further authorize On Assignment to check my conviction record as needed, on a continuous basis as it relates to my employment.</p>'.
-      '<p>I authorize On Assignment to release any employment records, including health records submitted to On Assignment to any customer of On Assignment for consideration of employment at customer facility.</p>',
+    '#value' => '<div class="oa-terms-field">On Assignment* ("Company") is an Equal Opportunity Employer. All applicants are considered for employment regardless of age, race, gender, religion, national origin, disability, marital status or any other factor prohibited by law.</div>',
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
   );
-
   return $form;
 }
 

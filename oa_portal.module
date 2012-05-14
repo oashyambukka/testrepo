@@ -9,11 +9,11 @@ include_once('oa_portal.theme.inc');
 function oa_portal_init() {
   global $user;
 
+  $path = drupal_get_path('module', 'oa_portal');
+  drupal_add_css($path . '/css/misc.css');
   if (arg(0) == 'portal') {
-    $path = drupal_get_path('module', 'oa_portal');
     drupal_add_css($path . '/css/forms.css');
     drupal_add_css($path . '/css/phases.css');
-    drupal_add_css($path . '/css/misc.css');
     drupal_add_js($path . '/js/jquery.ba-untils.min.js');
     drupal_add_js($path . '/js/main.js');
   }

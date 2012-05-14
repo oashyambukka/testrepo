@@ -4,5 +4,6 @@ description = "Exposes web forms for initial registration of Prospects."
 core = 6.x
 package = "On Assignment"
 
+dependencies[] = date_popup
 dependencies[] = devel
 dependencies[] = oa_portal
