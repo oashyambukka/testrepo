@@ -219,12 +219,53 @@ function oa_onboard_dupecheck() {
     exit();
   }
 
-  // @TODO RMax dupe check
-  // http://rmdev-630.rmaxut.oaifield.onasgn.com/com/recruitmax/webservices/candidateLS/candidateGatewayUS.cfc?wsdl
-  // array('Email' => $Email)
-  
+  $params = array('Email' => $Email)
+  $result = oa_onboard_soap('check', $params, TRUE);
   watchdog('oaonboard', 'Dupe checked email: '. $Email .'. Duplicate? Y/N');
+  watchdog('oaonboard', 'Dupe checked result: <pre>'. print_r($result, TRUE) .'</pre>');
+
   // $result-> === 0 means no dupe
   drupal_json(array('status' => (TRUE) ? 'no-dupe' : 'dupe'));
   exit();
+}
+
+/**
+ * SOAP interface
+ */
+function oa_onboard_soap($method, $params, $debug = FALSE) {
+  // ini_set("soap.wsdl_cache_enabled", "0");
+  $wsdl = 'http://rmdev-630.rmaxut.oaifield.onasgn.com/com/recruitmax/webservices/candidateLS/candidateGatewayUS.cfc?wsdl';
+  ini_set('display_errors', 1);
+
+  $soap_params = array(
+    // 'login' => 'weblogic',
+    // 'password' => '0ATraining',
+    'trace' => 1,
+  );
+  ini_set('default_socket_timeout', 10);
+
+  try {
+    $client = @new SoapClient($wsdl, $soap_params);
+    $response = $client->{$method}($params);
+  }
+  catch(SoapFault $e){
+    // handle issues returned by the web service
+    if (!$debug) {
+      oa_portal_503($e);
+    }
+  }
+  catch(Exception $e){
+    // handle PHP issues with the request
+    if (!$debug) {
+      oa_portal_500($e);
+    }
+  }
+
+  if ($debug) {
+    dsm($params, $method . ' $params');
+    dsm($client, $method . ' $client');
+    dsm($response, $method . ' $response');
+  }
+
+  return $response;
 }
