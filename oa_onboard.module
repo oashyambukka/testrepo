@@ -213,6 +213,12 @@ function oa_onboard_form_submit($form, &$form_state) {
  */
 function oa_onboard_dupecheck() {
   $Email = $_POST['email'];
+
+  if (!valid_email_address($Email)) {
+    drupal_json(array('status' => 'invalid'));
+    exit();
+  }
+
   // @TODO RMax dupe check
   // http://rmdev-630.rmaxut.oaifield.onasgn.com/com/recruitmax/webservices/candidateLS/candidateGatewayUS.cfc?wsdl
   // array('Email' => $Email)

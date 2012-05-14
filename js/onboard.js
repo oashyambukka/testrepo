@@ -17,7 +17,7 @@ Drupal.behaviors.onboard = function (context) {
           $('#email-address-is-dupe').slideDown();
           $('#edit-submit').hide();
         }
-        else if (data.status == 'no-dupe') {
+        else {
           $('#email-address-is-dupe').slideUp();
           $('#edit-submit').show();
         }
