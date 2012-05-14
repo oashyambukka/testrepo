@@ -116,6 +116,7 @@ function _accountresource_update($rmaxid, $data) {
  * @return object
  */
 function _messageresource_create($data, $notify) {
+  unset($data['sessid']);
   // Check for duplicates
   if ($message = oa_services_message_load($data['msg_id'])) {
     return services_error('Invalid attribute "msg_id". Message already exists.', 406);
@@ -149,7 +150,7 @@ function _messageresource_create($data, $notify) {
     return (object)array(
       'msg_id' => $message->msg_id,
       'message' => $message,
-      'uri' => services_resource_uri(array('message', $message->msg_id)),
+//      'uri' => services_resource_uri(array('message', $message->msg_id)),
     );
   }
   else {

@@ -82,25 +82,25 @@ function oa_services_services_resources() {
           ),
         ),
       ),
+    ),
 
-      'message' => array(
-        'create' => array(
-          'help' => 'Creates a message',
-          'file' => array('file' => 'inc', 'module' => 'oa_services'),
-          'callback' => '_messageresource_create',
-          'access arguments' => array('message resource create an message'),
-          'access arguments append' => FALSE,
-          'args' => array(
-            array(
-              'name' => 'data',
-              'type' => 'struct',
-              'description' => 'The message data array. Must include the following keys: rmaxid, msg_id, subject, body',
-              'source' => 'data',
-              'optional' => FALSE,
-            ),
+    'message' => array(
+      'create' => array(
+        'help' => 'Creates a message',
+        'file' => array('file' => 'inc', 'module' => 'oa_services'),
+        'callback' => '_messageresource_create',
+        'access arguments' => array('message resource create an message'),
+        'access arguments append' => FALSE,
+        'args' => array(
+          array(
+            'name' => 'data',
+            'type' => 'struct',
+            'description' => 'The message data array. Must include the following keys: rmaxid, msg_id, subject, body',
+            'source' => 'data',
+            'optional' => FALSE,
           ),
         ),
-      
+      ),
     ),
   );
 }
@@ -139,9 +139,8 @@ function oa_services_message_load($msg_id) {
  * @return object $message
  */
 function oa_services_message_create($data) {
-  if ($result = db_query("INSERT INTO {ucm_messages} (msg_id, rmaxid, subject, body, timestamp, was_read) VALUES (%d, %d, '%s', '%s', %d, %d)",
-    $data['rmaxid'], $data['msg_id'], $data['subject'], $data['body'], $data['timestamp'], $data['was_read'])) {
-    return oa_portal_get_message($data['msg_id']);
-  }
-  return NULL;
+  watchdog('rp', 'Creating new message: <pre>'. print_r($data, TRUE) .'</pre>');
+  db_query("INSERT INTO {ucm_messages} (rmaxid, msg_id, subject, body, timestamp, was_read) VALUES (%d, %d, '%s', '%s', %d, %d)",
+    $data['rmaxid'], $data['msg_id'], $data['subject'], $data['body'], $data['timestamp'], $data['was_read']);
+  return oa_services_message_load($data['msg_id']);
 }
