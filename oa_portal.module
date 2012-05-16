@@ -292,11 +292,9 @@ function oa_portal_forms_info() {
     ),
     'checklist' => array(
       '#title' => t('Skills Checklist'),
-      '#formtypes' => array_keys(oa_portal_get_category_formids('Skills Checklists')),
+      '#formtypes' => array(),
     ),
   );
-  $certifications = array_keys(oa_portal_get_category_formids('Certifications'));
-  $licensures = array_keys(oa_portal_get_category_formids('Licensure'));
   
   $p['p2'] = array(
     '#title' => t('Phase 2'),
@@ -306,7 +304,7 @@ function oa_portal_forms_info() {
     ),
     'licensure_certs' => array(
       '#title' => t('Licensure Certifications'),
-      '#formtypes' => array_merge($certifications, $licensures),
+      '#formtypes' => array(),
     ),
     'background_reference' => array(
       '#title' => t('Background/Reference Check'),

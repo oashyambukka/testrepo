@@ -52,6 +52,12 @@ class Candidate {
   private function load_compliance() {
     $p = oa_portal_forms_info();
 
+    // Get formtypes for Skills Checklists, Licensures & Certifications
+    $p['p1']['checklist']['#formtypes'] = array_keys(oa_portal_get_category_formids('Skills Checklists'));
+    $certifications = array_keys(oa_portal_get_category_formids('Certifications'));
+    $licensures = array_keys(oa_portal_get_category_formids('Licensure'));
+    $p['p2']['licensure_certs']['#formtypes'] = array_merge($certifications, $licensures);
+
     // Get Compliance object
     $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> dDocType <matches> `Rmax`  <AND>  dDocAccount <matches> `Recruit/QA`  <AND>  xContentType <matches> `Compliance`';
     $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dInDate', 'sortOrder' => 'Desc', 'resultCount' => '1'));
