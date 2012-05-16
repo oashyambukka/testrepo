@@ -199,18 +199,19 @@ function oa_portal_messages_page($form_state) {
   $time = time();
   $form = array();
   $checkboxes = array();
-  if ($messages = oa_portal_get_messages($rmaxid, 'all')) {
+  if ($messages = oa_portal_get_messages($account->rmaxid, 'all')) {
     $form['delete'] = array(
       '#type' => 'submit',
       '#value' => t('Delete Selected Message(s)'),
     );
     foreach($messages as $message) {
+      $unread = ($message->was_read) ? 'read' : 'unread';
       $checkboxes[$message->msg_id] = '';
       $form[$message->msg_id]['date'] = array(
-        '#value' => format_interval($time - $message->date),
+        '#value' => '<div class="'. $unread .'">'. format_interval($time - $message->timestamp) .' ago</div>',
       );
       $form[$message->msg_id]['subject'] = array(
-        '#value' => $message->subject,
+        '#value' => '<div class="'. $unread .'">'. l($message->subject, 'portal/messages/'. $message->msg_id) .'</div>',
       );
     }
 
@@ -229,7 +230,14 @@ function oa_portal_messages_page($form_state) {
 }
 
 function oa_portal_messages_page_submit($form, &$form_state) {
-  dsm($form_state['values'], '@TODO Delete selected messages from $form_state[values]');
+  global $user;
+  $account = user_load($user->uid);
+  foreach ($form_state['values']['checkboxes'] AS $k => $v) {
+    if ($k == $v) {
+      oa_portal_message_delete($account->rmaxid, $v);
+    }
+  }
+  drupal_set_message(t('Selected messages deleted.'));
 }
 
 /**

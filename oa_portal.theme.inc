@@ -16,7 +16,7 @@ function oa_portal_preprocess_oap_messages(&$vars) {
   // )
 
   foreach ($vars['messages'] AS $message) {
-    $vars['messages'] .= theme('oap_message_row', format_interval(time() - $message->timestamp), $message->subject, $message->body, l('More', 'messages/'. $message->msg_id));
+    $vars['messages_rendered'] .= theme('oap_message_row', format_interval(time() - $message->timestamp), $message->subject, $message->body, l('More', 'messages/'. $message->msg_id));
   }
 }
 
@@ -25,12 +25,13 @@ function oa_portal_preprocess_oap_messages(&$vars) {
  */
 function theme_oap_messages_page(&$vars) {
   global $user;
+dsm($vars, 'vars');
   $account = user_load($user->uid);
   $time = time();
 
   $rows = array();
-  foreach(element_children($form['checkboxes']) as $uid) {
-    $rows[] = array(drupal_render($form['checkboxes'][$uid]), drupal_render($form[$uid]['first_name']), drupal_render($form[$uid]['last_name']));
+  foreach(element_children($vars['checkboxes']) AS $mid) {
+    $rows[] = array(drupal_render($vars['checkboxes'][$mid]), drupal_render($vars[$mid]['date']), drupal_render($vars[$mid]['subject']));
   }
 
   if (!count($rows)) {
@@ -38,7 +39,8 @@ function theme_oap_messages_page(&$vars) {
   }
   
   $output = theme('table', array(), $rows);
-  return $output . drupal_render($form);
+  $output .= drupal_render($vars);
+  return $output;
 }
 
 

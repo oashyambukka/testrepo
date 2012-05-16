@@ -232,10 +232,11 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'arguments' => array('date' => NULL, 'subject' => NULL, 'body' => NULL, 'link' => NULL),
     ),
     'oap_message_page' => array(
+      'template' => 'oap_message_page',
+      'path' => $path . '/templates',
       'arguments' => array('date' => NULL, 'subject' => NULL, 'body' => NULL),
     ),
     'oap_messages_page' => array(
-      'template' => 'oap_messages_page',
       'path' => $path . '/templates',
       'arguments' => array('form' => NULL),
     ),
@@ -720,7 +721,7 @@ function oa_portal_get_message($rmaxid, $msg_id) {
  * @return
  *   An object containing the individual message
  */
-function oa_portal_mark_message_read($msg_id) {
+function oa_portal_mark_message_read($msg_id, $this_was_ajax = FALSE) {
   global $user;
   $account = user_load($user->uid);
   db_query("UPDATE {ucm_messages} SET was_read = 1 WHERE rmaxid = %d AND msg_id = %d LIMIT 1", $account->rmaxid, $msg_id);
@@ -730,6 +731,18 @@ function oa_portal_mark_message_read($msg_id) {
     drupal_json('200');
     exit();
   }
+}
+
+/**
+ * Delete a specific message.
+ *
+ * @param integer $rmaxid
+ *   The RMax ID of the user.
+ * @param integer $msg_id
+ *   The Message ID
+ */
+function oa_portal_message_delete($rmaxid, $msg_id) {
+  db_query("DELETE FROM {ucm_messages} WHERE rmaxid = %d AND msg_id = %d LIMIT 1", $rmaxid, $msg_id);
 }
 
 /**
