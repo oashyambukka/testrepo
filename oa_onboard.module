@@ -43,7 +43,7 @@ function oa_onboard_form($form_state) {
     );
   }
   $form['Candidates'] = array(
-    '#tree' => TRUE,
+    // '#tree' => TRUE,
   );
   // Email Address: <fill-in>
   $form['Candidates']['Email'] = array(
@@ -66,7 +66,7 @@ function oa_onboard_form($form_state) {
     '#required' => TRUE,
     '#size' => 20,
   );
-  $form['Candidates']['Middle'] = array(
+  $form['Candidates']['MiddleName'] = array(
     '#type' => 'textfield',
     '#title' => 'Middle Initial',
     '#size' => 3,
@@ -81,17 +81,11 @@ function oa_onboard_form($form_state) {
   
   $form['Candidates']['PostalAddress'] = address();
 
+  $form['Phone'] = phone('Primary Phone');
+  $form['CellPhone'] = phone('Cell Phone');
+  $form['CellPhone']['#required'] = FALSE;
 
-  // Primary Phone Number: <fill-in>
-  // Secondary Phone Number (optional): <fill-in>
-  $form['CandidatePhones'] = array(
-    '#tree' => TRUE,
-  );
-  $form['CandidatePhones'][2] = phone('Primary Phone');
-  $form['CandidatePhones'][1] = phone('Cell Phone');
-  $form['CandidatePhones'][1]['#required'] = FALSE;
-
-  $form['specialty'] = select('Specialty', 
+  $form['Specialty'] = select('Specialty', 
     array(
       'Environmental Experience',
       'Organic Chemistry Techniques',
@@ -118,9 +112,9 @@ function oa_onboard_form($form_state) {
     )
   );
 
-  $form['date_available'] = date_popup('Date Available');
+  $form['DateAvailable'] = date_popup('Date Available');
 
-  $form['referral'] = array(
+  $form['Referral'] = array(
     '#type' => 'select',
     '#title' => t('Were you referred?'),
     '#options' => array('none' => t('- Select -')) + drupal_map_assoc(array('Yes', 'No')),
@@ -155,17 +149,31 @@ function oa_onboard_form_validate($form, &$form_state) {
  * Form submission callback for onboarding form
  */
 function oa_onboard_form_submit($form, &$form_state) {
-  // Candidates method: FirstName, LastName, Email, AvailableDate (datetime) 
-  // PostalAddress method: EntityID, AddressLine1, AddressLine2, Municipality, RegionID (from Region table), PostalCode
+  $params = $form_state['values'];
+
+  // RMax expecting: Address1, Address2, City, State, PostalCode
+  $params['Address1'] = $params['PostalAddress']['address1'];
+  $params['Address2'] = $params['PostalAddress']['address1'];
+  $params['City'] = $params['PostalAddress']['city'];
+  $params['State'] = $params['PostalAddress']['state'];
+  $params['PostalCode'] = $params['PostalAddress']['postalcode'];
+  unset($params['PostalAddress']);
   
-  // AddressLine1
-  // AddressLine2
-  // Municipality (City)
-  // RegionID (State)
-  // PostalCode
+  // @TODO Unset other stuff
   
+  dsm($params, 'Check address is all there');
+
+  // What is OfficeID?
+  $params['OfficeID'] = 1057;
+
+  $result = oa_portal_soap('save', array('candidateJSON' => json_encode($params)), TRUE);
   
-  // CandidatePhones method: CandidateID, TypeID (1=Work, 2=Home, 3=Mobile, 72=Other), Phone (strip non-numeric characters)
+  // if ($result->oacheckinResult->StatusInfo->statusCode === 0) {
+  //   drupal_set_message(t('Your file upload was successful.'));
+  // }
+  // else {
+  //   drupal_set_message(t('An error occured. Please try again.'));
+  // }
   
   
   // Resume file upload
@@ -234,7 +242,10 @@ function oa_onboard_dupecheck() {
  */
 function oa_onboard_soap($method, $params, $debug = FALSE) {
   // ini_set("soap.wsdl_cache_enabled", "0");
-  $wsdl = 'http://rmdev-630.rmaxut.oaifield.onasgn.com/com/recruitmax/webservices/candidateLS/candidateGatewayUS.cfc?wsdl';
+  $wsdl = array(
+    'check' => 'http://rmdev-630.rmaxut.oaifield.onasgn.com/com/recruitmax/webservices/candidateLS/candidateGatewayUS.cfc?wsdl',
+    'save' => 'http://rmdms/com/recruitmax/webservices/candidateHC/candidateGateway.cfc?wsdl',
+  );
   ini_set('display_errors', 1);
 
   $soap_params = array(
