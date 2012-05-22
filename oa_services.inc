@@ -112,11 +112,9 @@ function _accountresource_update($rmaxid, $data) {
  * Callback for creating message resources.
  *
  * @param array $data
- * @param string $notify (yes, no, etc)
  * @return object
  */
-function _messageresource_create($data, $notify) {
-  unset($data['sessid']);
+function _messageresource_create($data) {
   // Check for duplicates
   if ($message = oa_services_message_load($data['msg_id'])) {
     return services_error('Invalid attribute "msg_id". Message already exists.', 406);
