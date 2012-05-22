@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:s="http://www.w3.org/2001/XMLSchema"
+	xmlns:s0="http://www.stellent.com/DocInfo/"
+	targetNamespace="http://www.stellent.com/DocInfo/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
+	<types>
+		<s:schema elementFormDefault="qualified" targetNamespace="http://www.stellent.com/DocInfo/">
+			<s:element name="DocInfoByID">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="dID" type="s:int" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="DocInfoByIDResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="DocInfoByIDResult" type="s0:DocInfoByIDResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="DocInfoByIDResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="unbounded" name="ContentInfo" type="s0:ContentInfo" />
+					<s:element minOccurs="0" maxOccurs="unbounded" name="Revisions" type="s0:Revisions" />
+					<s:element minOccurs="0" maxOccurs="unbounded" name="WorkflowInfo" type="s0:WorkflowInfo" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="DocInfoByName">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="dDocName" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="DocInfoByNameResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="DocInfoByNameResult" type="s0:DocInfoByNameResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="DocInfoByNameResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="unbounded" name="ContentInfo" type="s0:ContentInfo" />
+					<s:element minOccurs="0" maxOccurs="unbounded" name="Revisions" type="s0:Revisions" />
+					<s:element minOccurs="0" maxOccurs="unbounded" name="WorkflowInfo" type="s0:WorkflowInfo" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="ContentInfo">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="dDocName" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocTitle" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocType" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocAuthor" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dSecurityGroup" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocAccount" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevClassID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevisionID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevLabel" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dIsCheckedOut" type="s:boolean" />
+					<s:element minOccurs="0" maxOccurs="1" name="dCheckoutUser" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dCreateDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dInDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dOutDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dStatus" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dReleaseState" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dFlag1" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dWebExtension" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dProcessingState" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dMessage" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dReleaseDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRendition1" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRendition2" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dIndexerState" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dPublishType" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dPublishState" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dIsPrimary" type="s:boolean" />
+					<s:element minOccurs="0" maxOccurs="1" name="dIsWebFormat" type="s:boolean" />
+					<s:element minOccurs="0" maxOccurs="1" name="dLocation" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dOriginalName" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dFormat" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dExtension" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dFileSize" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="CustomDocMetaData" type="s0:IdcPropertyList" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="Revisions">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="dFormat" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dInDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dOutDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dStatus" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dProcessingState" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevLabel" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocName" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevisionID" type="s:int" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="WorkflowInfo">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="dWfID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocName" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dWfDocState" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dWfComputed" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dWfCurrentStepID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dWfDirectory" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dClbraName" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dWfName" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dWfDescription" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dCompletionDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dSecurityGroup" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dWfStatus" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dWfType" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dProjectID" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dIsCollaboration" type="s:boolean" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="StatusInfo">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="statusCode" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="statusMessage" type="s:string" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="IdcPropertyList">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="unbounded" name="property" type="s0:IdcProperty" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="IdcProperty">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="value" type="s:string" />
+				</s:sequence>
+			</s:complexType>
+		</s:schema>
+	</types>
+	<message name="DocInfoByIDSoapIn">
+		<part name="parameters" element="s0:DocInfoByID" />
+	</message>
+	<message name="DocInfoByIDSoapOut">
+		<part name="parameters" element="s0:DocInfoByIDResponse" />
+	</message>
+	<message name="DocInfoByNameSoapIn">
+		<part name="parameters" element="s0:DocInfoByName" />
+	</message>
+	<message name="DocInfoByNameSoapOut">
+		<part name="parameters" element="s0:DocInfoByNameResponse" />
+	</message>
+	<portType name="DocInfoSoap">
+		<operation name="DocInfoByID">
+			<input message="s0:DocInfoByIDSoapIn" />
+			<output message="s0:DocInfoByIDSoapOut" />
+		</operation>
+		<operation name="DocInfoByName">
+			<input message="s0:DocInfoByNameSoapIn" />
+			<output message="s0:DocInfoByNameSoapOut" />
+		</operation>
+	</portType>
+	<binding name="DocInfoSoap" type="s0:DocInfoSoap">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+		<operation name="DocInfoByID">
+			<soap:operation soapAction="http://www.stellent.com/DocInfo/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="DocInfoByName">
+			<soap:operation soapAction="http://www.stellent.com/DocInfo/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="DocInfo">
+		<port name="DocInfoSoap" binding="s0:DocInfoSoap">
+			<soap:address location="https://172.23.8.58:16201/_dav/cs/idcplg" />
+		</port>
+	</service>
+</definitions>

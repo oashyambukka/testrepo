@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:s="http://www.w3.org/2001/XMLSchema"
+	xmlns:s0="http://www.stellent.com/Search/"
+	targetNamespace="http://www.stellent.com/Search/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
+	<types>
+		<s:schema elementFormDefault="qualified" targetNamespace="http://www.stellent.com/Search/">
+			<s:element name="QuickSearch">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="queryText" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="QuickSearchResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="QuickSearchResult" type="s0:QuickSearchResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="QuickSearchResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="unbounded" name="SearchResults" type="s0:SearchResults" />
+					<s:element minOccurs="0" maxOccurs="1" name="SearchInfo" type="s0:SearchInfo" />
+					<s:element minOccurs="0" maxOccurs="unbounded" name="NavigationPages" type="s0:NavigationPages" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="AdvancedSearch">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="queryText" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="sortField" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="sortOrder" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="resultCount" type="s:int" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="AdvancedSearchResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="AdvancedSearchResult" type="s0:AdvancedSearchResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="AdvancedSearchResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="unbounded" name="SearchResults" type="s0:SearchResults" />
+					<s:element minOccurs="0" maxOccurs="1" name="SearchInfo" type="s0:SearchInfo" />
+					<s:element minOccurs="0" maxOccurs="unbounded" name="NavigationPages" type="s0:NavigationPages" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="NavigationSearch">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="queryText" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="sortField" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="sortOrder" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="resultCount" type="s:int" />
+						<s:element minOccurs="0" maxOccurs="1" name="pageNumber" type="s:int" />
+						<s:element minOccurs="0" maxOccurs="1" name="startRow" type="s:int" />
+						<s:element minOccurs="0" maxOccurs="1" name="endRow" type="s:int" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="NavigationSearchResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="NavigationSearchResult" type="s0:NavigationSearchResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="NavigationSearchResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="unbounded" name="SearchResults" type="s0:SearchResults" />
+					<s:element minOccurs="0" maxOccurs="1" name="SearchInfo" type="s0:SearchInfo" />
+					<s:element minOccurs="0" maxOccurs="unbounded" name="NavigationPages" type="s0:NavigationPages" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="SearchResults">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="dID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevisionID" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocName" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocTitle" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocType" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocAuthor" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dSecurityGroup" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dDocAccount" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dExtension" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dWebExtension" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRevLabel" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dInDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dOutDate" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dFormat" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dOriginalName" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="url" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dGif" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="webFileSize" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="vaultFileSize" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="alternateFileSize" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="alternateFormat" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dPublishType" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRendition1" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="dRendition2" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="CustomDocMetaData" type="s0:IdcPropertyList" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="SearchInfo">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="startRow" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="endRow" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="pageNumber" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="numPages" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="totalRows" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="totalDocsProcessed" type="s:int" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="NavigationPages">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="headerPageNumber" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="pageReference" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="pageNumber" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="startRow" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="endRow" type="s:int" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="StatusInfo">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="statusCode" type="s:int" />
+					<s:element minOccurs="0" maxOccurs="1" name="statusMessage" type="s:string" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="IdcPropertyList">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="unbounded" name="property" type="s0:IdcProperty" />
+				</s:sequence>
+			</s:complexType>
+			<s:complexType name="IdcProperty">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="value" type="s:string" />
+				</s:sequence>
+			</s:complexType>
+		</s:schema>
+	</types>
+	<message name="QuickSearchSoapIn">
+		<part name="parameters" element="s0:QuickSearch" />
+	</message>
+	<message name="QuickSearchSoapOut">
+		<part name="parameters" element="s0:QuickSearchResponse" />
+	</message>
+	<message name="AdvancedSearchSoapIn">
+		<part name="parameters" element="s0:AdvancedSearch" />
+	</message>
+	<message name="AdvancedSearchSoapOut">
+		<part name="parameters" element="s0:AdvancedSearchResponse" />
+	</message>
+	<message name="NavigationSearchSoapIn">
+		<part name="parameters" element="s0:NavigationSearch" />
+	</message>
+	<message name="NavigationSearchSoapOut">
+		<part name="parameters" element="s0:NavigationSearchResponse" />
+	</message>
+	<portType name="SearchSoap">
+		<operation name="QuickSearch">
+			<input message="s0:QuickSearchSoapIn" />
+			<output message="s0:QuickSearchSoapOut" />
+		</operation>
+		<operation name="AdvancedSearch">
+			<input message="s0:AdvancedSearchSoapIn" />
+			<output message="s0:AdvancedSearchSoapOut" />
+		</operation>
+		<operation name="NavigationSearch">
+			<input message="s0:NavigationSearchSoapIn" />
+			<output message="s0:NavigationSearchSoapOut" />
+		</operation>
+	</portType>
+	<binding name="SearchSoap" type="s0:SearchSoap">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+		<operation name="QuickSearch">
+			<soap:operation soapAction="http://www.stellent.com/Search/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="AdvancedSearch">
+			<soap:operation soapAction="http://www.stellent.com/Search/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="NavigationSearch">
+			<soap:operation soapAction="http://www.stellent.com/Search/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="Search">
+		<port name="SearchSoap" binding="s0:SearchSoap">
+			<soap:address location="https://172.23.8.58:16201/_dav/cs/idcplg" />
+		</port>
+	</service>
+</definitions>
