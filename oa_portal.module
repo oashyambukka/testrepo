@@ -386,8 +386,8 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
   $wsdl = dirname(__FILE__) .'/wsdl/'. $wsdl[$method];
 
   $soap_params = array(
-    'login' => 'weblogic',
-    'password' => '0ATraining',
+    'login' => variable_get('oa_portal_ucm_login', 'weblogic'),
+    'password' => variable_get('oa_portal_ucm_password', '0ATraining'),
     'trace' => 1,
   );
 

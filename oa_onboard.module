@@ -249,8 +249,8 @@ function oa_onboard_soap($method, $params, $debug = FALSE) {
   ini_set('display_errors', 1);
 
   $soap_params = array(
-    // 'login' => 'weblogic',
-    // 'password' => '0ATraining',
+    // 'login' => variable_get('oa_portal_ucm_login', 'weblogic'),
+    // 'password' => variable_get('oa_portal_ucm_password', '0ATraining'),
     'trace' => 1,
   );
   ini_set('default_socket_timeout', 10);
