@@ -227,8 +227,7 @@ function oa_onboard_dupecheck() {
     exit();
   }
 
-  $params = array('Email' => $Email);
-  $result = oa_onboard_soap('check', $params, TRUE);
+  $result = oa_onboard_soap('check', $Email, TRUE);
   watchdog('oaonboard', 'Dupe checked email: '. $Email .'. Duplicate? Y/N');
   watchdog('oaonboard', 'Dupe checked result: <pre>'. print_r($result, TRUE) .'</pre>');
 
