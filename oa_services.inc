@@ -115,21 +115,15 @@ function _accountresource_update($rmaxid, $data) {
  * @return object
  */
 function _messageresource_create($data) {
-  // Check for duplicates
-  if ($message = oa_services_message_load($data['msg_id'])) {
-    return services_error('Invalid attribute "msg_id". Message already exists.', 406);
-  }
-
   // Check for missing required attributes
   $allowed_keys = array(
     'rmaxid',
-    'msg_id',
     'subject',
     'body',
   );
   foreach ($allowed_keys AS $k) {
     if (!isset($data[$k])) {
-      return services_error('Missing message attribute "data['. $k .']". Message was not created.', 406);
+      return services_error('Missing message attribute "'. $k .'". Message was not created.', 406);
     }
   }
 

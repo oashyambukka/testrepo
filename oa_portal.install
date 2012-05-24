@@ -65,8 +65,8 @@ function oa_portal_schema() {
       'description' => t("Table to save UCM messages and their read state"),
       'fields' => array(
         'msg_id' => array(
-          'type'        => 'int',
-          'length'      => 11,
+          'type'        => 'serial',
+          'unsigned'    => TRUE,
           'not null'    => TRUE,
         ),
         'rmaxid' => array(
