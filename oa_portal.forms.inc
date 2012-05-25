@@ -1373,9 +1373,11 @@ function oa_portal_p3_i9_form($form_state) {
  * Form submission callback for I-9
  */
 function oa_portal_p3_i9_form_submit($form, &$form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid);
+
   /**
-   * @TODO Post 461 I9 to UCM
-   *
    * lastname - From Profile
    * firstname - From Profile
    * initial - From Profile
@@ -1392,6 +1394,30 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
    * appsignature - ?
    * apptimestamp - Current date
    */
+
+  // PDF Field => RMax Profile Field
+
+  foreach (array(
+    'lastname' => 'lname',
+    'firstname' => 'fname',
+    'address' => 'address',
+    'city' => 'city',
+    'state' => 'state',
+    'zip' => 'postal',
+    ) AS $pdff => $rmaxf) {
+    $form_state['values'][461][$pdff] = $candidate->profile->{$rmaxf};
+  }
+  
+  $form_state['values'][461]['initial'] = '';
+  // * maiden - From Background Check form
+  $form_state['values'][461]['maiden'] = 'MAIDEN';
+  // * dob - From Profile
+  $form_state['values'][461]['dob'] = '2012-11-22';
+  // * ssn - From Profile
+  $form_state['values'][461]['ssn'] = '123456789';
+
+  unset($form_state['values'][461]['chk_certify']);
+
   dsm($form_state['values'][461], 'Process & post 461 to UCM');
   if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 461, $form_state['values'][461])) {
     $form_state['redirect'] = 'portal/p3/eeo';
