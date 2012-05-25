@@ -794,6 +794,9 @@ function oa_portal_get_category_formids($form_category) {
     'whereClause' => "formcategory = '$form_category'",
   );
   $result = oa_portal_soap('formview', $params);
+  if (!count($result->formviewResult->formdata)) {
+    return array();
+  }
   $forms = array();
   foreach ($result->formviewResult->formdata AS $form) {
     $forms[$form->formid] = $form->formname;
