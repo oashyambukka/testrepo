@@ -1364,6 +1364,7 @@ function oa_portal_p3_i9_form($form_state) {
   $form[461]['citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
     array('citizen' => t('A citizen of the United States'), 'national' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
   $form[461]['expiry'] = date_popup('Until (expiration date if applicable)');
+  $form[461]['expiry']['#required'] = FALSE;
   $form[461]['chk_certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');
 
   return $form;
