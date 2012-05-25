@@ -16,7 +16,7 @@ function oa_portal_preprocess_oap_messages(&$vars) {
   // )
 
   foreach ($vars['messages'] AS $message) {
-    $vars['messages_rendered'] .= theme('oap_message_row', format_interval(time() - $message->timestamp), $message->subject, $message->body, l('More', 'messages/'. $message->msg_id));
+    $vars['messages_rendered'] .= theme('oap_message_row', format_interval(time() - $message->timestamp), $message->subject, $message->body, l('More', 'portal/messages/'. $message->msg_id, array('attributes' => array('msg_id' => $message->msg_id))));
   }
 }
 
@@ -25,7 +25,6 @@ function oa_portal_preprocess_oap_messages(&$vars) {
  */
 function theme_oap_messages_page(&$vars) {
   global $user;
-dsm($vars, 'vars');
   $account = user_load($user->uid);
   $time = time();
 

@@ -78,6 +78,12 @@ function oa_portal_menu() {
     'access arguments' => array('access portal'),
     'file' => 'oa_portal.pages.inc'
   );
+  $items['portal/message/read/%/%'] = array(
+    'page callback' => 'oa_portal_mark_message_read',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access portal'),
+    'file' => 'oa_portal.pages.inc'
+  );
   $items['update-password'] = array(
     'title' => 'Update Password',
     'page callback' => 'drupal_get_form',
@@ -707,28 +713,6 @@ function oa_portal_get_message($rmaxid, $msg_id) {
     return $message;
   }
   return NULL;
-}
-
-/**
- * Mark a specific message as read for a user.
- *
- * @param integer $rmaxid
- *   The RMax ID of the user.
- * @param integer $msg_id
- *   The Message ID
- * @return
- *   An object containing the individual message
- */
-function oa_portal_mark_message_read($msg_id, $this_was_ajax = FALSE) {
-  global $user;
-  $account = user_load($user->uid);
-  db_query("UPDATE {ucm_messages} SET was_read = 1 WHERE rmaxid = %d AND msg_id = %d LIMIT 1", $account->rmaxid, $msg_id);
-
-  // @TODO
-  if ($this_was_ajax) {
-    drupal_json('200');
-    exit();
-  }
 }
 
 /**

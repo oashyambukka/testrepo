@@ -160,3 +160,28 @@ Drupal.behaviors.licensureCert = function (context) {
   });
 
 }
+
+Drupal.behaviors.messages = function (context) {
+  $('.oap-message-link a').click(function() {
+    $(this).parent().next().slideDown();
+
+    // Mark message as read
+    var msg_id = $(this).attr('msg_id');
+    $.ajax({
+      url: '/portal/message/read/' + msg_id + '/TRUE',
+      type: "POST",
+      dataType: "json",
+      data: {},
+      complete: function(XMLHttpRequest, textStatus) {
+      },
+      success: function(data) {
+      }
+    });
+    return false;
+  });
+
+  $('.close-message-link').click(function() {
+    $(this).parent().parent().slideUp();
+    return false;
+  });
+}

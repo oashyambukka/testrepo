@@ -258,3 +258,24 @@ function oa_portal_message_page($msg_id) {
     drupal_not_found();
   }
 }
+
+/**
+ * Mark a specific message as read for a user.
+ *
+ * @param integer $rmaxid
+ *   The RMax ID of the user.
+ * @param integer $msg_id
+ *   The Message ID
+ * @return
+ *   An object containing the individual message
+ */
+function oa_portal_mark_message_read($msg_id, $js = FALSE) {
+  global $user;
+  $account = user_load($user->uid);
+  db_query("UPDATE {ucm_messages} SET was_read = 1 WHERE rmaxid = %d AND msg_id = %d LIMIT 1", $account->rmaxid, $msg_id);
+
+  if ($js) {
+    drupal_json('200');
+    exit();
+  }
+}
