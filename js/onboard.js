@@ -1,7 +1,7 @@
 Drupal.behaviors.onboard = function (context) {
 
   // If email address field changes, check for dupes
-  $('#edit-Candidates-Email').change(function() {
+  $('#edit-Email').change(function() {
     var data = {};
     data['email'] = $(this).val();
     $.ajax({
