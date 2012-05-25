@@ -33,11 +33,9 @@ function theme_oap_messages_page(&$vars) {
     $rows[] = array(drupal_render($vars['checkboxes'][$mid]), drupal_render($vars[$mid]['date']), drupal_render($vars[$mid]['subject']));
   }
 
-  $output = 'No messages found.';
-  if (count($rows)) {
-    $output = theme('table', array(), $rows);
-    $output .= drupal_render($vars);
-  }
+  $output = drupal_render($vars['delete']);
+  $output .= theme('table', array(), $rows);
+  $output .= drupal_render($vars);
   return $output;
 }
 
