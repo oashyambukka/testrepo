@@ -799,7 +799,7 @@ function oa_portal_get_category_formids($form_category) {
   }
   $forms = array();
   foreach ($result->formviewResult->formdata AS $form) {
-    $forms[$form->formid] = $form->formname;
+    $forms[$form->FormID] = $form->FormName;
   }
   return $forms;
 }
