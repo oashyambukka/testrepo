@@ -1618,11 +1618,13 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
  * Skills Checklist constructor
  */
 function oa_portal_checklist(&$elements, $skills) {
-  foreach ($skills AS $section => $skills) {
-    $elements[$section] = fieldset($section);
-    $elements[$section]['#tree'] = FALSE;
-    foreach ($skills AS $k => $v) {
-      $elements[$section][$k] = checklist_skill($v);
+  if (count($skills)) {
+    foreach ($skills AS $section => $skills) {
+      $elements[$section] = fieldset($section);
+      $elements[$section]['#tree'] = FALSE;
+      foreach ($skills AS $k => $v) {
+        $elements[$section][$k] = checklist_skill($v);
+      }
     }
   }
 }
