@@ -241,15 +241,10 @@ function oa_onboard_dupecheck() {
  */
 function oa_onboard_soap($method, $params, $debug = FALSE) {
   // ini_set("soap.wsdl_cache_enabled", "0");
-  $wsdl = array(
-    'check' => 'http://rmdev-630.rmaxut.oaifield.onasgn.com/com/recruitmax/webservices/candidateLS/candidateGatewayUS.cfc?wsdl',
-    'save' => 'http://rmdms/com/recruitmax/webservices/candidateHC/candidateGateway.cfc?wsdl',
-  );
+  $wsdl = dirname(__FILE__) .'/wsdl/candidateGateway.wsdl';
   ini_set('display_errors', 1);
 
   $soap_params = array(
-    // 'login' => variable_get('oa_portal_ucm_login', 'weblogic'),
-    // 'password' => variable_get('oa_portal_ucm_password', '0ATraining'),
     'trace' => 1,
   );
   ini_set('default_socket_timeout', 10);
