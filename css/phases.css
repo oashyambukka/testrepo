@@ -156,4 +156,15 @@
    color:rgba(0,0,0,.5);
 }
 
-	
+
+
+/*** Candidate navigation ***/
+#block-oa_portal-oap_candidate_menu .content { padding-top:0;}
+#block-oa_portal-oap_candidate_menu .content ul.menu { padding-left:0px; padding-bottom:0px; width:100%;}
+#block-oa_portal-oap_candidate_menu .content ul.menu li ul.menu { padding-left:15px; width:auto;}
+#block-oa_portal-oap_candidate_menu .content ul.menu li { padding:0px 0px 1px 0px; list-style-image:none; list-style:none; margin:0; line-height:normal;line-height:35px; overflow:hidden; background:url(../img/bg-line.gif) bottom repeat-x;}
+#block-oa_portal-oap_candidate_menu .content ul.menu li a { color:#6b6b6b; font-size:12px; text-decoration:none; padding-left:13px; overflow:hidden; display:block; background:url(../img/a1.gif) no-repeat 0 15px; font-weight:bold;}
+#block-oa_portal-oap_candidate_menu .content ul.menu li a:hover{ text-decoration:none; color:#07b4f4;}
+#block-oa_portal-oap_candidate_menu .content ul.menu li.expanded { padding-bottom:0px;}
+#block-oa_portal-oap_candidate_menu .content ul.menu li.expanded ul { padding-top:1px;}
+#block-oa_portal-oap_candidate_menu .content ul.menu li.last { border-bottom:0;}
