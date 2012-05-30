@@ -45,15 +45,6 @@
 
 #oap-status-legend {padding-bottom:10px}
 
-
-	
-/* Styles for messages */
-#oap-messages {background:#F9F6D5;overflow:hidden;padding:10px}
-#oap-message-notice {font-weight:bold;padding-bottom:10px;}
-.oap-message-date {float:left;padding-left:30px; padding-right:20px; text-align:right}
-.oap-message-teaser {float:left;font-weight:bold}
-.oap-message-link a {padding-left:20px;color:#666}
-
 /* Tooltips */
 
 /* TEMPORARY trigger button */
@@ -168,3 +159,36 @@
 #block-oa_portal-oap_candidate_menu .content ul.menu li.expanded { padding-bottom:0px;}
 #block-oa_portal-oap_candidate_menu .content ul.menu li.expanded ul { padding-top:1px;}
 #block-oa_portal-oap_candidate_menu .content ul.menu li.last { border-bottom:0;}
+
+
+
+/* Styles for messages */
+#oap-messages {background:#F9F6D5;overflow:hidden;padding:10px}
+#oap-message-notice {font-weight:bold;padding-bottom:10px;}
+.oap-message-date {float:left;padding-left:30px; padding-right:20px; text-align:right}
+.oap-message-teaser {float:left;font-weight:bold}
+
+/**** Messages on portal page ****************************/
+#oap-messages .oap-message-row {margin:0 20px;float:left;}
+#oap-messages .oap-message-date {padding:0;width:120px;text-align:left;float:left}
+#oap-messages .oap-message-subject {width:425px;white-space:nowrap;overflow:hidden;float:left;font-weight:bold}
+#oap-messages .oap-message-link {float:right}
+.oap-message-link a {color:#666;width:auto}
+#oap-messages .full-message {padding-bottom:30px;}
+#oap-messages .full-message .oap-message-date,
+#oap-messages .full-message .oap-message-subject {display:none}
+#oap-messages .full-message .oap-message-body {padding:20px 0}
+#oap-messages .full-message .close-message {float:right;font-weight:bold;cursor:pointer}
+#oap-messages .full-message .oap-message-body hr {margin-top:10px}
+
+/**** Message Center *****/
+#oa-portal-messages-page table {width:100%}
+#oa-portal-messages-page td {background:#fff;padding:4px}
+
+/**** Individual message pages ****/
+.oap-message-page .full-message {background:#F9F6D5;padding:10px;overflow:auto}
+.oap-message-page .oap-message-date {padding:0}
+.oap-message-page .oap-message-subject {padding-left:120px;font-weight:bold}
+.oap-message-page .oap-message-body {padding:20px 0}
+.oap-message-page .close-message {float:right;font-weight:bold;cursor:pointer}
+.oap-message-page .oap-message-body hr {margin-top:10px}
