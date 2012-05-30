@@ -321,13 +321,13 @@ function oa_portal_p1_checklist_form_493() {
   $elements = fieldset('Essential/Practical Skills Checklist');
   $skills = array(
     'Core Skills' => array(
-      'rdo_item1' => 'Admission of a Patient',
-      'rdo_item2' => 'Transfer of a Patient',
-      'rdo_item3' => 'Discharge of a Patient',
+      'Admission of a Patient',
+      'Transfer of a Patient',
+      'Discharge of a Patient',
     ),
     'Cardiovascular' => array(
-      'rdo_item1' => 'Doppler',
-      'rdo_item2' => 'Lead placement',
+      'Doppler',
+      'Lead placement',
     ),
   );
   oa_portal_checklist($elements, $skills);
