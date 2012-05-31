@@ -768,11 +768,20 @@ function oa_portal_user_mail_notify($op, $account) {
   $language = $language ? $language : user_preferred_language($account);
   $variables = user_mail_tokens($account, $language);
 
+  switch ($op) {
+    case 'register_admin_created':
+      $messagetype = 'INITACCTETMPL';
+    break;
+    case 'password_reset':
+      $messagetype = 'BASICSAMPLE';
+    break;
+  }
+
   // Send message via UCM
   $params = array(
     'to' => $account->mail,
     'from' => 'test@onassignment.com',
-    'messagetype' => 'BASICSAMPLE',
+    'messagetype' => $messagetype,
     'rmaxid' => $account->rmaxid,
     'subject' => _user_mail_text($op .'_subject', $language, $variables),
     'payload' => _user_mail_text($op .'_body', $language, $variables),
