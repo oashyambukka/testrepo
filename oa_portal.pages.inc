@@ -32,21 +32,18 @@ function oa_portal_page() {
     foreach (element_children($phase) AS $sk) {
       $section = $phase[$sk];
       $s_ct++;
-// @TODO Temporary. Un-comment to re-enable correct behaviour.
-//      if ($candidate->p[$pk]['#status'] == 'locked') {
-//        $rows[] = theme('oap_phase_row', $section['#title'], 'phase-closed');
-//      }
-//      else {
+
+     if ($candidate->p[$pk]['#status'] == 'locked') {
+       $rows[] = theme('oap_phase_row', $section['#title'], 'phase-closed');
+     }
+     else {
         $status = $candidate->get_section_status($pk, $sk);
         if ($status == 'closed') {
           $s_completed++;
         }
         $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $status);
-//      }
+     }
     }
-
-// @TODO Temporary. Remove to re-enable correct behaviour.
-$phase['#status'] = 'open';
 
     $output .= theme('oap_phase', $pk, $phase['#title'], $phase['#status'], implode("\n", $rows), "$s_completed of $s_ct");
   }
