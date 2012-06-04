@@ -142,7 +142,10 @@ function oa_onboard_form($form_state) {
  */
 function oa_onboard_form_validate($form, &$form_state) {
   // Dupe check email address
-
+  $result = oa_onboard_soap('check', $_POST['email']);
+  if ($result > 0) {
+    form_set_error('Email', 'Your profile already exists.');
+  }
 }
 
 /**
@@ -221,18 +224,14 @@ function oa_onboard_form_submit($form, &$form_state) {
  */
 function oa_onboard_dupecheck() {
   $Email = $_POST['email'];
-
   if (!valid_email_address($Email)) {
     drupal_json(array('status' => 'invalid'));
     exit();
   }
 
   $result = oa_onboard_soap('check', $Email, TRUE);
-  watchdog('oaonboard', 'Dupe checked email: '. $Email .'. Duplicate? Y/N');
-  watchdog('oaonboard', 'Dupe checked result: <pre>'. print_r($result, TRUE) .'</pre>');
-
-  // $result-> === 0 means no dupe
-  drupal_json(array('status' => (TRUE) ? 'no-dupe' : 'dupe'));
+  // $result === 0 means no dupe. Otherwise, RMaxID
+  drupal_json(array('status' => ($result > 0) ? 'dupe' : 'no-dupe'));
   exit();
 }
 
