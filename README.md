@@ -82,35 +82,35 @@ Major Portal workflows
   4. RecruitMax: candidate record created
 
 2. Portal Account creation by RecruitMax
-  a) RecruitMax: POST request to Portal: email, rmaxid
-  b) Portal account created with rmaxid. $account->must_update_pass set to 1.
-  c) Portal triggers welcome email by POST request to UCM. One-time login link included.
+  1. RecruitMax: POST request to Portal: email, rmaxid
+  2. Portal account created with rmaxid. $account->must_update_pass set to 1.
+  3. Portal triggers welcome email by POST request to UCM. One-time login link included.
 
 3. Candidate: first visit
-  a) Portal: Candidate logs in with one-time login link
-  b) Portal: Candidate prompted to set new password. If user attempts to visit any page other than /update-password, they will be redirected to /update-password.
-  c) Portal: Upon successful submission, $account->must_update_pass set to 0 and Candidate redirected to Portal main page
+  1. Portal: Candidate logs in with one-time login link
+  2. Portal: Candidate prompted to set new password. If user attempts to visit any page other than /update-password, they will be redirected to /update-password.
+  3. Portal: Upon successful submission, $account->must_update_pass set to 0 and Candidate redirected to Portal main page
 
 4. Candidate: forgotten password
-  a) Portal: Candidate visits and populates forgot password form
-  b) Portal: $account->must_update_pass set to 1.
-  c) Portal: Email request POSTed to UCM via Soap web service with one-time login link
-  d) Portal: Candidate proceeds to step through #3 workflow.
+  1. Portal: Candidate visits and populates forgot password form
+  2. Portal: $account->must_update_pass set to 1.
+  3. Portal: Email request POSTed to UCM via Soap web service with one-time login link
+  4. Portal: Candidate proceeds to step through #3 workflow.
 
 5. Portal: Candidate Form finalization on Portal
-  a) Candidate clicks on open phase section, Drupal form shown
-  b) Candidate populates fields with information, form is checked for valid input as focus moves to further fields
-  c) Form autosaves on input focus change. Serialized values retrieved to prepopulate form should candidate leave the form before finalization is complete. 
-  d) User finalizes form, submitted via AJAX. Portal takes captured data, merges with RecruitMax Profile and/or other supplementary data where necessary. Data POSTed to UCM via Soap web service.
-  e) AJAX response contains URL of further portal stage. jQuery used to bind this URL redirect action to "Continue" button.
-  f) Document Download box and "Continue" button are exposed
+  1. Candidate clicks on open phase section, Drupal form shown
+  2. Candidate populates fields with information, form is checked for valid input as focus moves to further fields
+  3. Form autosaves on input focus change. Serialized values retrieved to prepopulate form should candidate leave the form before finalization is complete. 
+  4. User finalizes form, submitted via AJAX. Portal takes captured data, merges with RecruitMax Profile and/or other supplementary data where necessary. Data POSTed to UCM via Soap web service.
+  5. AJAX response contains URL of further portal stage. jQuery used to bind this URL redirect action to "Continue" button.
+  6. Document Download box and "Continue" button are exposed
 
 6. UCM Nag email ingestion
-  a) UCM: email POSTed to Portal via RESTful web service (see below)
-  b) Portal: message stored in {ucm_messages}:  msg_id, rmaxid, subject, body, timestamp, was_read
+  1. UCM: email POSTed to Portal via RESTful web service (see below)
+  2. Portal: message stored in {ucm_messages}:  msg_id, rmaxid, subject, body, timestamp, was_read
 
 9. UCM: Candidate status or document state change
-  a) 
+  The Portal is generated based on live data. RMax profiles, compliance records and modality states are loaded for every page load.
 
 Test Credentials
 ================
