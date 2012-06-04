@@ -125,27 +125,26 @@ Maintenance and future considerations
 
 1. Modifying existing forms
 
-Scope: Field labels, field keys, field descriptions, field validation rules
+  Scope: Field labels, field keys, field descriptions, field validation rules
 
-Changes may be reflected directly in OA Module code (likely in oa_portal.form.inc). Field key changes must match PDF Forms.
+  Changes may be reflected directly in OA Module code (likely in oa_portal.form.inc). Field key changes must match PDF Forms.
 
 2. Adding new forms
 
-a) Add form particulars to function oa_portal_forms_info() in oa_portal.module
-b) Add form callback to oa_portal.forms.inc following the pattern of oa_portal_<phase id>_<section id>_form($form_state)
-c) Add form submission callback
-d) Clear Drupal's cache to expose form menu item
-
+  1. Add form particulars to function oa_portal_forms_info() in oa_portal.module
+  2. Add form callback to oa_portal.forms.inc following the pattern of oa_portal_<phase id>_<section id>_form($form_state)
+  3. Add form submission callback
+  4. Clear Drupal's cache to expose form menu item
 
 
 Drupal Web Service Documentation
 ================================
 
 1. Authentication
-
-
+  
+  
 2. RMax account creation
-
-
+  
+  
 3. UCM Message Ingestion
-
+  
