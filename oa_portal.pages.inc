@@ -38,10 +38,11 @@ function oa_portal_page() {
      }
      else {
         $status = $candidate->get_section_status($pk, $sk);
-        if ($status == 'closed') {
+        if ($status == 'closed' || $status == 'locked') {
           $s_completed++;
         }
-        $rows[] = theme('oap_phase_row', l($section['#title'], 'portal/'. $pk .'/'. $sk), $status);
+        $t = ($status == 'locked') ? '<span>'. $section['#title'] .'</span>' : l($section['#title'], 'portal/'. $pk .'/'. $sk);
+        $rows[] = theme('oap_phase_row', $t, $status);
      }
     }
 

@@ -290,7 +290,7 @@ function oa_portal_forms_info() {
     '#status' => 'open',
     'contact' => array(
       '#title' => t('Contact Information'),
-      '#status' => 'closed',
+      '#status' => 'locked',
     ),
     'application' => array(
       '#title' => t('Application'),
