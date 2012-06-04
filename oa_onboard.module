@@ -117,8 +117,8 @@ function oa_onboard_form($form_state) {
   $form['Referral'] = array(
     '#type' => 'select',
     '#title' => t('Were you referred?'),
-    '#options' => array('none' => t('- Select -')) + drupal_map_assoc(array('Yes', 'No')),
-    '#required' => TRUE,
+    '#options' => array('none' => t('- Select -')) + drupal_map_assoc(array('No', 'Yahoo! Search')),
+    // '#required' => TRUE,
   );
 
   $form['resume_file'] = array(
@@ -142,7 +142,7 @@ function oa_onboard_form($form_state) {
  */
 function oa_onboard_form_validate($form, &$form_state) {
   // Dupe check email address
-  $result = oa_onboard_soap('check', $_POST['email']);
+  $result = oa_onboard_soap('check', $_POST['Email']);
   if ($result > 0) {
     form_set_error('Email', 'Your profile already exists.');
   }
@@ -153,22 +153,22 @@ function oa_onboard_form_validate($form, &$form_state) {
  */
 function oa_onboard_form_submit($form, &$form_state) {
   $params = $form_state['values'];
-  dsm($params, 'params');
 
   // RMax expecting: Address1, Address2, City, State, PostalCode
   $params['Address1'] = $params['PostalAddress']['address1'];
-  $params['Address2'] = $params['PostalAddress']['address1'];
+  $params['Address2'] = $params['PostalAddress']['address2'];
   $params['City'] = $params['PostalAddress']['city'];
   $params['State'] = $params['PostalAddress']['state'];
-  $params['PostalCode'] = $params['PostalAddress']['postalcode'];
-  unset($params['PostalAddress']);
+  $params['PostalCode'] = $params['PostalAddress']['zip'];
+  $params['DateAvailable'] = date('m/d/Y', strtotime($params['DateAvailable']));
+  unset($params['PostalAddress'], $params['Email_confirm']);
 
   // @TODO Unset other stuff
-
-  dsm($params, 'Check address is all there');
+  unset($params['submit'], $params['op'], $params['form_build_id'], $params['form_token'], $params['form_id']);
 
   // What is OfficeID?
   $params['OfficeID'] = 1057;
+  dsm($params, 'Ending params, pre file upload');
 
   // Resume file upload
   if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['resume_file'])) {
@@ -181,9 +181,10 @@ function oa_onboard_form_submit($form, &$form_state) {
     $params['Resumes.resumeFile'] = $contents;
     $params['Resumes.resumeFilename'] = $filename;
   }
+  unset($params['resume_file']);
 
-//  $result = oa_portal_soap('save', array('candidateJSON' => json_encode($params)), TRUE);
-  
+  // $result = oa_portal_soap('save', array('candidateJSON' => json_encode($params)), TRUE);
+  $result = oa_portal_soap('save', json_encode($params), TRUE);
 }
 
 /**
@@ -196,7 +197,7 @@ function oa_onboard_dupecheck() {
     exit();
   }
 
-  $result = oa_onboard_soap('check', $Email, TRUE);
+  $result = oa_onboard_soap('check', $Email);
   // $result === 0 means no dupe. Otherwise, RMaxID
   drupal_json(array('status' => ($result > 0) ? 'dupe' : 'no-dupe'));
   exit();
