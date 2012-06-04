@@ -50,73 +50,67 @@ Data storage/access
 ===================
 
 1. User account (one per candidate): standard Drupal account. $account = user_load($uid);
-
 2. RMax ID stored as $account->rmaxid profile field. Not editable by user.
-
 3. Candidate objects: $candidate = get_candidate($rmaxid); currently loads everything. Statically cached per page request.
-
 4. Phase Status keys:
-- open
-- locked
-
+  - open
+  - locked
 5. Section Status keys:
-- open
-- under-review
-- closed
-- locked
-
+  - open
+  - under-review
+  - closed
+  - locked
 6. UCM messages: ingested from UCM, stored in {ucm_messages}
-- msg_id (autoincrement), rmaxid, subject, body, timestamp, was_read (default=0)
-- Unread message count per Candidate: $candidate->get_unread_message_count();
-- Load messages oa_portal_get_messages($rmaxid, $read = 0, $limit = 100)
-- Load one message: oa_portal_get_message($rmaxid, $msg_id)
-- Mark message as read: oa_portal_mark_message_read($msg_id, $js = FALSE) (Note: uses currently logged in user's RMaxID. Doubles as a page callback.)
-- Delete message: oa_portal_message_delete($rmaxid, $msg_id)
-
+  - msg_id (autoincrement), rmaxid, subject, body, timestamp, was_read (default=0)
+  - Unread message count per Candidate: $candidate->get_unread_message_count();
+  - Load messages oa_portal_get_messages($rmaxid, $read = 0, $limit = 100)
+  - Load one message: oa_portal_get_message($rmaxid, $msg_id)
+  - Mark message as read: oa_portal_mark_message_read($msg_id, $js = FALSE) (Note: uses currently logged in user's RMaxID. Doubles as a page callback.)
+  - Delete message: oa_portal_message_delete($rmaxid, $msg_id)
 7. Autosaved forms: stores serialized form state values per RMaxID & Form ID in {autosaved_forms}. 
-- Get autosaved form: oa_portal_get_autosaved_form($form_id, $path, $uid)
-- See: <web root>/sites/all/modules/oahealthportal/js/autosave.js
+  - Get autosaved form: oa_portal_get_autosaved_form($form_id, $path, $uid)
+  - See: <web root>/sites/all/modules/oahealthportal/js/autosave.js
 
 
 Major Portal workflows
 ======================
 
 1. Initial Candidate application process
-a) Portal: form captures candidate particulars
-b) Portal: form dupe-checks email address with RecruitMax ("check" method)
-b) Portal: form data and attachments POSTed to RecruitMax via Soap web service ("save" method)
-c) RecruitMax: candidate record created
+  a) Portal: form captures candidate particulars
+  b) Portal: form dupe-checks email address with RecruitMax ("check" method)
+  b) Portal: form data and attachments POSTed to RecruitMax via Soap web service ("save" method)
+  c) RecruitMax: candidate record created
 
 2. Portal Account creation by RecruitMax
-a) RecruitMax: POST request to Portal: email, rmaxid
-b) Portal account created with rmaxid. $account->must_update_pass set to 1.
-c) Portal triggers welcome email by POST request to UCM. One-time login link included.
+  a) RecruitMax: POST request to Portal: email, rmaxid
+  b) Portal account created with rmaxid. $account->must_update_pass set to 1.
+  c) Portal triggers welcome email by POST request to UCM. One-time login link included.
 
 3. Candidate: first visit
-a) Portal: Candidate logs in with one-time login link
-b) Portal: Candidate prompted to set new password. If user attempts to visit any page other than /update-password, they will be redirected to /update-password.
-c) Portal: Upon successful submission, $account->must_update_pass set to 0 and Candidate redirected to Portal main page
+  a) Portal: Candidate logs in with one-time login link
+  b) Portal: Candidate prompted to set new password. If user attempts to visit any page other than /update-password, they will be redirected to /update-password.
+  c) Portal: Upon successful submission, $account->must_update_pass set to 0 and Candidate redirected to Portal main page
 
 4. Candidate: forgotten password
-a) Portal: Candidate visits and populates forgot password form
-b) Portal: $account->must_update_pass set to 1.
-c) Portal: Email request POSTed to UCM via Soap web service with one-time login link
-d) Portal: Candidate proceeds to step through #3 workflow.
+  a) Portal: Candidate visits and populates forgot password form
+  b) Portal: $account->must_update_pass set to 1.
+  c) Portal: Email request POSTed to UCM via Soap web service with one-time login link
+  d) Portal: Candidate proceeds to step through #3 workflow.
 
 5. Portal: Candidate Form finalization on Portal
-a) Candidate clicks on open phase section, Drupal form shown
-b) Candidate populates fields with information, form is checked for valid input as focus moves to further fields
-c) Form autosaves on input focus change. Serialized values retrieved to prepopulate form should candidate leave the form before finalization is complete. 
-d) User finalizes form, submitted via AJAX. Portal takes captured data, merges with RecruitMax Profile and/or other supplementary data where necessary. Data POSTed to UCM via Soap web service.
-e) AJAX response contains URL of further portal stage. jQuery used to bind this URL redirect action to "Continue" button.
-f) Document Download box and "Continue" button are exposed
+  a) Candidate clicks on open phase section, Drupal form shown
+  b) Candidate populates fields with information, form is checked for valid input as focus moves to further fields
+  c) Form autosaves on input focus change. Serialized values retrieved to prepopulate form should candidate leave the form before finalization is complete. 
+  d) User finalizes form, submitted via AJAX. Portal takes captured data, merges with RecruitMax Profile and/or other supplementary data where necessary. Data POSTed to UCM via Soap web service.
+  e) AJAX response contains URL of further portal stage. jQuery used to bind this URL redirect action to "Continue" button.
+  f) Document Download box and "Continue" button are exposed
 
 6. UCM Nag email ingestion
-a) UCM: email POSTed to Portal via RESTful web service (see below)
-b) Portal: message stored in {ucm_messages}:  msg_id, rmaxid, subject, body, timestamp, was_read
+  a) UCM: email POSTed to Portal via RESTful web service (see below)
+  b) Portal: message stored in {ucm_messages}:  msg_id, rmaxid, subject, body, timestamp, was_read
 
 9. UCM: Candidate status or document state change
-a) 
+  a) 
 
 Test Credentials
 ================
