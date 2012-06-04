@@ -112,13 +112,6 @@ Major Portal workflows
 9. UCM: Candidate status or document state change
   The Portal is generated based on live data. RMax profiles, compliance records and modality states are loaded for every page load.
 
-Test Credentials
-================
-
-The following user/password 
-
-UCM - Un!5i3dc0N#n7
-RecruitMax - $ecRu!m@XX
 
 Maintenance and future considerations
 =====================================
@@ -142,7 +135,10 @@ Drupal Web Service Documentation
 
 RESTful web services are exposed to allow the creation of Accounts and Messages.
 
-Session-based authentication is used. You must first connect, then login. 
+Session-based authentication is used. You must first connect, then login. The following user/password combinations are used for the TEST environment:
+
+- UCM - Un!5i3dc0N#n7
+- RecruitMax - $ecRu!m@XX
 
 1. Connect
 -------
