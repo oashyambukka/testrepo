@@ -1,5 +1,8 @@
+Architecture 
+============
+
 Important terms
-===============
+---------------
 
 1. Drupal: Open source content management system (CMS) used as a framework for certain On Assignment web sites, including the OA Portal
 2. OA Portal module OR oa_portal module: custom Drupal module
@@ -13,7 +16,7 @@ Important terms
 10. Portal Main Page: Portal overview page accessible to Candidates only
 
 Code and other digital assets
-=============================
+-----------------------------
 
 1. Web root (depends on server environment) <web root>: /var/www/html/portal.oahealthcare.com
 2. Drupal core: <web root>/
@@ -24,10 +27,9 @@ Code and other digital assets
 7. Soap WSDLs in use by OA Portal module: <web root>/sites/all/modules/oahealthportal/wsdl
 
 Installation
-============
+------------
 
-Pre-existing Drupal site
-------------------------
+### Pre-existing Drupal site
 
 1. Take precautionary backups of both the Drupal codebase and MySQL database
 2. Unpack the OA module in the correct custom module location (<web root>/sites/all/modules/)
@@ -35,8 +37,7 @@ Pre-existing Drupal site
 4. Enable OA module
 5. Enable Candidate Menu block in Left sidebar region. Designate visibility settings to "Show on only the listed pages." and specify those pages as "portal portal/*" (note: two items on separate lines)
 
-New Drupal site
----------------
+### New Drupal site
 
 1. Download and extract Drupal 6. Create MySQL database and user. Install Drupal normally. 
 2. Unpack the OA module in the correct custom module location (<web root>/sites/all/modules/)
@@ -47,7 +48,7 @@ New Drupal site
 
 
 Data storage/access
-===================
+-------------------
 
 1. User account (one per candidate): standard Drupal account. $account = user_load($uid);
 2. RMax ID stored as $account->rmaxid profile field. Not editable by user.
@@ -73,7 +74,7 @@ Data storage/access
 
 
 Major Portal workflows
-======================
+----------------------
 
 1. Initial Candidate application process
   1. Portal: form captures candidate particulars
@@ -114,7 +115,7 @@ Major Portal workflows
 
 
 Maintenance and future considerations
-=====================================
+-------------------------------------
 
 1. Modifying existing forms
 
@@ -131,7 +132,7 @@ Maintenance and future considerations
 
 
 Drupal Web Service Documentation
-================================
+--------------------------------
 
 RESTful web services are exposed to allow the creation of Accounts and Messages.
 
@@ -140,8 +141,7 @@ Session-based authentication is used. You must first connect, then login. The fo
 - UCM - Un!5i3dc0N#n7
 - RecruitMax - $ecRu!m@XX
 
-1. Connect
--------
+### 1. Connect
 
 Params: none
 
@@ -151,8 +151,8 @@ Returns: array:
 
 POST http://dev.portal.oahealthcare.com/api/system/connect
 
-2. Login
---------
+### Login
+
 Header:
 - 'Cookie' = $data->session_name . '=' . $data->sessid; from Connect step above
 
@@ -167,8 +167,7 @@ Returns array:
 POST http://dev.portal.oahealthcare.com/api/user/login + body data
 
 
-Creating Accounts
------------------
+### Creating Accounts
 
 Header:
 - 'Cookie' = $data->session_name . '=' . $data->sessid; from Connect/Login steps above
@@ -184,8 +183,7 @@ Returns array:
 POST http://dev.portal.oahealthcare.com/api/account + body data
 
 
-Creating Messages
------------------
+### Creating Messages
 
 Header:
 - 'Cookie' = $data->session_name . '=' . $data->sessid; from Connect/Login steps above
