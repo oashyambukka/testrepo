@@ -140,11 +140,66 @@ Maintenance and future considerations
 Drupal Web Service Documentation
 ================================
 
-1. Authentication
-  
-  
-2. RMax account creation
-  
-  
-3. UCM Message Ingestion
-  
+RESTful web services are exposed to allow the creation of Accounts and Messages.
+
+Session-based authentication is used. You must first connect, then login. 
+
+1. Connect
+-------
+
+Params: none
+
+Returns: array:
+- 'sessid'
+- 'user': anonymous $user object
+
+POST http://dev.portal.oahealthcare.com/api/system/connect
+
+2. Login
+--------
+Header:
+- 'Cookie' = $data->session_name . '=' . $data->sessid; from Connect step above
+
+Params:
+- $data: array with username, password of RecruitMax user
+
+Returns array:
+- 'sessid'
+- 'session_name'
+- 'user': $user object
+
+POST http://dev.portal.oahealthcare.com/api/user/login + body data
+
+
+Creating Accounts
+-----------------
+
+Header:
+- 'Cookie' = $data->session_name . '=' . $data->sessid; from Connect/Login steps above
+
+Params:
+- $data: array with name, mail, rmaxid
+
+Returns array:
+- 'rmaxid'
+- 'account' object
+- 'uri': resource URI
+
+POST http://dev.portal.oahealthcare.com/api/account + body data
+
+
+Creating Messages
+-----------------
+
+Header:
+- 'Cookie' = $data->session_name . '=' . $data->sessid; from Connect/Login steps above
+
+Params:
+- $data: array with rmaxid, subject, body
+
+Returns array:
+- 'msg_id'
+- 'message' object
+- 'uri': resource URI
+
+POST http://dev.portal.oahealthcare.com/api/message + body data
