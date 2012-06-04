@@ -8,7 +8,8 @@
 .oap-phase-title-status h3 {font-size:200%;color:white}
 .oap-phase-title h3 {font-size:150%;color:white}
 
-.oap-phase-form-link a {color:black;text-decoration:none;}
+.oap-phase-form-link a,
+.oap-phase-form-link span {color:black;text-decoration:none;}
 
 #oa-phase-1, #oa-phase-2, #oa-phase-3 {
 	display:inline;
@@ -39,9 +40,9 @@
 #oa-phase-2 .oap-phase-form-link,
 #oa-phase-3 .oap-phase-form-link {padding-top:3px;padding-bottom:3px;padding-left:5px}
 
-#oa-phase-1 .oap-phase-form-link:hover,
-#oa-phase-2 .oap-phase-form-link:hover,
-#oa-phase-3 .oap-phase-form-link:hover {background:rgba(255,255,255,.2);cursor:pointer}
+#oa-phase-1 .oap-phase-form-link:hover a,
+#oa-phase-2 .oap-phase-form-link:hover a,
+#oa-phase-3 .oap-phase-form-link:hover a {background:rgba(255,255,255,.2);cursor:pointer}
 
 #oap-status-legend {padding-bottom:10px}
 
@@ -114,7 +115,9 @@
 .oap-icon-under-review {background:url(../img/under-review.png)}
 
 .oa-phase-row-status-closed,
-.oa-phase-row-status-closed .oap-phase-form-link {
+.oa-phase-row-status-closed .oap-phase-form-link,
+.oa-phase-row-status-locked,
+.oa-phase-row-status-locked .oap-phase-form-link {
 	background:url(../img/closed.png);
 	background-position:right;
 	background-repeat:no-repeat;
