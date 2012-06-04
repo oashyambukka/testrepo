@@ -1,53 +1,53 @@
 Important terms
+===============
 
-
-  1. Drupal: Open source content management system (CMS) used as a framework for certain On Assignment web sites, including the OA Portal
-  2. OA Portal module OR oa_portal module: custom Drupal module
-  3. Portal: referrs to Drupal site instance running the OA Portal Drupal module
-  4. RMax/RecruitMax: On Assignment recruitment management application
-  5. UCM: Oracle document management system (DMS) implemented by Sena Systems for On Assignment
-  6. PDF Form: One unique PDF document corresponding to a unique UCM Form ID
-  7. Portal form: Drupal form corresponding to one unique URI. Typically used to capture input to populate multiple PDF Forms.
-  8. Drupal contributed module: Drupal module sourced from drupal.org. Published for use under GPL 2 open source license.
-  9. Field: Drupal Form API field, typically corresponding to PDF Form field(s) and/or RecruitMax fields
-  10. Portal Main Page: Portal overview page accessible to Candidates only
+1. Drupal: Open source content management system (CMS) used as a framework for certain On Assignment web sites, including the OA Portal
+2. OA Portal module OR oa_portal module: custom Drupal module
+3. Portal: referrs to Drupal site instance running the OA Portal Drupal module
+4. RMax/RecruitMax: On Assignment recruitment management application
+5. UCM: Oracle document management system (DMS) implemented by Sena Systems for On Assignment
+6. PDF Form: One unique PDF document corresponding to a unique UCM Form ID
+7. Portal form: Drupal form corresponding to one unique URI. Typically used to capture input to populate multiple PDF Forms.
+8. Drupal contributed module: Drupal module sourced from drupal.org. Published for use under GPL 2 open source license.
+9. Field: Drupal Form API field, typically corresponding to PDF Form field(s) and/or RecruitMax fields
+10. Portal Main Page: Portal overview page accessible to Candidates only
 
 Code and other digital assets
+=============================
 
-
-  1. Web root (depends on server environment) <web root>: /var/www/html/portal.oahealthcare.com
-  2. Drupal core: <web root>/
-  3. "OA Portal" Drupal module: <web root>/sites/all/modules/oahealthportal
-  4. UI CSS for OA Portal module: <web root>/sites/all/modules/oahealthportal/css
-  5. UI JS for OA Portal module: <web root>/sites/all/modules/oahealthportal/js
-  6. Drupal templates for OA Portal module: <web root>/sites/all/modules/oahealthportal/templates
-  7. Soap WSDLs in use by OA Portal module: <web root>/sites/all/modules/oahealthportal/wsdl
-
+1. Web root (depends on server environment) <web root>: /var/www/html/portal.oahealthcare.com
+2. Drupal core: <web root>/
+3. "OA Portal" Drupal module: <web root>/sites/all/modules/oahealthportal
+4. UI CSS for OA Portal module: <web root>/sites/all/modules/oahealthportal/css
+5. UI JS for OA Portal module: <web root>/sites/all/modules/oahealthportal/js
+6. Drupal templates for OA Portal module: <web root>/sites/all/modules/oahealthportal/templates
+7. Soap WSDLs in use by OA Portal module: <web root>/sites/all/modules/oahealthportal/wsdl
 
 Installation
+============
 
-Assumes pre-existing Drupal site
+Pre-existing Drupal site
+------------------------
 
+1. Take precautionary backups of both the Drupal codebase and MySQL database
+2. Unpack the OA module in the correct custom module location (<web root>/sites/all/modules/)
+3. Verify and enable Drupal contributed module dependencies are met by visiting /admin/build/modules. Download missing contributed modules where appropriate. 
+4. Enable OA module
+5. Enable Candidate Menu block in Left sidebar region. Designate visibility settings to "Show on only the listed pages." and specify those pages as "portal portal/*" (note: two items on separate lines)
 
-  1. Take precautionary backups of both the Drupal codebase and MySQL database
-  2. Unpack the OA module in the correct custom module location (<web root>/sites/all/modules/)
-  3. Verify and enable Drupal contributed module dependencies are met by visiting /admin/build/modules. Download missing contributed modules where appropriate. 
-  4. Enable OA module
-  5. Enable Candidate Menu block in Left sidebar region. Designate visibility settings to "Show on only the listed pages." and specify those pages as "portal
-portal/*" (note: two items on separate lines)
-Assumes no pre-existing Drupal site
+New Drupal site
+---------------
 
-
-  1. Download and extract Drupal 6. Create MySQL database and user. Install Drupal normally. 
-  2. Unpack the OA module in the correct custom module location (<web root>/sites/all/modules/)
-  3. Verify and enable Drupal contributed module dependencies are met by visiting /admin/build/modules. Download and extract missing contributed modules where appropriate. 
-  4. Enable OA module
-  5. Enable Candidate Menu block in Left sidebar region. Designate visibility settings to "Show on only the listed pages." and specify those pages as "portal
-portal/*" (note: two items on separate lines)
-  6. Using Backup & Migrate module, restore from a recent backup.
+1. Download and extract Drupal 6. Create MySQL database and user. Install Drupal normally. 
+2. Unpack the OA module in the correct custom module location (<web root>/sites/all/modules/)
+3. Verify and enable Drupal contributed module dependencies are met by visiting /admin/build/modules. Download and extract missing contributed modules where appropriate. 
+4. Enable OA module
+5. Enable Candidate Menu block in Left sidebar region. Designate visibility settings to "Show on only the listed pages." and specify those pages as "portal portal/*" (note: two items on separate lines)
+6. Using Backup & Migrate module, restore from a recent backup.
 
 
 Data storage/access
+===================
 
 1. User account (one per candidate): standard Drupal account. $account = user_load($uid);
 
@@ -79,6 +79,7 @@ Data storage/access
 
 
 Major Portal workflows
+======================
 
 1. Initial Candidate application process
 a) Portal: form captures candidate particulars
@@ -118,6 +119,7 @@ b) Portal: message stored in {ucm_messages}:  msg_id, rmaxid, subject, body, tim
 a) 
 
 Test Credentials
+================
 
 The following user/password 
 
@@ -125,6 +127,7 @@ UCM - Un!5i3dc0N#n7
 RecruitMax - $ecRu!m@XX
 
 Maintenance and future considerations
+=====================================
 
 1. Modifying existing forms
 
@@ -142,6 +145,7 @@ d) Clear Drupal's cache to expose form menu item
 
 
 Drupal Web Service Documentation
+================================
 
 1. Authentication
 
