@@ -51,6 +51,7 @@ class Candidate {
 
   private function load_compliance() {
     $p = oa_portal_forms_info();
+    $profile = $this->profile;
 
     // Get formtypes for Skills Checklists, Licensures & Certifications
     $p['p1']['checklist']['#formtypes'] = array_keys(oa_portal_get_category_formids('Skills Checklists'));
@@ -97,10 +98,10 @@ class Candidate {
 
     $p['p2']['#status'] = 'locked';
     $p['p3']['#status'] = 'locked';
-    if ($modality_compliance['p1']['approved_date']) {
+    if (in_array($profile->status, array('Interviewed', 'Candidate'))) {
       $p['p2']['#status'] = 'open';
     }
-    if ($modality_compliance['p2']['approved_date']) {
+    if ($profile->status == 'Candidate') {
       $p['p3']['#status'] = 'open';
     }
 
@@ -126,13 +127,19 @@ class Candidate {
   public function get_section_status($phase, $section) {
     $p = $this->p;
     $modality_compliance = $this->modality_compliance;
+    $profile = $this->profile;
 
     // If section is marked as read-only, verify phase is open
     if ($p[$phase][$section]['#status'] == 'read-only') {
-      if (($section == 'p2' && $modality_compliance[1]['approved_date']) || ($section == 'p3' && $modality_compliance[2]['approved_date'])) {
+      if (($section == 'p2' && in_array($profile->status, array('Interviewed', 'Candidate'))) || ($section == 'p3' && $profile->status == 'Candidate')) {
         return 'open';
       }
       return 'closed';
+    }
+
+    // Global access checking - If phase or section is locked (cannot access)
+    if ($p[$phase][$section]['#status'] == 'locked') {
+      return 'locked';
     }
 
     // Global access checking - If phase or section is closed

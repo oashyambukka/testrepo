@@ -155,7 +155,7 @@ function oa_portal_candidate_access($phase, $section) {
   //$candidate->load_compliance();
 
   // If previous sections are marked as approved, grant access
-  if ($section = 'p1' || ($section == 'p2' && $candidate->compliance['p1']['approved_date']) || ($section == 'p3' && $candidate->compliance['p2']['approved_date'])) {
+  if ($section = 'p1' || ($section == 'p2' && in_array($candidate->profile->status, array('Interviewed', 'Candidate'))) || ($section == 'p3' && $candidate->profile->status == 'Candidate')) {
     return TRUE;
   }
   return FALSE;

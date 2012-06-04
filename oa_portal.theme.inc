@@ -69,7 +69,7 @@ function oa_portal_preprocess_oap_candidate_menu(&$vars) {
   $count = (count($unread_count)) ? ' ('. $unread_count .')': '';
   $links[] = array('title' => 'Message Center'. $count, 'href' => 'portal/messages');
 
-  if ($candidate->modality_compliance[2]['approved_date']) {
+  if ($candidate->profile->status == 'Candidate') {
     $links[] = array('title' => 'Events Calendar', 'href' => 'todo');
     $links[] = array('title' => 'OTC', 'href' => 'todo');
     $links[] = array('title' => 'Forms', 'href' => 'portal/forms');
