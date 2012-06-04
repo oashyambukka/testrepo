@@ -1417,6 +1417,9 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
   // * ssn - From Profile
   $form_state['values'][461]['ssn'] = '123456789';
 
+  $form_state['values'][461]['appsignature'] = $candidate->profile->name;
+  $form_state['values'][461]['apptimestamp'] = date('m-d-Y g:i:s A');
+
   unset($form_state['values'][461]['chk_certify']);
 
   dsm($form_state['values'][461], 'Process & post 461 to UCM');
