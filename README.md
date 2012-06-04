@@ -76,10 +76,10 @@ Major Portal workflows
 ======================
 
 1. Initial Candidate application process
-  a) Portal: form captures candidate particulars
-  b) Portal: form dupe-checks email address with RecruitMax ("check" method)
-  b) Portal: form data and attachments POSTed to RecruitMax via Soap web service ("save" method)
-  c) RecruitMax: candidate record created
+  1. Portal: form captures candidate particulars
+  2. Portal: form dupe-checks email address with RecruitMax ("check" method)
+  3. Portal: form data and attachments POSTed to RecruitMax via Soap web service ("save" method)
+  4. RecruitMax: candidate record created
 
 2. Portal Account creation by RecruitMax
   a) RecruitMax: POST request to Portal: email, rmaxid
