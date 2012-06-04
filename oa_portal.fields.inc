@@ -97,7 +97,7 @@ function radios($title, $choices, $map = FALSE) {
   return $element;
 }
 
-function date_popup($title, $format = 'd-m-Y') {
+function date_popup($title, $format = 'm-d-Y') {
   $element = array(
     '#type' => 'date_popup',
     '#date_format' => $format,
