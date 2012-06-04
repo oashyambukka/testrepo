@@ -240,14 +240,15 @@ function oa_onboard_dupecheck() {
  * SOAP interface
  */
 function oa_onboard_soap($method, $params, $debug = FALSE) {
-  // ini_set("soap.wsdl_cache_enabled", "0");
-  $wsdl = dirname(__FILE__) .'/wsdl/candidateGateway.wsdl';
+  ini_set('soap.wsdl_cache_enabled', 0);
+  ini_set('soap.wsdl_cache_ttl', 0);
   ini_set('display_errors', 1);
+  ini_set('default_socket_timeout', 20);
 
+  $wsdl = 'http://rmdms.oaifield.onasgn.com/com/recruitmax/webservices/candidateHC/candidateGateway.cfc?wsdl';
   $soap_params = array(
     'trace' => 1,
   );
-  ini_set('default_socket_timeout', 10);
 
   try {
     $client = @new SoapClient($wsdl, $soap_params);
