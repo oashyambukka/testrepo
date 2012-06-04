@@ -32,10 +32,11 @@ Installation
 ### Pre-existing Drupal site
 
 1. Take precautionary backups of both the Drupal codebase and MySQL database
-2. Unpack the OA module in the correct custom module location (<web root>/sites/all/modules/)
-3. Verify and enable Drupal contributed module dependencies are met by visiting /admin/build/modules. Download missing contributed modules where appropriate. 
-4. Enable OA module
-5. Enable Candidate Menu block in Left sidebar region. Designate visibility settings to "Show on only the listed pages." and specify those pages as "portal portal/*" (note: two items on separate lines)
+2. Enable the Profile module, and create a hidden field called "rmaxid".
+3. Unpack the OA module in the correct custom module location (<web root>/sites/all/modules/)
+4. Verify and enable Drupal contributed module dependencies are met by visiting /admin/build/modules. Download missing contributed modules where appropriate. 
+5. Enable OA module
+6. Enable Candidate Menu block in Left sidebar region. Designate visibility settings to "Show on only the listed pages." and specify those pages as "portal portal/*" (note: two items on separate lines)
 
 ### New Drupal site
 
