@@ -33,14 +33,6 @@ function oa_services_services_resources() {
             'source' => 'data',
             'optional' => FALSE,
           ),
-          array(
-            'name' => 'notify',
-            'type' => 'struct',
-            'description' => 'Whether to send notification email or not. Only "yes" will trigger a notification.',
-            'source' => 'data',
-            'optional' => FALSE,
-          ),
-          
         ),
       ),
       'retrieve' => array(

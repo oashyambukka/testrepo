@@ -7,7 +7,7 @@
  * @param string $notify (yes, no, etc)
  * @return object
  */
-function _accountresource_create($data, $notify) {
+function _accountresource_create($data) {
   // Check for duplicates
   if ($account = user_load(array('mail' => $data['mail']))) {
     return services_error('Invalid attribute "mail". Account already exists.', 406);
@@ -36,7 +36,7 @@ function _accountresource_create($data, $notify) {
   $data['status'] = 1;
   $data['notify'] = $notify;
   $data['roles'] = array(2, 4);
-  $data['notified'] = ($notify == 'yes');
+  $data['notified'] = $notify == 'yes';
 
   if ($account = user_save(array(), $data, 'OnAssignment')) {
     // Not sure why I need this query -rp
@@ -44,9 +44,7 @@ function _accountresource_create($data, $notify) {
     db_query("INSERT INTO {profile_values} (fid, uid, value) VALUES (%d, %d, '%s')", 1, $account->uid, $data['rmaxid']);
 
     // Send notification email
-    if ($notify == 'yes') {
-      oa_portal_user_mail_notify('register_admin_created', $account);
-    }
+    oa_portal_user_mail_notify('register_admin_created', $account);
 
     return (object)array(
       'rmaxid' => $account->rmaxid,
