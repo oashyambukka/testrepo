@@ -153,6 +153,7 @@ function oa_onboard_form_validate($form, &$form_state) {
  */
 function oa_onboard_form_submit($form, &$form_state) {
   $params = $form_state['values'];
+  dsm($params, 'params');
 
   // RMax expecting: Address1, Address2, City, State, PostalCode
   $params['Address1'] = $params['PostalAddress']['address1'];
@@ -161,24 +162,14 @@ function oa_onboard_form_submit($form, &$form_state) {
   $params['State'] = $params['PostalAddress']['state'];
   $params['PostalCode'] = $params['PostalAddress']['postalcode'];
   unset($params['PostalAddress']);
-  
+
   // @TODO Unset other stuff
-  
+
   dsm($params, 'Check address is all there');
 
   // What is OfficeID?
   $params['OfficeID'] = 1057;
 
-  $result = oa_portal_soap('save', array('candidateJSON' => json_encode($params)), TRUE);
-  
-  // if ($result->oacheckinResult->StatusInfo->statusCode === 0) {
-  //   drupal_set_message(t('Your file upload was successful.'));
-  // }
-  // else {
-  //   drupal_set_message(t('An error occured. Please try again.'));
-  // }
-  
-  
   // Resume file upload
   if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['resume_file'])) {
     $filepath = $_FILES['files']['tmp_name']['resume_file'];
@@ -187,35 +178,11 @@ function oa_onboard_form_submit($form, &$form_state) {
     $handle = fopen($filepath, "r");
     $contents = fread($handle, $filesize);
     fclose($handle);
-
-    $params = array(
-      // 'dDocName' => ($form_state['values']['lc']['lc_licensure'] == 61) ? '' : $account->rmaxid .'_'. $form_state['values']['lc']['lc_licensure'],
-      'dDocTitle' => '9999999 - '. $rmaxid,
-      'dDocType' => 'Rmax',
-      'dDocAuthor' => 'weblogic',
-      'dSecurityGroup' => 'Form',
-      'dDocAccount' => 'Recruit/QA',
-      'xContentType' => 'Form',
-      'xFormType' => 999999999,
-      'xRM_ID' => $rmaxid,
-      'xStatus' => 'Pending Review',
-      'xComments' => '',
-      'xRejectReason' => '',
-      'xRejectOther' => '',
-      'xSuccessAudit' => '',
-    );
-    $params['primaryFile'] = array(
-      'fileName'=> $_FILES['files']['name']['resume_file'],
-      'fileContent' => $contents,
-    );
-    $result = oa_portal_soap('oacheckin', $params);
-    if ($result->oacheckinResult->StatusInfo->statusCode === 0) {
-      drupal_set_message(t('Your file upload was successful.'));
-    }
-    else {
-      drupal_set_message(t('An error occured. Please try again.'));
-    }
+    $params['Resumes.resumeFile'] = $contents;
+    $params['Resumes.resumeFilename'] = $filename;
   }
+
+//  $result = oa_portal_soap('save', array('candidateJSON' => json_encode($params)), TRUE);
   
 }
 
