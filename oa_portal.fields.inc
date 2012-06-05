@@ -234,6 +234,7 @@ function acknowledgement($description, $confirm = 'I acknowledge, understand, an
   $element['#rules'] = array(array('rule' => 'chars[1]', 'error' => 'You must accept all acknowledgements to continue.'));
   $element['#prefix'] = '<div class="field-acknowledgement"><div class="acknowledgement-description">'. $description .'</div>';
   $element['#suffix'] = '</div>';
+  $element['#pdf_type'] = 'acknowledgement';
   return $element;
 }
 
@@ -241,5 +242,6 @@ function initial($description) {
   $element = textfield('I acknowledge, understand, and accept this Agreement/Statement. Please initial here.', 2);
   $element['#prefix'] = '<div class="field-acknowledgement"><div class="acknowledgement-description">'. $description .'</div>';
   $element['#suffix'] = '</div>';
+  $element['#pdf_type'] = 'initial';
   return $element;
 }
