@@ -128,13 +128,14 @@ function oa_portal_preprocess_oap_tooltip(&$vars) {
 
 }
 
+
 /**
  * Preprocess function for Phase Status block
  */
 function oa_portal_preprocess_oap_doc_download(&$vars) {
   $items = array();
   foreach ($vars['docs'] AS $id => $doc) {
-    $items[] = l($doc->dDocName, 'portal/file/'. $doc->dDocName);
+    $items[] = oa_portal_doc_link($doc);
   }
   $vars['items'] = theme('item_list', $items);
 }

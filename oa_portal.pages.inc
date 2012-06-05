@@ -63,7 +63,7 @@ function oa_portal_docs_page() {
 //  dsm($docs, 'docs');
   $items = array();
   foreach ($docs AS $doc) {
-    $items[] = l($doc->dDocTitle, 'portal/file/'. $doc->dDocName);
+    $items[] = oa_portal_doc_link($doc);
   }
   return theme('item_list', $items);
 }
