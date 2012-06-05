@@ -818,6 +818,6 @@ function oa_portal_get_category_formids($form_category) {
  */
 function oa_portal_doc_link($doc) {
   $title = preg_split('/ - /', $doc->dDocTitle);
-  dsm($title, 'doc title');
-  return l($title[0][0], 'portal/file/'. $doc->dDocName);
+  $t = ($title[0]) ? $title[0] : $doc->dDocTitle;
+  return l($t, 'portal/file/'. $doc->dDocName);
 }
