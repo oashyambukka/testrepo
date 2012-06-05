@@ -1313,9 +1313,12 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
 function oa_portal_p3_w4_form($form_state) {
   $form = array();
   $form[474] = fieldset('W4');
-  
+
   $form[474]['#description'] = 'If you would like to reference the W4 Personal Allowances Worksheet, Deductions and Adjustments Worksheet, and Two-Earners/Multiple Jobs Worksheet please <a href="to-do">click here</a>.';
-  
+
+  $form[474]['ssn'] = textfield_ssn();
+  // $form[474]['dob'] = date_popup('Date of Birth');
+
   $form[474]['rdo_marital_status'] = radios('', array('Single', 'Married', 'Married, but withhold at higher Single rate'), TRUE);
   $form[474]['marital_status']['#description'] = t('<strong>Note:</strong> If married, but legally seperated, or spouse is a nonresident alien, check the "Single" box');
   $form[474]['different_name'] = markup('<p><strong>If your last name differs from that shown on your social security card, check here.<br/>You must call 1-800-772-1213 for a replacement.</strong></p>');
@@ -1325,7 +1328,7 @@ function oa_portal_p3_w4_form($form_state) {
   <ul><li>Last year I had a right to a refund of all federal income tax withheld because I had no tax liability, and </li><li>This year I expect a refund of all federal income tax withheld because I expect to have no tax liability</li></ul><strong>');
   $form[474]['exempt'] = textfield('If you meet both conditions, write "Exempt" here', 6);
   $form[474]['chk_certify'] = checkbox('Under penalties of perjury, I declare that I have examined this certificate and, to the best of my knowledge and belief, it is true, correct, and complete.');
-  
+
   return $form;
 }
 
@@ -1338,7 +1341,7 @@ function oa_portal_p3_w4_form_submit($form, &$form_state) {
    *
    * firstnameandinitial - From Profile
    * lastname - From Profile
-   * ssn - From Profile
+   * ssn
    * address - From Profile
    * citystatezip - From Profile
    * @TODO Note: missing from PDF doc: Marital status (marital_status above)
@@ -1361,6 +1364,9 @@ function oa_portal_p3_w4_form_submit($form, &$form_state) {
 function oa_portal_p3_i9_form($form_state) {
   $form = array();
   $form[461] = fieldset('I9');
+  $form[461]['ssn'] = textfield_ssn();
+  $form[461]['dob'] = date_popup('Date of Birth');
+  $form[461]['maiden'] = textfield('Maiden/other names used');
   $form[461]['citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
     array('citizen' => t('A citizen of the United States'), 'national' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
   $form[461]['expiry'] = date_popup('Until (expiration date if applicable)');
@@ -1382,18 +1388,18 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
    * lastname - From Profile
    * firstname - From Profile
    * initial - From Profile
-   * maiden - From Background Check form
+   * maiden
    * address - From Profile
    * apt - From Profile
-   * dob - From Profile
+   * dob
    * city - From Profile
    * state - From Profile
    * zip - From Profile
-   * ssn - From Profile
+   * ssn
    * citizentype
    * expiry - @TODO Missing from PDF: Expiration date of employment status
-   * appsignature - ?
-   * apptimestamp - Current date
+   * appsignature - From Profile
+   * apptimestamp - current date/time
    */
 
   // PDF Field => RMax Profile Field
@@ -1409,14 +1415,10 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
     $form_state['values'][461][$pdff] = $candidate->profile->{$rmaxf};
   }
   
+  // No initial for now. Not in RMax profile.
   $form_state['values'][461]['initial'] = '';
-  // * maiden - From Background Check form
-  $form_state['values'][461]['maiden'] = 'MAIDEN';
-  // * dob - From Profile
-  $form_state['values'][461]['dob'] = '2012-11-22';
-  // * ssn - From Profile
-  $form_state['values'][461]['ssn'] = '123456789';
-
+  
+  $form_state['values'][461]['dob'] = date('m/d/Y', strtotime($form_state['values'][461]['dob']));
   $form_state['values'][461]['appsignature'] = $candidate->profile->name;
   $form_state['values'][461]['apptimestamp'] = date('m-d-Y g:i:s A');
 
