@@ -17,6 +17,11 @@ function oa_onboard_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
+  $items['apply/thanks'] = array(
+    'page callback' => 'oa_onboard_apply_thanks',
+    'access arguments' => array('access content'),
+    'title' => 'Submit Resume',
+  );
   return $items;
 }
 
@@ -146,6 +151,9 @@ function oa_onboard_form_validate($form, &$form_state) {
   if ($result > 0) {
     form_set_error('Email', 'Your profile already exists.');
   }
+  if ($form_state['values']['Email'] != $form_state['values']['Email_confirm']) {
+    form_set_error('Email_confirm', 'Your email addresses must match.');
+  }
 }
 
 /**
@@ -168,7 +176,6 @@ function oa_onboard_form_submit($form, &$form_state) {
 
   // What is OfficeID?
   $params['OfficeID'] = 1057;
-  dsm($params, 'Ending params, pre file upload');
 
   // Resume file upload
   if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['resume_file'])) {
@@ -183,8 +190,13 @@ function oa_onboard_form_submit($form, &$form_state) {
   }
   unset($params['resume_file']);
 
-  // $result = oa_portal_soap('save', array('candidateJSON' => json_encode($params)), TRUE);
-  $result = oa_portal_soap('save', json_encode($params), TRUE);
+  $result = oa_onboard_soap('save', json_encode($params), TRUE);
+  if ($result > 0) {
+    $form_state['redirect'] = 'apply/thanks';
+  }
+  else {
+    drupal_set_message(t('Your resume was not received. Please try again.'));
+  }
 }
 
 /**
@@ -241,4 +253,11 @@ function oa_onboard_soap($method, $params, $debug = FALSE) {
   }
 
   return $response;
+}
+
+/**
+ * Page callback for Application confirmation page
+ */
+function oa_onboard_apply_thanks() {
+  return '<p><strong>Thank you for submitting your resume.</strong></p><p>Once your information has been reviewed, you will be contacted via email.</p>';
 }
