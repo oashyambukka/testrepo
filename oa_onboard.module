@@ -192,9 +192,12 @@ function oa_onboard_form_submit($form, &$form_state) {
 
   $result = oa_onboard_soap('save', json_encode($params), TRUE);
   if ($result > 0) {
+    watchdog('oaonboard', 'Onboard form submission received from '. $params['FirstName'] .' '. $params['LastName'] .'. New RMaxID: '. $result);
     $form_state['redirect'] = 'apply/thanks';
   }
   else {
+    unset($params['Resumes.resumeFile']);
+    watchdog('oaonboard', 'Onboard form submission error. $params: <pre>'. print_r($params, TRUE) .'</pre>');
     drupal_set_message(t('Your resume was not received. Please try again.'));
   }
 }
