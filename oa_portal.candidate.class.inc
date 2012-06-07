@@ -73,20 +73,19 @@ class Candidate {
       'doNotUpdate' => 1,
     );
     $results = oa_portal_soap('drupalcounts', $params);
+
     if ($results->drupalcountsResult->StatusInfo->statusCode === -1) {
       oa_portal_503();
     }
 
     $dcr = $results->drupalcountsResult;
     $modality_compliance = array();
-    foreach (array(1, 2, 3) AS $k) {
-      $modality_compliance[$k]['approved_date'] = $dcr->{'phase'. $k .'ApprovedDate'};
-    }
     $modality_compliance['open'] = array_merge(
       ($dcr->expired == 0) ? array() : explode(',', $dcr->expired),
       ($dcr->missing == 0) ? array() : explode(',', $dcr->missing),
       ($dcr->rejected == 0) ? array() : explode(',', $dcr->rejected)
     );
+
     $modality_compliance['under-review'] = array_merge(
       ($dcr->inprogress == 0) ? array() : explode(',', $dcr->inprogress),
       ($dcr->pendingreview == 0) ? array() : explode(',', $dcr->pendingreview)
