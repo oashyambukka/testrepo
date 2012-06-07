@@ -1111,54 +1111,116 @@ function oa_portal_p2_medical_form($form_state) {
   // @TODO Add help tooltip
   // PDFs 261/262?
   $form['mmr'] = fieldset('MMR');
-  $form['mmr']['rdo_mmr_12_rubella_titer'] = radios('', array(
-    'mmr_12' => 'MMR #1 / #2 if born after 1957',
+  $form['mmr']['mmr_rubella_titer'] = radios('', array(
+    'mmr' => 'MMR #1 / #2 if born after 1957',
     'rubella_titer' => 'Rubela Titer / Rubeola Titer / Mumps Titer',
     ));
 
-  $form['mmr']['certificate'] = array(
+  $form['mmr']['mmr_file'] = array(
     '#type' => 'file',
     '#title' => t('Certificate'),
     '#required' => TRUE,
     '#size' => 80,
   );
-  $form['mmr']['chk_fax_preference'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
+  $form['mmr']['mmr_fax'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
+  $form['mmr']['mmr_fax']['#attributes'] = array('class' => 'set-hide');
 
   // @TODO Which PDF(s) for Cardiac Life Support?
-  // BLS: 19
-  // CPR: 37
-  // ACLS: 13
-  $form['cardiac'] = fieldset('Cardiac Life Support');
-  $form['cardiac']['#tree'] = TRUE;
-  $form['cardiac']['rdo_cardiac'] = radios('', array(19 => 'BLS', 37 => 'CPR', 13 => 'ACLS'), TRUE);
-  $form['cardiac']['certificate'] = array(
+  // CLS Option #1: BLS - 19
+  // CLS Option #2: CPR - 37
+  // CLS Option #3: ACLS - 13
+  $form['cls'] = fieldset('Cardiac Life Support');
+  $form['cls']['#tree'] = TRUE;
+  $form['cls']['cls_option'] = radios('', array(
+    19 => 'BLS',
+    37 => 'CPR',
+    13 => 'ACLS'));
+
+  // @TODO Hide this field until cls_option is specified
+  $form['cls']['cls_file'] = array(
     '#type' => 'file',
     '#title' => t('Certificate'),
     '#required' => TRUE,
     '#size' => 80,
+    '#attributes' => array('class' => 'set-hide'),
   );
 
   // @TODO Which PDF(s) for Varivax/Varicella?
   // Varivax/Varicella PDFs: 295, 296, 297, 298, 299
-  $form['vari'] = fieldset('Varivax/Varicella');
-  $form['vari']['rdo_vari'] = radios('', array(
-    'vari_vaccine' => 'Varivax Vaccine #1',
-    'stmt' => 'Varicella Immunity Stmt/Hist. of Disease',
-    'titer' => 'Varicella Titer'));
+  // #1: Varivax Immunization #1 - 298
+  // #2: Varicella Immunity Stmt / Hist of Disease - 296
+  // #3: Varicella Titer - 295
+  // 297 ?
+  // 299 ?
+
+  $form['varivax'] = fieldset('Varivax/Varicella');
+  $form['varivax']['varivax_choice'] = radios('', array(
+    298 => 'Varivax Vaccine #1',
+    296 => 'Varicella Immunity Stmt/Hist. of Disease',
+    295 => 'Varicella Titer'));
+
+  // @TODO Show when varivax_option is specified
+  $form['varivax']['varivax_file'] = array(
+    '#type' => 'file',
+    '#title' => t('Certificate'),
+    '#required' => TRUE,
+    '#size' => 80,
+    '#attributes' => array('class' => 'set-hide'),
+  );
   
   // @TODO Which PDF(s) for Hepatitis B?
   // Hepatitis B PDFs: 274, 275
+  // #1: Hep B Series 1, 2 & 3 - 270, 271, 272
+  // #2: Hep B Antigen Titer - 274
+  // #3: Declination - 275
+
   $form['hepb'] = fieldset('Hepatitis B Vaccination');
   $form['hepb']['#tree'] = TRUE;
-  $form['hepb']['rdo_vaccination'] = radios('', array(
+  $form['hepb']['hepb_option'] = radios('', array(
     'hep123' => 'Hep B Series 1, 2 & 3',
-    'titer' => 'Hep B Titer',
-    'declination' => 'Hep B Declination'));
-  $form['hepb']['acknowledgement'] = acknowledgement(
+    274 => 'Hep B Titer',
+    275 => 'Hep B Declination'));
+
+  // @TODO Show when hepb_option = hep123
+  $form['hepb']['hepb_file_1'] = array(
+    '#type' => 'file',
+    '#title' => t('Hep B Series 1 Certificate'),
+    '#required' => TRUE,
+    '#size' => 80,
+    '#attributes' => array('class' => 'set-hide'),
+  );
+  // @TODO Show when hepb_option = hep123
+  $form['hepb']['hepb_file_2'] = array(
+    '#type' => 'file',
+    '#title' => t('Hep B Series 2 Certificate'),
+    '#required' => TRUE,
+    '#size' => 80,
+    '#attributes' => array('class' => 'set-hide'),
+  );
+  // @TODO Show when hepb_option = hep123
+  $form['hepb']['hepb_file_3'] = array(
+    '#type' => 'file',
+    '#title' => t('Hep B Series 3 Certificate'),
+    '#required' => TRUE,
+    '#size' => 80,
+    '#attributes' => array('class' => 'set-hide'),
+  );
+  // @TODO Show when hepb_option = 274
+  $form['hepb']['hepb_file_274'] = array(
+    '#type' => 'file',
+    '#title' => t('Hep B Titer Certificate'),
+    '#required' => TRUE,
+    '#size' => 80,
+    '#attributes' => array('class' => 'set-hide'),
+  );
+
+
+  // @TODO Hide this field unless cls_option is specified
+  $form['hepb']['declination'] = acknowledgement(
     'Hepatitis B Vaccination Declination - Please complete Bloodborne Training before...',
     'I acknowledge, understand, and accept this Agreement/Statement. *This is a reg..'
   );
-  
+  $form['hepb']['declination']['#attributes'] = array('class' => 'set-hide');
   return $form;
 }
 
@@ -1166,6 +1228,8 @@ function oa_portal_p2_medical_form($form_state) {
  * Form submission callback for Medical Authorization and Disclosures
  */
 function oa_portal_p2_medical_form_submit($form, &$form_state) {
+  // @TODO Upload ['mmr']['mmr_file'] to 261 if ['mmr']['mmr_option'] == 'mmr'
+  // @TODO Upload ['mmr']['mmr_file'] to 284 if ['mmr']['mmr_option'] == 'rubella_titer'
   /**
    * @TODO Post 263 Health Disclosure Agreement to UCM
    * @TODO needs PDF fields
