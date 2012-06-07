@@ -326,8 +326,13 @@ function oa_portal_forms_info() {
     ),
     'medical' => array(
       '#title' => t('Medical Authorization and Disclosures'),
-      // Missing others.
-      '#formtypes' => array(263),
+      '#formtypes' => array(
+        263,
+        291, 288,
+        261, 262, 284, 285,
+        19, 37, 13,
+        298, 296, 295,
+        270, 271, 272, 274, 275),
     ),
     'competency' => array(
       '#title' => t('Competency Test'),
@@ -506,7 +511,7 @@ function oa_portal_ucm_oacheckin($formtype, $fields) {
  * Get file contents by dID. Used by oa_portal_download_file($dDocName)
  */
 function oa_portal_ucm_getfilebyname($dDocName) {
-  $result = oa_portal_soap('GetFileByName', array('dDocName' => $dDocName, 'revisionSelectionMethod' => 'Latest'), TRUE);
+  $result = oa_portal_soap('GetFileByName', array('dDocName' => $dDocName, 'revisionSelectionMethod' => 'Latest'));
   return $result->GetFileByNameResult;
 }
 

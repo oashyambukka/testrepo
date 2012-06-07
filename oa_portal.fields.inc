@@ -245,3 +245,12 @@ function initial($description) {
   $element['#pdf_type'] = 'initial';
   return $element;
 }
+
+function medical_file($title) {
+  return array(
+    '#type' => 'file',
+    '#title' => t($title),
+    '#size' => 80,
+    '#attributes' => array('class' => 'set-hide'),
+  );
+}

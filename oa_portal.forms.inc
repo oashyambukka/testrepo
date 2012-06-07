@@ -1103,27 +1103,29 @@ function oa_portal_p2_medical_form($form_state) {
   $form['tb'] = fieldset('TB');
   
   // @TODO Which PDF for TB Stage 1&2?
-  $form['tb']['rdo_state_12_negative_chest'] = radios('', array(
-    'stage_12' => 'TB Vaccine Stage 1 & Stage 2',
+  $form['tb']['tb_option'] = radios('', array(
+    291 => 'TB Vaccine Stage 1 & Stage 2',
     288 => 'Negative Chest X-ray (every 3 years)',
     ));
+  $form['tb']['tb_file'] = medical_file('Certificate');
+  $form['tb']['tb_fax'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
+  $form['tb']['tb_fax']['#attributes'] = array('class' => 'set-hide fax-option');
 
   // @TODO Add help tooltip
-  // PDFs 261/262?
+  // MMR: 261 & 262
+  // Titer: 284 & 285
   $form['mmr'] = fieldset('MMR');
-  $form['mmr']['mmr_rubella_titer'] = radios('', array(
+  $form['mmr']['mmr_option'] = radios('', array(
     'mmr' => 'MMR #1 / #2 if born after 1957',
     'rubella_titer' => 'Rubela Titer / Rubeola Titer / Mumps Titer',
     ));
 
-  $form['mmr']['mmr_file'] = array(
-    '#type' => 'file',
-    '#title' => t('Certificate'),
-    '#required' => TRUE,
-    '#size' => 80,
-  );
+  $form['mmr']['mmr_file_261'] = medical_file('MMR #1 Certificate');
+  $form['mmr']['mmr_file_262'] = medical_file('MMR #2 Certificate');
+  $form['mmr']['mmr_file_284'] = medical_file('Rubella Titer Certificate');
+  $form['mmr']['mmr_file_285'] = medical_file('Rubeola Titer Certificate');
   $form['mmr']['mmr_fax'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
-  $form['mmr']['mmr_fax']['#attributes'] = array('class' => 'set-hide');
+  $form['mmr']['mmr_fax']['#attributes'] = array('class' => 'set-hide fax-option');
 
   // @TODO Which PDF(s) for Cardiac Life Support?
   // CLS Option #1: BLS - 19
@@ -1137,14 +1139,10 @@ function oa_portal_p2_medical_form($form_state) {
     13 => 'ACLS'));
 
   // @TODO Hide this field until cls_option is specified
-  $form['cls']['cls_file'] = array(
-    '#type' => 'file',
-    '#title' => t('Certificate'),
-    '#required' => TRUE,
-    '#size' => 80,
-    '#attributes' => array('class' => 'set-hide'),
-  );
-
+  $form['cls']['cls_file'] = medical_file('Certificate');
+  $form['cls']['cls_fax'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
+  $form['cls']['cls_fax']['#attributes'] = array('class' => 'set-hide fax-option');
+  
   // @TODO Which PDF(s) for Varivax/Varicella?
   // Varivax/Varicella PDFs: 295, 296, 297, 298, 299
   // #1: Varivax Immunization #1 - 298
@@ -1160,16 +1158,11 @@ function oa_portal_p2_medical_form($form_state) {
     295 => 'Varicella Titer'));
 
   // @TODO Show when varivax_option is specified
-  $form['varivax']['varivax_file'] = array(
-    '#type' => 'file',
-    '#title' => t('Certificate'),
-    '#required' => TRUE,
-    '#size' => 80,
-    '#attributes' => array('class' => 'set-hide'),
-  );
-  
+  $form['varivax']['varivax_file'] = medical_file('Certificate');
+  $form['varivax']['tb_fax'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
+  $form['varivax']['tb_fax']['#attributes'] = array('class' => 'set-hide fax-option');
+
   // @TODO Which PDF(s) for Hepatitis B?
-  // Hepatitis B PDFs: 274, 275
   // #1: Hep B Series 1, 2 & 3 - 270, 271, 272
   // #2: Hep B Antigen Titer - 274
   // #3: Declination - 275
@@ -1182,39 +1175,16 @@ function oa_portal_p2_medical_form($form_state) {
     275 => 'Hep B Declination'));
 
   // @TODO Show when hepb_option = hep123
-  $form['hepb']['hepb_file_1'] = array(
-    '#type' => 'file',
-    '#title' => t('Hep B Series 1 Certificate'),
-    '#required' => TRUE,
-    '#size' => 80,
-    '#attributes' => array('class' => 'set-hide'),
-  );
+  $form['hepb']['hepb_file_1'] = medical_file('Hep B Series 1 Certificate');
   // @TODO Show when hepb_option = hep123
-  $form['hepb']['hepb_file_2'] = array(
-    '#type' => 'file',
-    '#title' => t('Hep B Series 2 Certificate'),
-    '#required' => TRUE,
-    '#size' => 80,
-    '#attributes' => array('class' => 'set-hide'),
-  );
+  $form['hepb']['hepb_file_2'] = medical_file('Hep B Series 2 Certificate');
   // @TODO Show when hepb_option = hep123
-  $form['hepb']['hepb_file_3'] = array(
-    '#type' => 'file',
-    '#title' => t('Hep B Series 3 Certificate'),
-    '#required' => TRUE,
-    '#size' => 80,
-    '#attributes' => array('class' => 'set-hide'),
-  );
+  $form['hepb']['hepb_file_3'] = medical_file('Hep B Series 3 Certificate');
   // @TODO Show when hepb_option = 274
-  $form['hepb']['hepb_file_274'] = array(
-    '#type' => 'file',
-    '#title' => t('Hep B Titer Certificate'),
-    '#required' => TRUE,
-    '#size' => 80,
-    '#attributes' => array('class' => 'set-hide'),
-  );
-
-
+  $form['hepb']['hepb_file_274'] = medical_file('Hep B Titer Certificate');
+  $form['hepb']['hepb_fax'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
+  $form['hepb']['hepb_fax']['#attributes'] = array('class' => 'set-hide fax-option');
+  
   // @TODO Hide this field unless cls_option is specified
   $form['hepb']['declination'] = acknowledgement(
     'Hepatitis B Vaccination Declination - Please complete Bloodborne Training before...',
