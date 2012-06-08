@@ -20,7 +20,8 @@ function fieldset($title, $description = NULL) {
  */
 function fieldset_locked($title) {
   return array(
-    '#value' => '<fieldset class="collapsed dummy"><legend class="">'. $title .' <span class="fieldset-autosave-status locked">Locked</span></legend></fieldset>'
+    // '#value' => '<fieldset class="collapsed dummy"><legend class="">'. $title .' <span class="fieldset-autosave-status locked">Locked</span></legend></fieldset>'
+    '#value' => '<div class="fieldset-locked set-hide">'. $title .'</div>',
   );
 }
 
