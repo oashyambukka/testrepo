@@ -15,6 +15,15 @@ function fieldset($title, $description = NULL) {
   return $element;
 }
 
+/**
+ * Helper function for oa_portal_form_alter()
+ */
+function fieldset_locked($title) {
+  return array(
+    '#value' => '<fieldset class="collapsed dummy"><legend class="">'. $title .' <span class="fieldset-autosave-status locked">Locked</span></legend></fieldset>'
+  );
+}
+
 function textfield($title, $size = 60, $maxlength = null) {
   $element = array(
     '#type' => 'textfield',

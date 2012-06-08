@@ -1573,51 +1573,76 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
     $form['#formtypes_pr'] = $p[arg(1)][arg(2)]['#formtypes_pr'];
     $form['#formtypes_closed'] = $p[arg(1)][arg(2)]['#formtypes_closed'];
 
+    // For each fieldset, check to ensure formids are indeed open.
+    // Numeric fieldsets are easy, others may indicate more than one formid apply
     foreach ($form AS $ek => $element) {
-      if (is_numeric($ek)) {
-        if (!in_array($ek, $form['#formtypes_open'])) {
-//          dsm($element, 'found a numeric fieldset that should have been locked');
-          // Set this fieldset as empty and locked
-          $form[$ek] = array(
-            '#value' => '<fieldset class="collapsed dummy"><legend class="">'. $element['#title'] .' <span class="fieldset-autosave-status locked">Locked</span></legend></fieldset>'
-          );
+      if ($element['#type'] == 'fieldset') {
+        if (is_numeric($ek)) {
+          if (!in_array($ek, $form['#formtypes_open']) && FALSE) { // @TODO REMOVE!
+            // Set this fieldset as empty and locked
+            $form[$ek] = fieldset_locked($element['#title']);
+          }
+        }
+        elseif (in_array($ek, array('tb', 'mmr', 'cls', 'varivax', 'hepb'))) {
+          if (
+            ($ek == 'tb' && !count(array_intersect(array(291, 288), $form['#formtypes_open']))) ||
+            ($ek == 'mmr' && !count(array_intersect(array(261, 262, 284, 285), $form['#formtypes_open']))) ||
+            ($ek == 'cls' && !count(array_intersect(array(19, 37, 13), $form['#formtypes_open']))) ||
+            ($ek == 'varivax' && !count(array_intersect(array(298, 296, 295), $form['#formtypes_open']))) ||
+            ($ek == 'hepb' && !count(array_intersect(array(270, 271, 272, 274, 275), $form['#formtypes_open']))) ||
+            ) {
+            // Set this fieldset as empty and locked
+            $form[$ek] = fieldset_locked($element['#title']);
+            dsm($element, $ek .' - Closed special case fieldset. Not open.');
+          }
+          else {
+            dsm($element, $ek .' - Special case fieldset. Did not close.');
+          }
         }
       }
-      elseif (in_array($ek, array(''))) {
-        dsm($element, $ek .' - Special case. Judge accordingly.');
+    }
+
+    // @TODO If all formtypes are submitted, expose continue button only
+    $something_to_submit = FALSE;
+    foreach ($form AS $ek => $element) {
+      if ($element['#type'] == 'fieldset') {
+        $something_to_submit = TRUE;
       }
     }
-    // @TODO If all formtypes are submitted, expose continue button only
 
-    $form['finalize'] = array(
-      '#type' => 'button',
-      '#value' => t('Finalize'),
-      '#weight' => 1998,
-    );
-    $form['submit'] = array(
-      '#type' => 'submit',
-      '#prefix' => '<div id="finalize-confirm-box" style="display:none;"><p>Once you finalize your application, you will not be able to edit it anymore.</p><p>Are you sure you want to finalize?</p><div id="finalize-cancel">No, I need to make changes</div>',
-      '#value' => t("Yes, I'm done"),
-      '#suffix' => '</div>',
-      '#weight' => 1999,
-    );
-    $form['throbber'] = array(
-      '#value' => '<div id="form-throbber" class="set-hide"></div>',
-      '#weight' => 1998,
-    );
-    $form['continue'] = array(
-      '#type' => 'button',
-      '#value' => t('Continue'),
-      '#weight' => 1998,
-      '#attributes' => array('class' => 'set-hide'),
-    );
+    if ($something_to_submit) {
+      $form['finalize'] = array(
+        '#type' => 'button',
+        '#value' => t('Finalize'),
+        '#weight' => 1998,
+      );
+      $form['submit'] = array(
+        '#type' => 'submit',
+        '#prefix' => '<div id="finalize-confirm-box" style="display:none;"><p>Once you finalize your application, you will not be able to edit it anymore.</p><p>Are you sure you want to finalize?</p><div id="finalize-cancel">No, I need to make changes</div>',
+        '#value' => t("Yes, I'm done"),
+        '#suffix' => '</div>',
+        '#weight' => 1999,
+      );
+      $form['throbber'] = array(
+        '#value' => '<div id="form-throbber" class="set-hide"></div>',
+        '#weight' => 1998,
+      );
+      $form['continue'] = array(
+        '#type' => 'button',
+        '#value' => t('Continue'),
+        '#weight' => 1998,
+        '#attributes' => array('class' => 'set-hide'),
+      );
+    }
+    else {
+      $form['continue'] = array(
+        '#type' => 'button',
+        '#value' => t('Continue'),
+        '#weight' => 1998,
+        '#attributes' => array('class' => 'portal-continue'),
+      );
+    }
 
-// No longer required? We know all the formtypes from $p now
-//    foreach ($form AS $k => $v) {
-//      if (is_numeric($k)) {
-//        $form['#formtypes'][] = $k;
-//      }
-//    }
     if (count($form['#formtypes'])) {
       $form['#docs'] = $candidate->get_docs_not_missing($form['#formtypes']);
       if (is_array($form['#docs']) && count($form['#docs'])) {
