@@ -96,6 +96,17 @@ function checkboxes($title, $choices, $map = FALSE) {
   return $element;
 }
 
+function fax_preference_checkbox($title = 'I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555.') {
+  $element = array(
+    '#type' => 'checkbox',
+    '#title' => t($title),
+    '#prefix' => '<div class="set-hide fax-option">',
+    '#suffix' => '</div>',
+  );
+  return $element;
+}
+
+
 function radios($title, $choices, $map = FALSE) {
   $element = array(
     '#type' => 'radios',
@@ -260,6 +271,7 @@ function medical_file($title) {
     '#type' => 'file',
     '#title' => t($title),
     '#size' => 80,
-    '#attributes' => array('class' => 'set-hide'),
+    '#prefix' => '<div class="medical-file set-hide">',
+    '#suffix' => '</div>',
   );
 }

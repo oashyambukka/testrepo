@@ -1108,8 +1108,7 @@ function oa_portal_p2_medical_form($form_state) {
     288 => 'Negative Chest X-ray (every 3 years)',
     ));
   $form['tb']['tb_file'] = medical_file('Certificate');
-  $form['tb']['tb_fax'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
-  $form['tb']['tb_fax']['#attributes'] = array('class' => 'set-hide fax-option');
+  $form['tb']['tb_fax'] = fax_preference_checkbox();
 
   // @TODO Add help tooltip
   // MMR: 261 & 262
@@ -1124,8 +1123,7 @@ function oa_portal_p2_medical_form($form_state) {
   $form['mmr']['mmr_file_262'] = medical_file('MMR #2 Certificate');
   $form['mmr']['mmr_file_284'] = medical_file('Rubella Titer Certificate');
   $form['mmr']['mmr_file_285'] = medical_file('Rubeola Titer Certificate');
-  $form['mmr']['mmr_fax'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
-  $form['mmr']['mmr_fax']['#attributes'] = array('class' => 'set-hide fax-option');
+  $form['mmr']['mmr_fax'] = fax_preference_checkbox();
 
   // @TODO Which PDF(s) for Cardiac Life Support?
   // CLS Option #1: BLS - 19
@@ -1140,8 +1138,7 @@ function oa_portal_p2_medical_form($form_state) {
 
   // @TODO Hide this field until cls_option is specified
   $form['cls']['cls_file'] = medical_file('Certificate');
-  $form['cls']['cls_fax'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
-  $form['cls']['cls_fax']['#attributes'] = array('class' => 'set-hide fax-option');
+  $form['cls']['cls_fax'] = fax_preference_checkbox();
   
   // @TODO Which PDF(s) for Varivax/Varicella?
   // Varivax/Varicella PDFs: 295, 296, 297, 298, 299
@@ -1159,8 +1156,7 @@ function oa_portal_p2_medical_form($form_state) {
 
   // @TODO Show when varivax_option is specified
   $form['varivax']['varivax_file'] = medical_file('Certificate');
-  $form['varivax']['tb_fax'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
-  $form['varivax']['tb_fax']['#attributes'] = array('class' => 'set-hide fax-option');
+  $form['varivax']['tb_fax'] = fax_preference_checkbox();
 
   // @TODO Which PDF(s) for Hepatitis B?
   // #1: Hep B Series 1, 2 & 3 - 270, 271, 272
@@ -1182,8 +1178,7 @@ function oa_portal_p2_medical_form($form_state) {
   $form['hepb']['hepb_file_3'] = medical_file('Hep B Series 3 Certificate');
   // @TODO Show when hepb_option = 274
   $form['hepb']['hepb_file_274'] = medical_file('Hep B Titer Certificate');
-  $form['hepb']['hepb_fax'] = checkbox('I prefer to fax my certificate. Please fax with the cover letter below to 800-555-5555');
-  $form['hepb']['hepb_fax']['#attributes'] = array('class' => 'set-hide fax-option');
+  $form['hepb']['hepb_fax'] = fax_preference_checkbox();
   
   // @TODO Hide this field unless cls_option is specified
   $form['hepb']['declination'] = acknowledgement(
@@ -1589,7 +1584,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
             ($ek == 'mmr' && !count(array_intersect(array(261, 262, 284, 285), $form['#formtypes_open']))) ||
             ($ek == 'cls' && !count(array_intersect(array(19, 37, 13), $form['#formtypes_open']))) ||
             ($ek == 'varivax' && !count(array_intersect(array(298, 296, 295), $form['#formtypes_open']))) ||
-            ($ek == 'hepb' && !count(array_intersect(array(270, 271, 272, 274, 275), $form['#formtypes_open']))) ||
+            ($ek == 'hepb' && !count(array_intersect(array(270, 271, 272, 274, 275), $form['#formtypes_open'])))
             ) {
             // Set this fieldset as empty and locked
             $form[$ek] = fieldset_locked($element['#title']);
