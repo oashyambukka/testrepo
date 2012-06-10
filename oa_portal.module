@@ -528,7 +528,7 @@ function oa_portal_ucm_rmax_getfilebyname($rmaxid, $formtype) {
  *
 function oa_portal_ucm_docinfobyid($dID) {
   $result = oa_portal_soap('DocInfoByID', array('dID' => $dID), TRUE);
-  return (get_class($result) == 'SoapFault') ? FALSE : $result->DocInfoByIDResult;;
+  return $result->DocInfoByIDResult;;
 }
 */
 
@@ -537,7 +537,7 @@ function oa_portal_ucm_docinfobyid($dID) {
  *
 function oa_portal_ucm_docinfobyame($rmaxid, $formtype) {
   $result = oa_portal_soap('DocInfoByName', array('dDocName' => $rmaxid .'_'. $formtype));
-  return (get_class($result) == 'SoapFault') ? FALSE : $result->DocInfoByNameResult;
+  return $result->DocInfoByNameResult;
 }
 */
 
@@ -578,6 +578,13 @@ function oa_portal_html_to_pdf_change_type($felements, $values) {
     }
   }
   return $felements;
+/**
+ * Process Dynamic HTML, send for PDF generation
+ */
+function oa_portal_submitdrupalform($rmaxid, $formid, $body) {
+  $html = theme('oap_', $body);
+  $result = oa_portal_soap('submitdrupalform', array('rmaxid' => $rmaxid, 'formid' => $formid, 'htmlConversionString' => $html), TRUE);
+  return $result;
 }
 
 /**

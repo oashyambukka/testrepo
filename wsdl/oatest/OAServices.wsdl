@@ -224,6 +224,31 @@
 					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
 				</s:sequence>
 			</s:complexType>
+			<s:element name="submitdrupalform">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="rmaxid" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="formid" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="htmlConversionString" type="s:string" />
+						<s:element minOccurs="0" maxOccurs="1" name="extraProps" type="s0:IdcPropertyList" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="submitdrupalformResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1" name="submitdrupalformResult" type="s0:submitdrupalformResult" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="submitdrupalformResult">
+				<s:sequence>
+					<s:element minOccurs="0" maxOccurs="1" name="DrupalError" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusCode" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusMessage" type="s:string" />
+					<s:element minOccurs="0" maxOccurs="1" name="StatusInfo" type="s0:StatusInfo" />
+				</s:sequence>
+			</s:complexType>
 			<s:complexType name="profiledata">
 				<s:sequence>
 					<s:element minOccurs="0" maxOccurs="1" name="rmaxid" type="s:string" />
@@ -323,6 +348,12 @@
 	<message name="formviewSoapOut">
 		<part name="parameters" element="s0:formviewResponse" />
 	</message>
+	<message name="submitdrupalformSoapIn">
+		<part name="parameters" element="s0:submitdrupalform" />
+	</message>
+	<message name="submitdrupalformSoapOut">
+		<part name="parameters" element="s0:submitdrupalformResponse" />
+	</message>
 	<portType name="OAServicesSoap">
 		<operation name="createcoversheet">
 			<input message="s0:createcoversheetSoapIn" />
@@ -355,6 +386,10 @@
 		<operation name="formview">
 			<input message="s0:formviewSoapIn" />
 			<output message="s0:formviewSoapOut" />
+		</operation>
+		<operation name="submitdrupalform">
+			<input message="s0:submitdrupalformSoapIn" />
+			<output message="s0:submitdrupalformSoapOut" />
 		</operation>
 	</portType>
 	<binding name="OAServicesSoap" type="s0:OAServicesSoap">
@@ -431,10 +466,19 @@
 				<soap:body use="literal" />
 			</output>
 		</operation>
+		<operation name="submitdrupalform">
+			<soap:operation soapAction="http://www.stellent.com/OAServices/" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
 	</binding>
 	<service name="OAServices">
 		<port name="OAServicesSoap" binding="s0:OAServicesSoap">
-			<soap:address location="https://172.23.8.58:16201/_dav/cs/idcplg" />
+			<soap:address location="https://172.23.8.56:16201/_dav/cs/idcplg" />
 		</port>
 	</service>
 </definitions>
