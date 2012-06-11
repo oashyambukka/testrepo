@@ -1186,7 +1186,8 @@ function oa_portal_p2_medical_form($form_state) {
     'Hepatitis B Vaccination Declination - Please complete Bloodborne Training before...',
     'I acknowledge, understand, and accept this Agreement/Statement. *This is a reg..'
   );
-  $form['hepb']['declination']['#attributes'] = array('class' => 'set-hide');
+  $form['hepb']['declination']['#prefix'] = '<div class="set-hide">' . $form['hepb']['declination']['#prefix'];
+  $form['hepb']['declination']['#suffix'] = $form['hepb']['declination']['#suffix'] .'</div>';
   return $form;
 }
 
