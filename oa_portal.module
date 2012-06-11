@@ -269,6 +269,11 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates',
       'arguments' => array('candidate' => NULL, 'body' => NULL),
     ),
+    'oap_pdf_wrapper_checklist' => array(
+      'template' => 'oap_pdf_wrapper_checklist',
+      'path' => $path . '/templates',
+      'arguments' => array('candidate' => NULL, 'body' => NULL),
+    ),
     'oap_pdf_section_wrapper' => array(
       'template' => 'oap_pdf_section_wrapper',
       'path' => $path . '/templates',
@@ -276,6 +281,11 @@ function oa_portal_theme($existing, $type, $theme, $path) {
     ),
     'oap_pdf_item' => array(
       'template' => 'oap_pdf_item',
+      'path' => $path . '/templates',
+      'arguments' => array('element' => NULL),
+    ),
+    'oap_pdf_item_checklist_skill' => array(
+      'template' => 'oap_pdf_item_checklist_skill',
       'path' => $path . '/templates',
       'arguments' => array('element' => NULL),
     ),

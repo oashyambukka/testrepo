@@ -169,3 +169,13 @@ function oa_portal_preprocess_oap_pdf_wrapper(&$vars) {
   $vars['name'] = $candidate->profile->name;
   $vars['rmaxid'] = $candidate->rmaxid;
 }
+
+/**
+ * Preprocess function for Dynamic HTML PDF generation -- Checklists
+ */
+function oa_portal_preprocess_oap_pdf_wrapper_checklist(&$vars) {
+  $candidate = $vars['candidate'];
+  $vars['formtitle'] = $vars['formid']; // @TODO Look up a better name
+  $vars['name'] = $candidate->profile->name;
+  $vars['rmaxid'] = $candidate->rmaxid;
+}

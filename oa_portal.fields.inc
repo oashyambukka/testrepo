@@ -185,6 +185,7 @@ function checklist_skill($title) {
     '#options' => array('1' => '1', '2' => '2', '3' => '3', '4' => '4'),
     '#required' => TRUE,
     '#attributes' => array('class' => 'checklist-skill'),
+    '#pdf_type' => 'oap_pdf_item_checklist_skill',
   );
   return $element;
 }
