@@ -191,9 +191,10 @@ function oa_portal_p1_checklist_form($form_state) {
   $candidate = get_candidate($account->rmaxid);
   $form = array();
   $form['directions'] = markup('<p>Directions: Indicate your level of experience by selecting the numbers below as follows:<br>
-    1 = Can Function Independently<br>
-    2 = Experienced, but May Need Review<br>
-    3 = Limited Experience<br><br></p>');
+    1 = No Experience<br>
+    2 = Limited Experience<br>
+    3 = Experienced<br>
+    4 = Highly Skilled<br><br></p>');
 
   foreach ($candidate->p['p1']['checklist']['#formtypes_open'] AS $cft) {
     $fn = 'oa_portal_p1_checklist_form_'. $cft;
@@ -1678,11 +1679,13 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
  */
 function oa_portal_checklist(&$elements, $skills) {
   if (count($skills)) {
+    $sections = 0;
     foreach ($skills AS $section => $skills) {
+      $sections++;
       $elements[$section] = fieldset($section);
-      $elements[$section]['#tree'] = FALSE;
+      $elements[$section]['#tree'] = TRUE;
       foreach ($skills AS $k => $v) {
-        $elements[$section][$k] = checklist_skill($v);
+        $elements[$section][$sections .'_'. $k] = checklist_skill($v);
       }
     }
   }

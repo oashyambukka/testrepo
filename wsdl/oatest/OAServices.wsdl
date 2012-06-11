@@ -478,7 +478,7 @@
 	</binding>
 	<service name="OAServices">
 		<port name="OAServicesSoap" binding="s0:OAServicesSoap">
-			<soap:address location="https://172.23.8.56:16201/_dav/cs/idcplg" />
+			<soap:address location="https://172.23.8.58:16201/_dav/cs/idcplg" />
 		</port>
 	</service>
 </definitions>

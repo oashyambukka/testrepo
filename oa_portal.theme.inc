@@ -125,7 +125,6 @@ function oa_portal_preprocess_oap_tooltip(&$vars) {
     default:
       $vars['body'] = 'No body set!';
   }
-
 }
 
 /**

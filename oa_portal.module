@@ -277,7 +277,7 @@ function oa_portal_theme($existing, $type, $theme, $path) {
     'oap_pdf_section_wrapper' => array(
       'template' => 'oap_pdf_section_wrapper',
       'path' => $path . '/templates',
-      'arguments' => array('section_title' => NULL, 'section_items' => NULL),
+      'arguments' => array('element' => NULL),
     ),
     'oap_pdf_item' => array(
       'template' => 'oap_pdf_item',
@@ -289,7 +289,6 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates',
       'arguments' => array('element' => NULL),
     ),
-
   );
 }
 
@@ -591,42 +590,55 @@ function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
 function oa_portal_pdf_section_to_string($section_title, $values, $felements) {
   // Recursively transform the values to something renderable
   $to_render = oa_portal_html_to_pdf_change_type($values, $felements);
-  return theme('oap_pdf_section_wrapper', $section_title, drupal_render($to_render));
+dsm($to_render, 'to render');
+  
+  // return theme('oap_pdf_section_wrapper', $section_title, drupal_render($to_render));
+  return drupal_render($to_render);
 }
 
 /**
  * Recursively process $values, merging title and types from $form
  */
 function oa_portal_html_to_pdf_change_type($values, $felements) {
+dsm($values, 'values start');
+  dsm($felements, 'felements start');
+  $return = array('#sorted' => TRUE);
   foreach ($values AS $vk => $value) {
     if (is_array($value)) {
-      $value = oa_portal_html_to_pdf_change_type($value, $felements[$vk]);
+      $return[$vk] = array(
+        '#type' => 'oap_pdf_section_wrapper',
+        '#title' => $felements[$vk]['#title'],
+        '#children' => oa_portal_html_to_pdf_change_type($value, $felements[$vk]),
+        '#sorted' => TRUE,
+      );
     }
-
-    $return[$vk] = array(
-      '#type' => ($elements[$vk]['#pdf_type']) ? $elements[$vk]['#pdf_type'] : 'oap_pdf_item',
-      '#title' => $felements[$vk]['#title'],
-      '#value' => $value,
-    );
-    // Override title -- @TODO do this in theme function insted?
-    switch ($elements[$vk]['#pdf_type']) {
-      case 'acknowledgement':
-      case 'initial':
-        $return[$vk]['title'] = $felements[$vk]['#prefix'] . $felements[$vk]['#suffix'];
-      break;
+    else {
+      // dsm($felements[$vk], $vk);
+      $return[$vk] = array(
+        '#type' => ($felements[$vk]['#pdf_type']) ? $felements[$vk]['#pdf_type'] : 'oap_pdf_item',
+        '#title' => $felements[$vk]['#title'],
+        '#value' => $value,
+        '#sorted' => TRUE,
+      );
+      // Override title -- @TODO do this in theme function insted?
+      switch ($felements[$vk]['#pdf_type']) {
+        case 'acknowledgement':
+        case 'initial':
+          $return[$vk]['title'] = $felements[$vk]['#prefix'] . $felements[$vk]['#suffix'];
+        break;
+      }
     }
   }
+
   return $return;
 }
 
 /**
  * Process Dynamic HTML, send for PDF generation
  */
-function oa_portal_submitdrupalform($rmaxid, $formid, $body) {
-  $html = theme('oap_', $body);
-  // @TODO HTML encode?
+function oa_portal_submitdrupalform($rmaxid, $formid, $html) {
   $result = oa_portal_soap('submitdrupalform', array('rmaxid' => $rmaxid, 'formid' => $formid, 'htmlConversionString' => $html), TRUE);
-  return $result;
+  return $result->submitdrupalformResult;
 }
 
 /**
