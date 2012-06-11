@@ -264,6 +264,22 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates',
       'arguments' => array('docs' => NULL),
     ),
+    'oap_pdf_wrapper' => array(
+      'template' => 'oap_pdf_wrapper',
+      'path' => $path . '/templates',
+      'arguments' => array('candidate' => NULL, 'body' => NULL),
+    ),
+    'oap_pdf_section_wrapper' => array(
+      'template' => 'oap_pdf_section_wrapper',
+      'path' => $path . '/templates',
+      'arguments' => array('section_title' => NULL, 'section_items' => NULL),
+    ),
+    'oap_pdf_item' => array(
+      'template' => 'oap_pdf_item',
+      'path' => $path . '/templates',
+      'arguments' => array('element' => NULL),
+    ),
+
   );
 }
 
@@ -387,6 +403,7 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
     'oacheckin' => 'OAServices.wsdl',
     'oasendemail' =>  'OAServices.wsdl',
     'profileview' => 'OAServices.wsdl',
+    'submitdrupalform' => 'OAServices.wsdl',
     'CheckInUniversal' => 'CheckIn.wsdl',
     'DocInfoByName' => 'DocInfo.wsdl',
     'GetFileByID' => 'GetFile.wsdl',
@@ -561,28 +578,43 @@ function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
   return (get_class($result) == 'SoapFault') ? FALSE : $result->createpdfformResult;
 }
 
-function oa_portal_html_to_pdf_string($rmaxid, $formtype, $values, $form) {
-  $to_render = oa_portal_html_to_pdf_change_type($forms, $values);
-  return drupal_render($to_render);
+function oa_portal_pdf_section_to_string($section_title, $values, $felements) {
+  // Recursively transform the values to something renderable
+  $to_render = oa_portal_html_to_pdf_change_type($values, $felements);
+  return theme('oap_pdf_section_wrapper', $section_title, drupal_render($to_render));
 }
 
-function oa_portal_html_to_pdf_change_type($felements, $values) {
-  foreach ($felements AS $ek => $element) {
-    if ($children = element_children($elements)) {
-      $child_values = $values[$ek];
-      $children = oa_portal_html_to_pdf_change_type($children, $child_values);
+/**
+ * Recursively process $values, merging title and types from $form
+ */
+function oa_portal_html_to_pdf_change_type($values, $felements) {
+  foreach ($values AS $vk => $value) {
+    if (is_array($value)) {
+      $value = oa_portal_html_to_pdf_change_type($value, $felements[$vk]);
     }
-    elseif ($felements[$ek]['#type']) {
-      $felements[$ek]['#type'] = 'pdf_'. $felement['#type'];
-      $felements[$ek]['#value'] = $values[$ek];
+
+    $return[$vk] = array(
+      '#type' => ($elements[$vk]['#pdf_type']) ? $elements[$vk]['#pdf_type'] : 'oap_pdf_item',
+      '#title' => $felements[$vk]['#title'],
+      '#value' => $value,
+    );
+    // Override title -- @TODO do this in theme function insted?
+    switch ($elements[$vk]['#pdf_type']) {
+      case 'acknowledgement':
+      case 'initial':
+        $return[$vk]['title'] = $felements[$vk]['#prefix'] . $felements[$vk]['#suffix'];
+      break;
     }
   }
-  return $felements;
+  return $return;
+}
+
 /**
  * Process Dynamic HTML, send for PDF generation
  */
 function oa_portal_submitdrupalform($rmaxid, $formid, $body) {
   $html = theme('oap_', $body);
+  // @TODO HTML encode?
   $result = oa_portal_soap('submitdrupalform', array('rmaxid' => $rmaxid, 'formid' => $formid, 'htmlConversionString' => $html), TRUE);
   return $result;
 }

@@ -128,7 +128,6 @@ function oa_portal_preprocess_oap_tooltip(&$vars) {
 
 }
 
-
 /**
  * Preprocess function for Phase Status block
  */
@@ -159,4 +158,14 @@ function theme_pdf_textfield($element) {
 
 function theme_pdf_form_element($element, $value) {
   return $output; '<tr><td id="' . $element['#id'] . '">' . $element['#title'] .'</td>'. $value ."</tr>\n";
+}
+
+/**
+ * Preprocess function for Dynamic HTML PDF generation
+ */
+function oa_portal_preprocess_oap_pdf_wrapper(&$vars) {
+  $candidate = $vars['candidate'];
+  $vars['formtitle'] = $vars['formid']; // @TODO Look up a better name
+  $vars['name'] = $candidate->profile->name;
+  $vars['rmaxid'] = $candidate->rmaxid;
 }
