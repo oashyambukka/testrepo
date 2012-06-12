@@ -164,7 +164,6 @@ function theme_pdf_form_element($element, $value) {
  */
 function oa_portal_preprocess_oap_pdf_wrapper(&$vars) {
   $candidate = $vars['candidate'];
-  $vars['formtitle'] = $vars['formid']; // @TODO Look up a better name
   $vars['name'] = $candidate->profile->name;
   $vars['rmaxid'] = $candidate->rmaxid;
 }
@@ -174,7 +173,6 @@ function oa_portal_preprocess_oap_pdf_wrapper(&$vars) {
  */
 function oa_portal_preprocess_oap_pdf_wrapper_checklist(&$vars) {
   $candidate = $vars['candidate'];
-  $vars['formtitle'] = $vars['formid']; // @TODO Look up a better name
   $vars['name'] = $candidate->profile->name;
   $vars['rmaxid'] = $candidate->rmaxid;
 }
