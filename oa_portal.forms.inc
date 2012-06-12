@@ -213,21 +213,25 @@ function oa_portal_p1_checklist_form($form_state) {
  * Form submission callback for Checklist
  */
 function oa_portal_p1_checklist_form_submit($form, &$form_state) {
-  dsm($form, '$form in submission');
-  // @TODO Post to UCM
-  dsm($form_state['values'], '$form_state values');
-  
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid);
+
+  // Process all open formtypes
   $error = FALSE;
-  foreach ($form['#formtypes'] AS $formtype) {
-    if ($success = oa_portal_ucm_createpdfform($account->rmaxid, $formtype, $form_state['values'][$formtype])) {
+  foreach ($form['#formtypes_open'] AS $formtype) {
+    $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][$formtype], $form[$formtype]));
+    $html_string = theme('oap_pdf_wrapper_checklist', $candidate, $form[$formtype]['#title'], $body_string);
+    dsm($html_string, 'PDF string');
+    $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
+    if ($result->StatusInfo->statusCode !== 0) {
       $error = TRUE;
     }
-  }  
+  }
   if ($error) {
-    drupal_set_message('An error occured. Please try again.');
+    drupal_set_message('An error occured. Please try again later.');
   }
   else {
-    // @TODO -- do we need to show a message here?
     $form_state['redirect'] = 'portal';
   }
 }
