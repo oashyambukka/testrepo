@@ -3,11 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta charset="UTF-8"/>
-  <link href="hcdmsform2.css" type="text/css" rel="Stylesheet"/>
+  <link href="form.css" type="text/css" rel="Stylesheet"/>
   <title><?php print $formtitle; ?></title>
 </head>
 
-<body>
+<body class="checklist">
+<div id="logo">&nbsp;</div>
 <div id="header">
   <div class="formtitle"><?php print $formtitle; ?></div>
   <div id="userinfo">
@@ -15,31 +16,30 @@
     <p class="userdata">ID: <?php print $rmaxid; ?></p>
   </div>
   <table class="legendtable">
-      <thead>
-        <tr>
-          <th class="sectionheader" colspan="2">Self-Assessment Rating Scale:</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr> 
-          <td class="italictext">No Experience</td>
-          <td>Theory or observation only during the past 12 months</td>
-        </tr>
-        <tr> 
-          <td class="italictext">Limited Experience</td>
-          <td>Performed less than 12 times within the past 12 months and may need a review</td>
-        </tr>
-        <tr> 
-          <td class="italictext">Experience</td>
-          <td>Performed at least once per month within the past 12 months and may need minimal assistance.</td>
-        </tr>
-        <tr> 
-          <td class="italictext">Highly Skilled</td>
-          <td>Performed on at least a weekly basis over the past 12 months; proficient</td>
-        </tr>
-      </tbody>
-    </table>
-    
+    <thead>
+      <tr>
+        <th class="sectionheader" colspan="2">Self-Assessment Rating Scale:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="italictext">No Experience</td>
+        <td>Theory or observation only during the past 12 months</td>
+      </tr>
+      <tr>
+        <td class="italictext">Limited Experience</td>
+        <td>Performed less than 12 times within the past 12 months and may need a review</td>
+      </tr>
+      <tr>
+        <td class="italictext">Experience</td>
+        <td>Performed at least once per month within the past 12 months and may need minimal assistance</td>
+      </tr>
+      <tr>
+        <td class="italictext">Highly Skilled</td>
+        <td>Performed on at least a weekly basis over the past 12 months; proficient</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 <div id="content">
 <?php print $body; ?>

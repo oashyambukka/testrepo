@@ -267,12 +267,12 @@ function oa_portal_theme($existing, $type, $theme, $path) {
     'oap_pdf_wrapper' => array(
       'template' => 'oap_pdf_wrapper',
       'path' => $path . '/templates',
-      'arguments' => array('candidate' => NULL, 'body' => NULL),
+      'arguments' => array('candidate' => NULL, 'formtitle' => NULL, 'body' => NULL),
     ),
     'oap_pdf_wrapper_checklist' => array(
       'template' => 'oap_pdf_wrapper_checklist',
       'path' => $path . '/templates',
-      'arguments' => array('candidate' => NULL, 'body' => NULL),
+      'arguments' => array('candidate' => NULL, 'formtitle' => NULL, 'body' => NULL),
     ),
     'oap_pdf_section_wrapper' => array(
       'template' => 'oap_pdf_section_wrapper',
@@ -284,11 +284,22 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates',
       'arguments' => array('element' => NULL),
     ),
+    'oap_pdf_item_acknowledgement' => array(
+      'template' => 'oap_pdf_item_acknowledgement',
+      'path' => $path . '/templates',
+      'arguments' => array('element' => NULL),
+    ),
     'oap_pdf_item_checklist_skill' => array(
       'template' => 'oap_pdf_item_checklist_skill',
       'path' => $path . '/templates',
       'arguments' => array('element' => NULL),
     ),
+    'oap_pdf_item_initial' => array(
+      'template' => 'oap_pdf_item_initial',
+      'path' => $path . '/templates',
+      'arguments' => array('element' => NULL),
+    ),
+    
   );
 }
 
@@ -600,36 +611,26 @@ dsm($to_render, 'to render');
  * Recursively process $values, merging title and types from $form
  */
 function oa_portal_html_to_pdf_change_type($values, $felements) {
-dsm($values, 'values start');
-  dsm($felements, 'felements start');
   $return = array('#sorted' => TRUE);
   foreach ($values AS $vk => $value) {
     if (is_array($value)) {
       $return[$vk] = array(
         '#type' => 'oap_pdf_section_wrapper',
         '#title' => $felements[$vk]['#title'],
-        '#children' => oa_portal_html_to_pdf_change_type($value, $felements[$vk]),
+        '#children' => drupal_render(oa_portal_html_to_pdf_change_type($value, $felements[$vk])),
         '#sorted' => TRUE,
       );
     }
     else {
-      // dsm($felements[$vk], $vk);
       $return[$vk] = array(
         '#type' => ($felements[$vk]['#pdf_type']) ? $felements[$vk]['#pdf_type'] : 'oap_pdf_item',
         '#title' => $felements[$vk]['#title'],
         '#value' => $value,
         '#sorted' => TRUE,
       );
-      // Override title -- @TODO do this in theme function insted?
-      switch ($felements[$vk]['#pdf_type']) {
-        case 'acknowledgement':
-        case 'initial':
-          $return[$vk]['title'] = $felements[$vk]['#prefix'] . $felements[$vk]['#suffix'];
-        break;
-      }
     }
   }
-
+  dsm($return, 'to render');
   return $return;
 }
 
@@ -874,7 +875,7 @@ function oa_portal_get_category_formids($form_category) {
   }
   $forms = array();
   foreach ($result->formviewResult->formdata AS $form) {
-    $forms[$form->FormID] = $form->FormName;
+    $forms[$form->formid] = $form->formname;
   }
   return $forms;
 }
