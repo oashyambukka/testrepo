@@ -1040,22 +1040,32 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
    * timestamp - current date
    * personnelinitials
    */
+
+  // Inject data from the RMax Profile
   // PDF Field => RMax Profile Field
-  
+  $values = $form_state['values'][433];
   foreach (array(
-    'personnelname' => 'name',
     'personneladdress1' => 'addressline1',
     'personneladdress2' => 'addressline2',
     'personneladdress3' => 'addressline3',
     ) AS $pdff => $rmaxf) {
-    $form_state['values'][433][$pdff] = $candidate->profile->{$rmaxf};
+    $values[$pdff] = $candidate->profile->{$rmaxf};
   }
   
+  // Create fake form items for the data we're injecting into $values
+  // $form[433]['personnelname']['#title'] = 'Name';
+  $form[433]['personneladdress1']['#title'] = 'Address 1';
+  $form[433]['personneladdress2']['#title'] = 'Address 2';
+  $form[433]['personneladdress3']['#title'] = 'Address 3';
+  
   // Others
-  unset($form_state['values'][433]['personelle']);
-  $form_state['values'][433]['timestamp'] = date('Y-m-d');
 
-  $pdf_html_string = oa_portal_html_to_pdf_string($account->rmaxid, 433, $form_state['values'][433], $form);
+  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($values, $form[433]));
+  $html_string = theme('oap_pdf_wrapper', $candidate, $form[433]['#title'], $body_string);
+  $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
+  if ($result->StatusInfo->statusCode !== 0) {
+    $error = TRUE;
+  }
 
   /**
    * @TODO Post 256 Substance Abuse Testing Consent to UCM
