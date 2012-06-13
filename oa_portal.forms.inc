@@ -55,15 +55,20 @@ function oa_portal_p1_application_form($form_state) {
   $edu_fields['school'] = textfield('School', array('#options' => array('opt1' => 'Opt 1')));
   $edu_fields['rdo_grad_status'] = radios('Did you graduate', array(1 => 'Yes', 0 => 'No'));
   $edu_fields['degree'] = select('Degree Earned', array('highschool' => 'High school diploma', 'associates' => 'Associates'));
+  unset($edu_fields['degree']['#required'], $edu_fields['degree']['#rules']);
   $edu_fields['city'] = textfield('City', 30);
   $edu_fields['state'] = state();
+  unset($edu_fields['state']['#required'], $edu_fields['state']['#rules']);
   $edu_fields['year'] = textfield('Year', 10, 4);
   $edu_fields['major'] = textfield('Major', 30);
   $edu_fields['minor'] = textfield('Minor', 30);
   $edu_fields['coursework1'] = textfield('Relevant Course Work', 25);
   $edu_fields['coursework2'] = textfield('', 25);
+  $edu_fields['coursework2']['#required'] = FALSE;
   $edu_fields['coursework3'] = textfield('', 25);
+  $edu_fields['coursework3']['#required'] = FALSE;
   $edu_fields['coursework4'] = textfield('', 25);
+  $edu_fields['coursework4']['#required'] = FALSE;
   $form['education']['edu'] = oa_portal_set($edu_fields, 'Add another school', 3);
 
   // Experience
@@ -74,6 +79,7 @@ function oa_portal_p1_application_form($form_state) {
   $exp_fields['employer'] = textfield('Employer',75);
   $exp_fields['city'] = textfield('City');
   $exp_fields['state'] = state('State');
+  unset($exp_fields['state']['#required'], $exp_fields['state']['#rules']);
   $exp_fields['empdatefrom'] = date_popup('Start Date', 'm-Y');
   $exp_fields['empdateto'] = date_popup('End Date', 'm-Y');
   $exp_fields['chk_present'] = checkbox('Present');
@@ -110,12 +116,13 @@ function oa_portal_p1_application_form($form_state) {
 
   $lc_fields['name'] = textfield('Licensure/Certification');
   $lc_fields['state'] = state();
+  unset($lc_fields['state']['#required'], $lc_fields['state']['#rules']);
   $lc_fields['number'] = textfield('License Number', 12);
   $lc_fields['expiry_date'] = date_popup('Expires');
   $form['licensures_certs']['lc'] = oa_portal_set($lc_fields, 'Add another Licensure/Certification', 12);
 
   $form['organizations'] = fieldset('Professional Organizations');
-  $proforgs['chk_none'] = checkbox('I am not a member of any organizations');
+  $form['organizations']['chk_none'] = checkbox('I am not a member of any organizations');
   $proforgs['org_name'] = textfield('Organization');
   $proforgs['org_role'] = textfield('Role');
   $proforgs['org_start'] = date_popup('From');
@@ -158,22 +165,12 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
    *
    */
   dsm($form_state['values'], 'Process & post 2 to UCM');
-  $fields = $form_state['values'];
-  // PDF Field => RMax Field
-  foreach (array(
-    'firstname' => 'fname',
-    'lastname' => 'lname',
-    'email' => 'email',
-    'address1' => 'addressline1',
-    'address2' => 'addressline2',
-    'address3' => 'addressline3',
-    'city' => 'city',
-    'state' => 'state',
-    'postal' => 'postal') AS $pdff => $rmaxf) {
-    $fields[$pdff] = $candidate->profile->{$rmaxf};
-  }
-
-  if ($success = oa_portal_ucm_createpdfform($account->rmaxid, $formtype, $fields)) {
+  $values = $form_state['values'];
+  
+  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($values, $form));
+  $html_string = theme('oap_pdf_wrapper', $candidate, 'Application', $body_string);
+  $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
+  if ($result->StatusInfo->statusCode === 0) {
     $form_state['redirect'] = 'portal/p1/checklist';
   }
   else {

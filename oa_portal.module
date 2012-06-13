@@ -606,7 +606,6 @@ function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
 function oa_portal_pdf_section_to_string($section_title, $values, $felements) {
   // Recursively transform the values to something renderable
   $to_render = oa_portal_html_to_pdf_change_type($values, $felements);
-dsm($to_render, 'to render');
   
   // return theme('oap_pdf_section_wrapper', $section_title, drupal_render($to_render));
   return drupal_render($to_render);
