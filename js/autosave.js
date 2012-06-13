@@ -1,6 +1,7 @@
 Drupal.behaviors.autosave = function (context) {
   var timeout;
-  var autosaved = Drupal.settings.autosave;   
+  var autosaved = Drupal.settings.autosave;
+  var autosave_lock;
 
   // Fieldset placeholder for Autosave status
   if (!$('form.oaportal fieldset legend .fieldset-autosave-status .locked')) {
@@ -9,6 +10,9 @@ Drupal.behaviors.autosave = function (context) {
 
   // Set form to autosaved values, should they exist
   if (autosaved.serialized) {
+
+    autosaved.serialized.form_build_id = $('input[name=form_build_id]').val();
+    autosaved.serialized.form_token = $('#edit-oa-portal-p1-application-form-form-token').val();
     $('#' + autosaved.form_id_id).formHash(autosaved.serialized);
     $('form.oaportal fieldset legend .fieldset-autosave-status').text('Autosave recovered').addClass('autosaved-recovered');
   }
@@ -33,18 +37,22 @@ Drupal.behaviors.autosave = function (context) {
 
   // Autosave fuction
   Drupal.sendAutosave = function() {
-    clearTimeout(timeout);
-    var serialized = $('#' + autosaved.form_id_id).formHash();
-    serialized['q'] =  Drupal.settings.autosave.q;
-    $.ajax({
-      url: Drupal.settings.autosave.url,
-      type: "POST",
-      dataType: "xml/html/script/json",
-      data: serialized,
-      complete: function(XMLHttpRequest, textStatus) {
-        $('form.oaportal .fieldset-autosave-status').text('Changes saved').removeClass('autosaved-recovered').removeClass('not-saved').addClass('changes-saved');
-      }
-    });
+    if (!autosave_lock) {
+      autosave_lock = true;
+      clearTimeout(timeout);
+      var serialized = $('#' + autosaved.form_id_id).formHash();
+      serialized['q'] =  Drupal.settings.autosave.q;
+      $.ajax({
+        url: Drupal.settings.autosave.url,
+        type: "POST",
+        dataType: "xml/html/script/json",
+        data: serialized,
+        complete: function(XMLHttpRequest, textStatus) {
+          autosave_lock = false;
+          $('form.oaportal .fieldset-autosave-status').text('Changes saved').removeClass('autosaved-recovered').removeClass('not-saved').addClass('changes-saved');
+        }
+      });
+    }
   }
 
   Drupal.attachAutosave = function() {
