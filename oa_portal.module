@@ -289,6 +289,11 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates',
       'arguments' => array('element' => NULL),
     ),
+    'oap_pdf_item_checkboxes' => array(
+      'template' => 'oap_pdf_item_checkboxes',
+      'path' => $path . '/templates',
+      'arguments' => array('element' => NULL),
+    ),
     'oap_pdf_item_checklist_skill' => array(
       'template' => 'oap_pdf_item_checklist_skill',
       'path' => $path . '/templates',
@@ -627,6 +632,7 @@ function oa_portal_html_to_pdf_change_type($values, $felements) {
         '#title' => $felements[$vk]['#title'],
         '#value' => $value,
         '#sorted' => TRUE,
+        '#pdf_title' => ($felements[$vk]['#pdf_title']) ? $felements[$vk]['#pdf_title'] : NULL,
       );
     }
   }

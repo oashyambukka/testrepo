@@ -176,3 +176,21 @@ function oa_portal_preprocess_oap_pdf_wrapper_checklist(&$vars) {
   $vars['name'] = $candidate->profile->name;
   $vars['rmaxid'] = $candidate->rmaxid;
 }
+
+/**
+ * Preprocess function for Dynamic HTML PDF generation
+ */
+function oa_portal_preprocess_oap_pdf_item_checkboxes(&$vars) {
+  dsm($vars, 'oa_portal_preprocess_oap_pdf_item_checkboxes');
+  $processed = FALSE;
+  foreach ($vars['element']['#value'] AS $v) {
+    if ($v) {
+      $vars['element']['#value'] = $v;
+      $processed = TRUE;
+      continue;
+    }
+  }
+  if (!$processed) {
+    $vars['element']['#value'] = '<none>';
+  }
+}

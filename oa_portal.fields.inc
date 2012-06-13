@@ -93,6 +93,7 @@ function checkboxes($title, $choices, $map = FALSE) {
     '#title' => t($title),
     '#options' => ($map) ? drupal_map_assoc($choices) : $choices,
     '#required' => TRUE,
+    '#pdf_type' => 'oap_pdf_item_checkboxes',
   );
   return $element;
 }
@@ -199,6 +200,7 @@ function terms($desc) {
     ),
     '#prefix' => '<div class="oa-terms-field">'. $desc,
     '#suffix' => '</div>',
+    '#pdf_title' => $desc,
   );
   return $element;
 }
@@ -257,6 +259,7 @@ function acknowledgement($description, $confirm = 'I acknowledge, understand, an
   $element['#prefix'] = '<div class="field-acknowledgement"><div class="acknowledgement-description">'. $description .'</div>';
   $element['#suffix'] = '</div>';
   $element['#pdf_type'] = 'oap_pdf_item_acknowledgement';
+  $element['#pdf_title'] = $description;
   return $element;
 }
 
@@ -265,6 +268,7 @@ function initial($description) {
   $element['#prefix'] = '<div class="field-acknowledgement"><div class="acknowledgement-description">'. $description .'</div>';
   $element['#suffix'] = '</div>';
   $element['#pdf_type'] = 'oap_pdf_item_initial';
+  $element['#pdf_title'] = $description;
   return $element;
 }
 
