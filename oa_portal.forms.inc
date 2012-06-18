@@ -4771,24 +4771,26 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
 
 
     // Add settings for Autosaving
-    $path = drupal_get_path('module', 'oa_portal');
-    drupal_add_js($path . '/js/jquery.field.js');
-    drupal_add_js($path . '/js/autosave.js');
+    if ($form_id != 'oa_portal_p1_checklist_form') {
+      $path = drupal_get_path('module', 'oa_portal');
+      drupal_add_js($path . '/js/jquery.field.js');
+      drupal_add_js($path . '/js/autosave.js');
     
-    $settings['autosave']['url'] = url('portal/autosave');
-    $settings['autosave']['q'] = $_GET['q'];
-    $settings['autosave']['form_id'] = $form_id;
-    $settings['autosave']['form_id_id'] = $form['#id'];
+      $settings['autosave']['url'] = url('portal/autosave');
+      $settings['autosave']['q'] = $_GET['q'];
+      $settings['autosave']['form_id'] = $form_id;
+      $settings['autosave']['form_id_id'] = $form['#id'];
 
-    // If an autosaved version of the form exists, make it available via javascript.
-    if ($autosaved_form = oa_portal_get_autosaved_form($form_id, $_GET['q'], $user->uid)) {
-      $settings['autosave'] = array_merge($settings['autosave'], array(
-        'serialized' => unserialize($autosaved_form['serialized']),
-        'saved_date' => format_date($autosaved_form['timestamp'], 'medium'),
-      ));
+      // If an autosaved version of the form exists, make it available via javascript.
+      if ($autosaved_form = oa_portal_get_autosaved_form($form_id, $_GET['q'], $user->uid)) {
+        $settings['autosave'] = array_merge($settings['autosave'], array(
+          'serialized' => unserialize($autosaved_form['serialized']),
+          'saved_date' => format_date($autosaved_form['timestamp'], 'medium'),
+        ));
+      }
     }
-    drupal_add_js($settings, 'setting');
 
+    drupal_add_js($settings, 'setting');
     dsm($form, 'Completed $form');
   }
 
