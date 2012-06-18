@@ -347,7 +347,7 @@ function oa_portal_forms_info() {
     '#title' => t('Phase 2'),
     'professional_orgs' => array(
       '#title' => t('Professional Organizations'),
-      '#status' => 'read-only',
+      '#status' => 'locked',
     ),
     'licensure_certs' => array(
       '#title' => t('Licensure Certifications'),
