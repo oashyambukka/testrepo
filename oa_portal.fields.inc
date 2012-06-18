@@ -226,19 +226,7 @@ function zip() {
 
 function phone($title = 'Phone') {
   $element = textfield($title, 24);
-  $element['#rules'] = array(array('rule' => 'regexp[/
-    \D*           # ignore non-digits
-    (\d*)         # an optional 1
-    \D*           # optional separator
-    [2-9][0-8]\d  # area code (Allowed range of [2-9] for the first digit, [0-8] for the second, and [0-9] for the third digit)
-    \D*           # optional separator
-    [2-9]\d{2}    # 3-digit prefix (cannot start with 0 or 1)
-    \D*           # optional separator
-    \d{4}         # 4-digit line number
-    \D*           # optional separator
-    \d*           # optional extension
-    \D*           # ignore trailing non-digits
-    /x]', 'error' => 'Please specify a valid %field number.'));
+  $element['#rules'] = array(array('rule' => 'regexp[/\D*(\d*)\D*[2-9][0-8]\d\D*[2-9]\d{2}\D*\d{4}\D*\d*\D*/x]', 'error' => 'Please specify a valid %field number.'));
   return $element;
 }
 
