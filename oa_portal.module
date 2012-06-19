@@ -615,13 +615,22 @@ function oa_portal_pdf_section_to_string($section_title, $values, $felements) {
  * Recursively process $values, merging title and types from $form
  */
 function oa_portal_html_to_pdf_change_type($values, $felements) {
+  unset($values['form_build_id'], $values['form_token'], $values['form_id'], $values['finalize'], $values['op'], $values['submit'], $values['continue']);
   $return = array('#sorted' => TRUE);
   foreach ($values AS $vk => $value) {
-    if (is_array($value)) {
+    if (is_array($value) && $felements[$vk]['#pdf_type']) {
       $return[$vk] = array(
-        '#type' => 'oap_pdf_section_wrapper',
+        '#type' => $felements[$vk]['#pdf_type'],
         '#title' => $felements[$vk]['#title'],
-        '#children' => drupal_render(oa_portal_html_to_pdf_change_type($value, $felements[$vk])),
+        '#sorted' => TRUE,
+        '#value' => $value,
+      );
+    }
+    elseif (is_array($value)) {
+      $return[$vk] = array(
+        '#type' => ($felements[$vk]['#title']) ? 'oap_pdf_section_wrapper' : 'markup',
+        '#title' => $felements[$vk]['#title'],
+        'children' => oa_portal_html_to_pdf_change_type($value, $felements[$vk]),
         '#sorted' => TRUE,
       );
     }
