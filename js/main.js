@@ -141,6 +141,12 @@ Drupal.behaviors.finalization = function (context) {
       return false;
     }
   }
+
+  $('.portal-continue').click(function() {
+    Drupal.Ajax.redirect('/portal');
+    return false;
+  });
+
 }
 
 
