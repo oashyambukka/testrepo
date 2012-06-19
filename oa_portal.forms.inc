@@ -159,15 +159,7 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid);
-  
-  /**
-   * @TODO Post all sections in 2 Application to UCM
-   *
-   */
-  dsm($form_state['values'], 'Process & post 2 to UCM');
-  $values = $form_state['values'];
-  
-  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($values, $form));
+  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'], $form));
   $html_string = theme('oap_pdf_wrapper', $candidate, 'Application', $body_string);
   $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
   if ($result->StatusInfo->statusCode === 0) {
@@ -219,7 +211,6 @@ function oa_portal_p1_checklist_form_submit($form, &$form_state) {
   foreach ($form['#formtypes_open'] AS $formtype) {
     $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][$formtype], $form[$formtype]));
     $html_string = theme('oap_pdf_wrapper_checklist', $candidate, $form[$formtype]['#title'], $body_string);
-    dsm($html_string, 'PDF string');
     $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
     if ($result->StatusInfo->statusCode !== 0) {
       $error = TRUE;
@@ -3923,8 +3914,8 @@ function oa_portal_p2_background_reference_form($form_state) {
 
   $form[233]['receivereport'] = checkbox('I request to receive a free copy of this report by checking this box. Under section 1786.22 of the California Civil Code, you may view the file maintained on you by GIS (the search company) during normal business hours. You may also obtain a copy of this file upon submitting proper identification and paying the costs of duplication services, by appearing at GIS in person or by mail. You may also receive a summary of the file by telephone. The agency is required to have personnel available to explain your file to you and the agency must explain to you any coded information appearing in your file. If you appear in person, a person of your choice may accompany you, provided that this person furnishes proper identification.');
   $form[233]['receivereport']['#prefix'] = 'NOTICE TO CALIFORNIA CANDIDATES<br /><p>You have a right to obtain a copy of any consumer report or investigative consumer report obtained by On Assignment, Inc by checking the box provided below. The report will be provided to you within three (3) business days after we receive the requested reports related to the matter investigated.</p>';
-
   $form[233]['maiden_name'] = textfield('Maiden/other names used');
+  $form[233]['maiden_name']['#required'] = FALSE;
   $form[233]['dob'] = date_popup('Date of birth');
   $form[233]['ssn'] = textfield_ssn();
   $form[233]['dlnumber'] = textfield('Driver License Number', 20);
@@ -3965,6 +3956,10 @@ function oa_portal_p2_background_reference_form($form_state) {
  * Form submission callback for Background/Reference Check
  */
 function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid);
+  
   /**
    * @TODO Post 233 Background Consent to UCM
    *
@@ -4019,8 +4014,11 @@ function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
   
   
   $error = FALSE;
-  foreach ($form['#formtypes'] AS $formtype) {
-    if (!$success = oa_portal_ucm_createpdfform($account->rmaxid, $formtype, $form_state['values'][$formtype])) {
+  foreach ($form['#formtypes_open'] AS $formtype) {
+    $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][$formtype], $form[$formtype]));
+    $html_string = theme('oap_pdf_wrapper', $candidate, 'Needs title', $body_string);
+    $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
+    if ($result->StatusInfo->statusCode !== 0) {
       $error = TRUE;
     }
   }  
@@ -4037,7 +4035,6 @@ function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
  */
 function oa_portal_p2_capabilities_form($form_state) {
   $form = array();
-  
   $form[5] = fieldset('Job Capabilities Questionnaire');
   $form[5]['#description'] = t('As a candidate for employment at On Assignment1, you have met the basic requirements of skills, experience, education and availability needed by our Clients.  Clients request that our employees work at their location for a specific period of time to complete various work duties.  As an On Assignment employee, you will typically be assigned to positions in healthcare, research and development and/or many different types of facilities.  These positions may involve working with various potentially hazardous substances and physical agents, including, but not limited to, the following:<br><br>
 <ul><li>Various organic volatile and non-volatile chemicals, corrosives, potential carcinogens, mutagens and teratogens</li>
@@ -4062,12 +4059,17 @@ function oa_portal_p2_capabilities_form($form_state) {
 function oa_portal_p2_capabilities_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid);
+
   /**
    * @TODO Post 5 Job Capabilities Questionnaire to UCM
-   * @TODO needs PDF fields
    */
   dsm($form_state['values'][5], 'Process & post 5 to UCM');
-  if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 5, $form_state['values'][5])) {
+  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][5], $form[5]));
+  $html_string = theme('oap_pdf_wrapper', $candidate, $form[5]['#title'], $body_string);
+  dsm($html_string, 'PDF string');
+  $result = oa_portal_submitdrupalform($account->rmaxid, 5, $html_string);
+  if ($result->StatusInfo->statusCode === 0) {
     $form_state['redirect'] = 'portal/p2/policies';
   }  
   else {
@@ -4151,13 +4153,14 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
 
   // Inject data from the RMax Profile
   // PDF Field => RMax Profile Field
-  $values = $form_state['values'][433];
+  // @TODO Move into form callback as hidden fields?
   foreach (array(
+    // 'personnelname' => 'name',
     'personneladdress1' => 'addressline1',
     'personneladdress2' => 'addressline2',
     'personneladdress3' => 'addressline3',
     ) AS $pdff => $rmaxf) {
-    $values[$pdff] = $candidate->profile->{$rmaxf};
+    $form_state['values'][433][$pdff] = $candidate->profile->{$rmaxf};
   }
   
   // Create fake form items for the data we're injecting into $values
@@ -4165,36 +4168,14 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
   $form[433]['personneladdress1']['#title'] = 'Address 1';
   $form[433]['personneladdress2']['#title'] = 'Address 2';
   $form[433]['personneladdress3']['#title'] = 'Address 3';
-  
-  // Others
-
-  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($values, $form[433]));
-  $html_string = theme('oap_pdf_wrapper', $candidate, $form[433]['#title'], $body_string);
-  $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
-  if ($result->StatusInfo->statusCode !== 0) {
-    $error = TRUE;
-  }
-
-  /**
-   * @TODO Post 256 Substance Abuse Testing Consent to UCM
-   * @TODO needs PDF fields
-   * 
-   */
-  dsm($form_state['values'][256], 'Process & post 256 to UCM');
-
-  /**
-   * @TODO Post 432 Direct Hire Agreement to UCM
-   * @TODO needs PDF fields
-   * 
-   */
-  dsm($form_state['values'][432], 'Process & post 432 to UCM');
 
   $error = FALSE;
   foreach ($form['#formtypes_open'] AS $formtype) {
-    if ($success = oa_portal_ucm_createpdfform($account->rmaxid, $formtype, $form_state['values'][$formtype])) {
-      dsm($success, $formtype .' success');
-    }
-    else {
+    $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][$formtype], $form[$formtype]));
+    $html_string = theme('oap_pdf_wrapper', $candidate, 'Needs title', $body_string);
+    dsm($html_string, 'PDF string');
+    $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
+    if ($result->StatusInfo->statusCode !== 0) {
       $error = TRUE;
     }
   }  
@@ -4517,6 +4498,7 @@ function oa_portal_p3_i9_form($form_state) {
   $form[461]['ssn'] = textfield_ssn();
   $form[461]['dob'] = date_popup('Date of Birth');
   $form[461]['maiden'] = textfield('Maiden/other names used');
+  $form[461]['maiden']['#required'] = FALSE;
   $form[461]['citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
     array('citizen' => t('A citizen of the United States'), 'national' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
   $form[461]['expiry'] = date_popup('Until (expiration date if applicable)');
@@ -4608,13 +4590,14 @@ function oa_portal_p3_eeo_form($form_state) {
  * Form submission callback for EEO Form
  */
 function oa_portal_p3_eeo_form_submit($form, &$form_state) {
-  /**
-   * @TODO Post 1 EEO to UCM
-   * @TODO needs PDF fields
-   * 
-   */
-  dsm($form_state['values'][1], 'Process & post 1 EEO to UCM');
-  if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 1, $form_state['values'][1])) {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid);
+  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'], $form));
+  $html_string = theme('oap_pdf_wrapper', $candidate, 'EEO', $body_string);
+  dsm($html_string, 'PDF string');
+  $result = oa_portal_submitdrupalform($account->rmaxid, 1, $html_string);
+  if ($result->StatusInfo->statusCode === 0) {
     $form_state['redirect'] = 'portal/p3/work_policy';
   }
   else {
@@ -4651,18 +4634,24 @@ function oa_portal_p3_work_policy_form($form_state) {
  * Form submission callback for Work Policy
  */
 function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid);
+
   /**
-   * @TODO Post 466 Work Policy Acknowledgement to UCM. Applies to all sections in this form.
-   *
+   * Post 466 Work Policy Acknowledgement to UCM. Applies to all sections in this form.
    */
   dsm($form_state['values'], 'Process & post 466 to UCM');
-  $fields = $form_state['values'];
-  if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 466, $fields)) {
+
+  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'], $form));
+  $html_string = theme('oap_pdf_wrapper', $candidate, 'Work Policy Acknowledgement', $body_string);
+  $result = oa_portal_submitdrupalform($account->rmaxid, 466, $html_string);
+  if ($result->StatusInfo->statusCode === 0) {
     $form_state['redirect'] = 'portal';
   }
   else {
     drupal_set_message('An error occured. Please try again.');
-  }  
+  }
 }
 
 /**
