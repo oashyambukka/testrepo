@@ -35,7 +35,7 @@ function _accountresource_create($data) {
 
   $data['status'] = 1;
   $data['notify'] = $notify;
-  $data['roles'] = array(2, 4);
+  $data['roles'] = array(2 => 2, 4 => 4);
   $data['notified'] = $notify == 'yes';
 
   if ($account = user_save(array(), $data, 'OnAssignment')) {
