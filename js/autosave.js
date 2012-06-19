@@ -10,9 +10,8 @@ Drupal.behaviors.autosave = function (context) {
 
   // Set form to autosaved values, should they exist
   if (autosaved.serialized) {
-
     autosaved.serialized.form_build_id = $('input[name=form_build_id]').val();
-    autosaved.serialized.form_token = $('#edit-oa-portal-p1-application-form-form-token').val();
+    autosaved.serialized.form_token = $('input[name=form_token]').val();
     $('#' + autosaved.form_id_id).formHash(autosaved.serialized);
     $('form.oaportal fieldset legend .fieldset-autosave-status').text('Autosave recovered').addClass('autosaved-recovered');
   }
