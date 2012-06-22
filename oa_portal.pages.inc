@@ -155,7 +155,7 @@ function oa_portal_autosave() {
   // Currently, each user can have only one autosave form at a particular path.
   db_query("DELETE FROM {autosaved_forms} WHERE form_id = '%s' AND path = '%s' AND uid = %d", $form_id, $path, $user->uid);
   db_query("INSERT INTO {autosaved_forms} (form_id, path, uid, timestamp, serialized) VALUES ('%s', '%s', %d, %d, '%s')", $form_id, $path, $user->uid, time(), $serialized);
-  watchdog('rpoa', 'Autosave captured from '. $_POST['q'] .'Post: <pre>'. print_r($_POST, TRUE) .'</pre>');
+  // watchdog('rpoa', 'Autosave captured from '. $_POST['q'] .'Post: <pre>'. print_r($_POST, TRUE) .'</pre>');
   exit();
 }
 
