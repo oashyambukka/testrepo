@@ -4806,6 +4806,8 @@ function oa_portal_checklist(&$elements, $skills) {
     foreach ($skills AS $section => $skills) {
       $sections++;
       $elements[$section] = fieldset($section);
+      $elements[$section]['#prefix'] = '<div class="checklist-section"><div class="checklist-scale">1 2 3 4</div>';
+      $elements[$section]['#suffix'] = '</div>';
       $elements[$section]['#tree'] = TRUE;
       foreach ($skills AS $k => $v) {
         $elements[$section][$sections .'_'. $k] = checklist_skill($v);
