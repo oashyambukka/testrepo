@@ -131,7 +131,28 @@ Drupal.behaviors.finalization = function (context) {
       $('#edit-finalize').hide();
       fieldsets_hide_all();
       lock_fields();
-      $('.oap-doc-download').show();
+
+      // Pull in new doc links with AJAX
+      // Add a throbber
+      $('.oap-doc-download').hide().parent().show();
+      $('.oap-doc-download').html('<div id="form-throbber" class="set-hide"></div>');
+      $('.oap-doc-download').parent().slideDown();
+      $.ajax({
+        url: window.location.pathname + '/docs',
+        type: "GET",
+        dataType: "json",
+        data: {},
+        complete: function(XMLHttpRequest, textStatus) {
+        },
+        success: function(data) {
+          // console.log('get docs success. Data:');
+          // console.log(data);
+          $('.oap-doc-download').replaceWith(data.docs_markup);
+          $('.oap-doc-download').parent().show();
+        }
+      });
+      
+      
       $('#edit-continue').show().click(function() {
         Drupal.Ajax.redirect(args.redirect);
         return false;

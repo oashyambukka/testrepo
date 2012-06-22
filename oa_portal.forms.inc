@@ -4749,12 +4749,24 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
     }
 
     if (count($form['#formtypes'])) {
+      if (arg(3) == 'docs') {
+        sleep(5);
+      }
       $form['#docs'] = $candidate->get_docs_not_missing($form['#formtypes']);
-      if (is_array($form['#docs']) && count($form['#docs'])) {
+      // Show docs box only if we have the possibility of submitting more formtypes
+      if (count($form['#formtypes_open'])) {
         $form['docs'] = array(
           '#value' => theme('oap_doc_download', $form['#docs']),
           '#weight' => 1997,
         );
+
+        // Return json if we need it. Kind of filthy, but necessary.
+        if (arg(3) == 'docs') {
+          drupal_json(array('docs_markup' => drupal_render($form['docs'])));
+          exit();
+        }
+        $form['docs']['#prefix'] = '<div class="set-hide">';
+        $form['docs']['#suffix'] = '</div>';
       }
     }
 
@@ -4777,9 +4789,9 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
           'saved_date' => format_date($autosaved_form['timestamp'], 'medium'),
         ));
       }
+      drupal_add_js($settings, 'setting');
     }
 
-    drupal_add_js($settings, 'setting');
     dsm($form, 'Completed $form');
   }
 
