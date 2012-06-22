@@ -11,6 +11,7 @@ function fieldset($title, $description = NULL) {
     '#title' => t($title),
     '#description' => $description,
     '#collapsible' => TRUE,
+    '#pdf_type' => 'oap_pdf_section_wrapper',
   );
   return $element;
 }
