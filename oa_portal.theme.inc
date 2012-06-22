@@ -194,3 +194,29 @@ function oa_portal_preprocess_oap_pdf_item_checkboxes(&$vars) {
     $vars['element']['#value'] = '<none>';
   }
 }
+
+function theme_oap_skill_radio($element) {
+  _form_set_class($element, array('form-radio'));
+  $output = '<input type="radio" ';
+  $output .= 'id="' . $element['#id'] . '" ';
+  $output .= 'name="' . $element['#name'] . '" ';
+  $output .= 'value="' . $element['#return_value'] . '" ';
+  $output .= (check_plain($element['#value']) == $element['#return_value']) ? ' checked="checked" ' : ' ';
+  $output .= drupal_attributes($element['#attributes']) . ' />';
+  unset($element['#title']);
+  if (!is_null($element['#title'])) {
+    $output = '<label class="option" for="' . $element['#id'] . '">' . $output . ' ' . $element['#title'] . '</label>';
+  }
+  return $output;
+}
+
+function theme_oap_skill_radios($element) {
+  $keys = array_keys($element['#options']);
+  $type = $element[$keys[0]]['#type'];
+  $output .= '<div class="oap-skill-radios">';
+  foreach ($keys as $key) {
+    $output .= theme('oap_skill_radio', $element[$key]);
+  }
+  $output .= '</div>';
+  return $output;
+}

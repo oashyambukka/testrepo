@@ -281,9 +281,30 @@
 	border-bottom-color:black;
 	box-shadow:none;
 	background:none;
-	width:40%;
+	width: 270px;
 }
 
+#oa-portal-p1-checklist-form .checklist-section {
+  position: relative;
+  padding-top: 5px;
+}
+#oa-portal-p1-checklist-form .checklist-scale {
+  position: absolute;
+  left: 210px;
+  top: 15px;
+  z-index: 100;
+  letter-spacing: 4px;
+}
+
+#oa-portal-p1-checklist-form .checklist-section .form-item label {
+  width: 197px;
+}
+#oa-portal-p1-checklist-form .checklist-section .form-radio.checklist-skill {
+  width: 17px;
+}
+#oa-portal-p1-checklist-form .checklist-section .form-item {
+  margin: 5px 0;
+}
 
 /***** PROFESSINAL ORGANIZATIONS ****************************************************************/
 #oa-portal-p2-professional-orgs-form .fieldset-wrapper {

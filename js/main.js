@@ -102,7 +102,6 @@ Drupal.behaviors.finalization = function (context) {
   
   Drupal.Ajax.plugins.oaportal = function(hook, args) {
     var errors_exist = false;
-    
     if (hook === 'submit') {
       $('#edit-finalize').hide();
       fieldsets_hide_all();
@@ -148,9 +147,6 @@ Drupal.behaviors.finalization = function (context) {
   });
 
 }
-
-
-
 
 Drupal.behaviors.licensureCert = function (context) {
   $('form#oa-portal-p2-licensure-certs-form .oap-doc-download.set-hide:last').show();

@@ -304,7 +304,12 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates',
       'arguments' => array('element' => NULL),
     ),
-    
+    'oap_skill_radio' => array(
+      'arguments' => array('element' => NULL),
+    ),
+    'oap_skill_radios' => array(
+      'arguments' => array('element' => NULL),
+    ),
   );
 }
 
