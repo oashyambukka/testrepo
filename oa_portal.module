@@ -16,6 +16,9 @@ function oa_portal_init() {
     drupal_add_css($path . '/css/phases.css');
     drupal_add_js($path . '/js/jquery.ba-untils.min.js');
     drupal_add_js($path . '/js/main.js');
+    if (in_array(arg(1), array('p1', 'p2', 'p3'))) {
+      drupal_add_js($path . '/js/forms.js');
+    }
   }
 
   if ($user->uid && arg(0) != 'update-password' && !user_access('administer portal')) {
