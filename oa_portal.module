@@ -862,7 +862,7 @@ function oa_portal_user_mail_notify($op, $account) {
       $messagetype = 'INITACCTETMPL';
     break;
     case 'password_reset':
-      $messagetype = 'BASICSAMPLE';
+      $messagetype = 'PWRESETETMPL';
     break;
   }
 
