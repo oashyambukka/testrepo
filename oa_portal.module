@@ -631,7 +631,7 @@ function oa_portal_html_to_pdf_change_type($values, $felements) {
         '#type' => $felements[$vk]['#pdf_type'],
         '#title' => $felements[$vk]['#title'],
         '#sorted' => TRUE,
-        '#value' => $value,
+        'children' => oa_portal_html_to_pdf_change_type($value, $felements[$vk]),
       );
     }
     elseif (is_array($value)) {
