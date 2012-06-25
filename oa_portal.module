@@ -382,7 +382,7 @@ function oa_portal_forms_info() {
     ),
     'competency' => array(
       '#title' => t('Competency Test'),
-      '#status' => 'read-only',
+      '#status' => 'none',
     ),
   );
   $p['p3'] = array(

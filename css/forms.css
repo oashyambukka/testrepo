@@ -16,7 +16,7 @@
 }
 
 /* PDF Forms */
-.oap-doc-download {
+.oap-doc-download, .oap-fax-download {
   background:url(../img/pdf.png);
   background-color:#CCC;
   background-repeat:no-repeat;
@@ -32,10 +32,10 @@
   margin:10px;
   color:black;
 }
-.oap-doc-download .title {font-weight:bold;width:auto}
-.oap-doc-download a {color:black}
-.oap-doc-download li .first last {width:auto}
-.oap-doc-download ul li {margin:0;width:auto}
+.oap-doc-download .title, , .oap-fax-download .title {font-weight:bold;width:auto}
+.oap-doc-download a, .oap-fax-download a {color:black}
+.oap-doc-download li .first last, .oap-fax-download li .first last {width:auto}
+.oap-doc-download ul li, .oap-fax-download ul li {margin:0;width:auto}
 
 
 /* Finalize - Cancel/Confirm submission box */
@@ -43,7 +43,6 @@
 	background:#F7BDBC;
 	float:right;
 	clear:both;
-	width:340px;
 	overflow:auto;
 	font-size:14px;
 	color:#000;
@@ -51,6 +50,7 @@
 	margin:10px;
 	margin-right:30px;
 }
+
 #finalize-confirm-box input {
 	text-transform:capitalize;
 	background:#499935;
@@ -68,7 +68,12 @@
 	cursor:pointer;
 }
 #finalize-confirm-box input, #finalize-cancel {display:inline;margin:2px;font-size:14px;vertical-align:middle}
-#finalize-confirm-box p {clear:both;padding-bottom:20px;padding:10px;}
+#finalize-confirm-box p {
+	clear:both;
+	padding-bottom:20px;
+	padding:10px;
+	width:323px;
+}
 
 #form-throbber {
   width: 215px;
@@ -88,6 +93,11 @@
 /*** Throbber ***/
 #form-throbber {clear:both;float:right;margin:20px 30px 0 0}
 
+.fake-link {
+	text-decoration:underline;
+	cursor: pointer;
+	color: #0CB2F9;
+}
 
 /***** GENERAL STYLES FOR ALL FORMS ****************************************************************/
 .oaportal fieldset {
@@ -428,8 +438,8 @@
 
 
 /***** PAYCHECK METHOD ********************************************************/
-#edit-delivery-delivery-option-no-wrapper label,
-#edit-delivery-delivery-option-yes-wrapper label {font-weight:normal}
+#edit-paycheck-delivery-delivery-option-no-wrapper label,
+#edit-paycheck-delivery-delivery-option-yes-wrapper label {font-weight:normal}
 
 #oa-portal-p3-paycheck-form .form-radios {clear:both}
 #edit-dd-account-type-wrapper .form-radios {clear:none}
@@ -442,7 +452,7 @@
 	clear:none;
 	padding-right:20px;
 }
-#oa-portal-p3-paycheck-form p {padding-top:120px}
+/*#oa-portal-p3-paycheck-form p {padding-top:120px}*/
 
 
 /***** W4 ********************************************************/

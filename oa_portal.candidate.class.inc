@@ -144,6 +144,10 @@ class Candidate {
     $modality_compliance = $this->modality_compliance;
     $profile = $this->profile;
 
+    // Specifically for Nurse competency link
+    if ($p[$phase][$section]['#status'] == 'none') {
+      return 'none';
+    }
     // If section is marked as read-only, verify phase is open
     if ($p[$phase][$section]['#status'] == 'read-only') {
       if (($section == 'p2' && in_array($profile->status, array('Interviewed', 'Candidate'))) || ($section == 'p3' && $profile->status == 'Candidate')) {
