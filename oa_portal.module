@@ -910,3 +910,14 @@ function oa_portal_doc_link($doc) {
   $t = ($title[0]) ? $title[0] : $doc->dDocTitle;
   return l($t, 'portal/file/'. $doc->dDocName);
 }
+
+/**
+ * Suppress formtypes we don't want to fill out
+ */
+function oap_account_add_suppressed(&$account, $ft) {
+  if (!is_array($account->ucm_suppressed)) {
+    $account->ucm_suppressed = array();
+  }
+  $account->ucm_suppressed[$ft] = $ft;
+  $account = user_save($account, array('ucm_suppressed' => $account->ucm_suppressed));
+}
