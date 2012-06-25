@@ -148,7 +148,7 @@ function oa_portal_p1_application_form($form_state) {
   <p>I authorize On Assignment to release any employment records, including health records submitted 
   to On Assignment to any customer of On Assignment for consideration of employment at customer facility.</p>';
   
-  $form['terms'] = terms($terms_desc);
+  $form['application_terms'] = terms($terms_desc);
   return $form;
 }
 
@@ -3814,16 +3814,16 @@ function oa_portal_p2_licensure_certs_form($form_state) {
   $options['Other'] = $options['Other'] + $all_cl;
 
   $form['lc']['lc_licensure'] = select('Select which certificate you are uploading', $options, FALSE);
+  unset($form['lc']['lc_licensure']['#required']);
+  unset($form['lc']['lc_licensure']['#rules']);
   $form['lc']['upload'] = array(
     '#type' => 'file',
     '#title' => t('Upload file'),
 //    '#required' => TRUE,
     '#size' => 80,
   );
-  $form['lc']['uploaded'] = markup('<h3>Uploaded files</h3>');
   $form['lc']['chk_fax_preference'] = checkbox('Check this box if you prefer to fax copies of your licensures/certifications');
-
-  $form['lc']['fax'] = markup('<div id="cover-letter-box" class="oap-doc-download set-hide">Please include this cover letter and fax it to (818) 555-5555. <a href="/portal/createcoversheet/" id="cover-letter-link">Cover Letter</a></div>');
+  $form['lc']['fax'] = markup('<div id="cover-letter-box" class="oap-fax-download set-hide">Please include this cover letter and fax it to (818) 555-5555. <a href="/portal/createcoversheet/" id="cover-letter-link">Cover Letter</a></div>');
 
   $form['#docs'] = $candidate->get_docs_not_missing($candidate->p['p2']['licensure_certs']['#formtypes']);
   if (is_array($form['#docs']) && count($form['#docs'])) {
@@ -3898,6 +3898,8 @@ function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
     else {
       drupal_set_message(t('An error occured. Please try again.'));
     }
+    // Delay a bit so we'll catch the files on the way back. 
+    sleep(6);
   }
 
   $candidate = get_candidate($account->rmaxid, $account->uid, TRUE);
@@ -3926,6 +3928,7 @@ function oa_portal_p2_background_reference_form($form_state) {
   $form[233]['maiden_name'] = textfield('Maiden/other names used');
   $form[233]['maiden_name']['#required'] = FALSE;
   $form[233]['dob'] = date_popup('Date of birth');
+  $form[233]['dob']['#date_year_range'] = '-80:-14';
   $form[233]['ssn'] = textfield_ssn();
   $form[233]['dlnumber'] = textfield('Driver License Number', 20);
   $form[233]['stateoflicense'] = state('Driver License State');
@@ -4331,10 +4334,28 @@ function oa_portal_p2_competency_form($form_state) {
   $candidate = get_candidate($account->rmaxid, $account->uid);
 
   $form = array();
-  $form['#description'] = t('You are required to complete....');
+  // $form['#description'] = t('You are required to complete....');
 
   // @TODO Get a test link from ___?
-  $form['take_the_test'] = markup('TAKE THE TEST');
+  $form['take_the_test'] = markup('<p>Please click on the link below and follow the instructions to complete the required Competency Exams for your specialty.</p>
+    <p>Login Information:<br />
+    Link to the Competency Exam testing site: <a href="http://oaallied.nursecompetency.com">http://oaallied.nursecompetency.com</a><br />
+    User Login: enter your email address<br />
+    Password: pass123</p>
+
+    <p>You will be prompted to create an account by entering the following information:
+    <ul>
+    <li>Primary Role: (Your Recruiter will tell you which Role to select)</li>
+    <li>First Name: <strong>'. $candidate->profile->fname .'</strong></li>
+    <li>Last Name: <strong>'. $candidate->profile->lname .'</strong></li>
+    <li>Email Address: <strong>'. $account->mail .'</strong></li>
+    <li>Confirm Email Address: <strong>'. $account->mail .'</strong></li>
+    <li><strong>Click Register</strong></li>
+    </ul></p>
+
+    <p>Continue to follow the prompts to complete the required Competency Exams.</p>
+    <p>Important: If you exit the tests before submitting it for grading, it will not save and you will need to take them again. You will be given different questions on the tests the next time you log in. On Assignment requires a minimum score of 80% on all tests. You may retake the tests as many times as you’d like in order to meet the score requirements. Once you’ve created an account you will receive your Login and Password which you will use when returning to the site.</p>
+    <p>If you have questions or need assistance logging in to the test site, please call Employee Services at (800)-995-7378.</p>');
   return $form;
 }
 
@@ -4345,14 +4366,13 @@ function oa_portal_p3_paycheck_form($form_state) {
   $form = array();
 
   // @TODO Add JS: expose either Direct Deposit or CashPay Enrollment conditionally based on rdo_delivery_option status
-  $form['delivery'] = fieldset('Paycheck Delivery');
-  $form['delivery']['#collapsible'] = FALSE;
-  $form['delivery']['rdo_delivery_option'] = radios('', array(
+  $form['paycheck_delivery'] = fieldset('Paycheck Delivery');
+  $form['paycheck_delivery']['delivery_option'] = radios('', array(
     'directdeposit' => '<strong>I do</strong> wish to sign up for Direct Deposit at this time and will complete the section below.',
-    'cashpay' => '<strong>I do</strong> wish to sign up for CashPay at this time and will complete the section below.',
-    'no' => '<strong>I do not</strong> wish to sign up for Direct Deposit or CashPay at this time. I would prefer to have my pay check mailed to me. I understand that there may be a delay to my paycheck delivery via the US Postal Service which is beyond the control of On Assignment.',
+    // 'cashpay' => '<strong>I do</strong> wish to sign up for CashPay at this time and will complete the section below.',
+    'no' => '<strong>I do not</strong> wish to sign up for Direct Deposit at this time. I would prefer to have my pay check mailed to me. I understand that there may be a delay to my paycheck delivery via the US Postal Service which is beyond the control of On Assignment.',
   ));
-  $form['delivery']['policy'] = markup('<p>Check Replacement Policy<br/>On Assignment requires that you wait 5 business days from the date the check was mailed before requesting a replacement check. Additionally, if a check replacement is needed, you will be rquired to sign up for Direct Deposit or CashPay.</p>');
+  $form['paycheck_delivery']['policy'] = markup('<p>Check Replacement Policy<br/>On Assignment requires that you wait 5 business days from the date the check was mailed before requesting a replacement check. Additionally, if a check replacement is needed, you will be rquired to sign up for Direct Deposit or CashPay.</p>');
 
   $form[536] = fieldset('Direct Deposit');
   $form[536]['#attributes']['id'] = 'fieldset-directdeposit';
@@ -4404,11 +4424,12 @@ function oa_portal_p3_paycheck_form($form_state) {
  * Form submission callback for Paycheck Method
  */
 function oa_portal_p3_paycheck_form_validate($form, &$form_state) {
-  if ($form_state['values']['rdo_delivery_option'] == 'directdeposit') { 
-    // @TODO: require verify Direct Deposit fields are complete
-  }
-  if ($form_state['values']['rdo_delivery_option'] == 'cashpay') {
-    // @TODO: require verify CashPay Enrollment fields are complete
+  if ($form_state['values']['paycheck_delivery']['delivery_option'] == 'directdeposit') { 
+    foreach(array('bank_name', 'bank_city', 'bank_state', 'bank_phone', 'bank_account', 'bank_route', 'account_type') AS $k) {
+      if (!$form_state['values'][536][$k]) {
+        form_set_error('536]['. $k, 'You must specify a value for '. $form[536][$k]['#title']);
+      }
+    }
   }
 }
 
@@ -4420,32 +4441,23 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid, $account->uid);
   
+  if ($form_state['values']['paycheck_delivery']['delivery_option'] == 'directdeposit') {
     dsm($form_state['values'][536], 'Process & post 536 to UCM');
-    if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 536, $form_state['values'][536])) {
+    $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][536], $form[536]));
+    $html_string = theme('oap_pdf_wrapper', $candidate, 'Direct Deposit', $body_string);
+    $result = oa_portal_submitdrupalform($account->rmaxid, 536, $html_string);
+    if ($result->StatusInfo->statusCode === 0) {
       $form_state['redirect'] = 'portal/p3/w4';
     }
     else {
       drupal_set_message('An error occured. Please try again.');
     }
   }
-  /*
-  elseif ($form_state['values']['rdo_delivery_option'] == 'cashpay') {
-    **
-     * @TODO Post 537 Cashpay Enrollment to UCM
-     * @TODO needs PDF fields
-     * 
-     *
-    dsm($form_state['values'][537], 'Process & post 537 to UCM');
-    if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 537, $form_state['values'][537])) {
-      $form_state['redirect'] = 'portal/p3/w4';
-    }
-    else {
-      drupal_set_message('An error occured. Please try again.');
-    }
-  }
-  */
   else {
     // @TODO Mark this section as complete anyway.
+    // Suppress 536/537 DirectDeposit/CashPay
+    oap_account_add_suppressed($account, 536);
+    oap_account_add_suppressed($account, 537);
   }
 }
 
@@ -4464,13 +4476,16 @@ function oa_portal_p3_w4_form($form_state) {
   $form[474]['rdo_marital_status'] = radios('', array('Single', 'Married', 'Married, but withhold at higher Single rate'), TRUE);
   $form[474]['marital_status']['#description'] = t('<strong>Note:</strong> If married, but legally seperated, or spouse is a nonresident alien, check the "Single" box');
   $form[474]['different_name'] = markup('<p><strong>If your last name differs from that shown on your social security card, check here.<br/>You must call 1-800-772-1213 for a replacement.</strong></p>');
-  $form[474]['totalclaims'] = textfield('Total number of allowances you are claiming',6);
-  $form[474]['addtnlamount'] = textfield('Additional amount, if any, you want withheld from each paycheck',6);
+  $form[474]['totalclaims'] = textfield('Total number of allowances you are claiming', 6);
+  $form[474]['addtnlamount'] = textfield('Additional amount, if any, you want withheld from each paycheck', 6);
   $form[474]['exempt_desc'] = markup('<strong>I claim exemption from withholding for 2012, and I certify that I meet both of the following conditions for exemption:</strong><br/>
   <ul><li>Last year I had a right to a refund of all federal income tax withheld because I had no tax liability, and </li><li>This year I expect a refund of all federal income tax withheld because I expect to have no tax liability</li></ul><strong>');
   $form[474]['exempt'] = textfield('If you meet both conditions, write "Exempt" here', 6);
   $form[474]['chk_certify'] = checkbox('Under penalties of perjury, I declare that I have examined this certificate and, to the best of my knowledge and belief, it is true, correct, and complete.');
-
+  $form[474]['firstnameandinitial'] = hidden($candidate->profile->fname);
+  $form[474]['lastname'] = hidden($candidate->profile->lname);
+  $form[474]['address'] = hidden($candidate->profile->address);
+  $form[474]['citystatezip'] = hidden($candidate->profile->city .', '. $candidate->profile->state .' '. $candidate->profile->postal);
   return $form;
 }
 
@@ -4508,14 +4523,18 @@ function oa_portal_p3_i9_form($form_state) {
   $form[461] = fieldset('I9');
   $form[461]['ssn'] = textfield_ssn();
   $form[461]['dob'] = date_popup('Date of Birth');
+  $form[461]['dob']['#date_year_range'] = '-80:-14';
   $form[461]['maiden'] = textfield('Maiden/other names used');
   $form[461]['maiden']['#required'] = FALSE;
   $form[461]['citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
     array('citizen' => t('A citizen of the United States'), 'national' => t('A noncitizen national of the United States'), 'resident' => t('A lawful permanent resident'), 'alien' => t('An alien authorized to work') ));
   $form[461]['expiry'] = date_popup('Until (expiration date if applicable)');
   $form[461]['expiry']['#required'] = FALSE;
-  $form[461]['chk_certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');
-
+  $form[461]['expiry']['#prefix'] = '<div class="set-hide" id="i9-expiry">';
+  $form[461]['expiry']['#suffix'] = '</div>';
+  $form[461]['certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');
+  $form[461]['verification'] = checkbox('I am aware that I must provide two (2) verification documents prior to employment. <span id="i9-verification-docs" class="fake-link">Click Here</span> to view a list of acceptable documents.</div>');
+  $form[461]['verification']['#suffix'] = '<div id="i9-verification-box" class="set-hide"><div id="i9-verification"><span id="i9-verification-close" class="fake-link">CLOSE [X]</span><img src="/sites/all/modules/oahealthportal/img/i9-verification-docs.png" width="600" /></div></div>';
   return $form;
 }
 
@@ -4557,17 +4576,19 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
     ) AS $pdff => $rmaxf) {
     $form_state['values'][461][$pdff] = $candidate->profile->{$rmaxf};
   }
-  
+
   // No initial for now. Not in RMax profile.
   $form_state['values'][461]['initial'] = '';
   
   $form_state['values'][461]['dob'] = date('m/d/Y', strtotime($form_state['values'][461]['dob']));
+  $form_state['values'][461]['expiry'] = ($form_state['values'][461]['expiry']) ? date('m/d/Y', strtotime($form_state['values'][461]['expiry'])) : NULL;
   $form_state['values'][461]['appsignature'] = $candidate->profile->name;
   $form_state['values'][461]['apptimestamp'] = date('m-d-Y g:i:s A');
-
-  unset($form_state['values'][461]['chk_certify']);
+  $form_state['values'][461]['ssn'] = implode($form_state['values'][461]['ssn'], '-');
+  unset($form_state['values'][461]['certify'], $form_state['values'][461]['verification']);
 
   dsm($form_state['values'][461], 'Process & post 461 to UCM');
+
   if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 461, $form_state['values'][461])) {
     $form_state['redirect'] = 'portal/p3/eeo';
   }
@@ -4584,15 +4605,16 @@ function oa_portal_p3_eeo_form($form_state) {
   $form['#description'] = t('');
   
   $form[1] = fieldset('EEO');
-  $form[1]['#description'] = t('Please fill out the Affirmative Action date below. To ensure that On Assignment complies with pertinent hiring practices, On Assignment must keep records about our applicants for employment.  This questionnaire will be kept in a confidential file, seperate from the application for employment.  Failure to provide this information will in no way adversely affect your candidacy for this position.  However, we would greatly appreciate your willingness to submit this information for our commitment to equal opportunity.<br/><br/><small><em>Note that all definitions as listed below were provuded by the U.S. Federal Government Equal Employment Opportunity Commission (EEOC)</em></small>');
-  $form[1]['rdo_ethnicity'] = radios('Ethnicity Code', array('hispanic' => t('Hispanic or Latino'),'asian' => t('Asian'),'white' => t('White'),'american_indian' => t('American Indian or Alaskan Native'),'black' => t('Black'),'two_more' => t('Two or more races'),'hawaiian' => t('Native Hawaiian or Pacific Islander') ) );
-  $form[1]['rdo_gender'] = radios('Gender', array('male' => t('Male'), 'female' => t('Female')));
-  $form[1]['rdo_handicap'] = radios_yesno('Handicap Status');
-  $form[1]['handicap']['#suffix'] = t('<em><small>(Any person who has a physical or mental impairment that substantially limits one or more major life activities, has a record of such impairments or is regarded as having such impairments)</small></em>');
-  $form[1]['chk_veteran'] = checkboxes('Veteran Status', array('armed_forces' => t('Armed Forces Service Medal Veteran'), 'disabled' => t('Disabled Veteran'), 'protected' => t('Other Protected Veteran'), 'seperated' => t('Recently Seperated Veteran')) );
-  $form[1]['veteran']['#description'] = t('<small><em>If you are unsure of your Veteran status under these definitions, contact your recruiter.</em></small>');
-  $form[1]['rdo_age'] = radios_yesno('Age');
-  $form[1]['age']['#description'] = t('<small><em>Are you over age 40 but under age 70?</em></small>');
+  $form[1]['#description'] = t('Please fill out the Affirmative Action date below. To ensure that On Assignment complies with pertinent hiring practices, On Assignment must keep records about our applicants for employment.  This questionnaire will be kept in a confidential file, seperate from the application for employment.  Failure to provide this information will in no way adversely affect your candidacy for this position.  However, we would greatly appreciate your willingness to submit this information for our commitment to equal opportunity.<br/><br/><em>Note that all definitions as listed below were provuded by the U.S. Federal Government Equal Employment Opportunity Commission (EEOC)</em>');
+  $form[1]['ethnicity'] = radios('Ethnicity Code', array('hispanic' => t('Hispanic or Latino'),'asian' => t('Asian'),'white' => t('White'),'american_indian' => t('American Indian or Alaskan Native'),'black' => t('Black'),'two_more' => t('Two or more races'),'hawaiian' => t('Native Hawaiian or Pacific Islander') ) );
+  $form[1]['gender'] = radios('Gender', array('male' => t('Male'), 'female' => t('Female')));
+  $form[1]['handicap'] = radios_yesno('Handicap Status');
+  $form[1]['handicap']['#suffix'] = t('<em>(Any person who has a physical or mental impairment that substantially limits one or more major life activities, has a record of such impairments or is regarded as having such impairments)</em>');
+  $form[1]['veteran'] = checkboxes('Veteran Status', array('armed_forces' => t('Armed Forces Service Medal Veteran'), 'disabled' => t('Disabled Veteran'), 'protected' => t('Other Protected Veteran'), 'seperated' => t('Recently Seperated Veteran')) );
+  $form[1]['veteran']['#description'] = t('<em>If you are unsure of your Veteran status under these definitions, contact your recruiter.</em>');
+  $form[1]['veteran']['#required'] = FALSE;
+  $form[1]['age'] = radios_yesno('Age');
+  $form[1]['age']['#description'] = '<em>'. t('Are you over age 40 but under age 70?') .'</em>';
   
   return $form;
 }
@@ -4693,12 +4715,19 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
     // Numeric fieldsets are easy, others may indicate more than one formid apply
     foreach ($form AS $ek => $element) {
       if ($element['#type'] == 'fieldset') {
-        if (is_numeric($ek)) {
-          if (!in_array($ek, $form['#formtypes_open']) && FALSE) { // @TODO REMOVE!
-            // Set this fieldset as empty and locked
-            $form[$ek] = fieldset_locked($element['#title']);
-          }
+        // Numeric fieldsets (most)
+        if (is_numeric($ek) && !in_array($ek, $form['#formtypes_open'])) {
+          // Set this fieldset as empty and locked
+          $form[$ek] = fieldset_locked($element['#title']);
         }
+        // Application
+        elseif (in_array($ek, array('emergency_contact', 'education', 'experience', 'preferences', 'licensures_certs', 'organizations', 'application_terms')) 
+          && !count(array_intersect(array(2), $form['#formtypes_open']))) {
+          // Set this fieldset as empty and locked
+          $form[$ek] = fieldset_locked($element['#title']);
+          unset($form['application_terms']);
+        }
+        // Medical
         elseif (in_array($ek, array('tb', 'mmr', 'cls', 'varivax', 'hepb'))) {
           if (
             ($ek == 'tb' && !count(array_intersect(array(291, 288), $form['#formtypes_open']))) ||
@@ -4709,11 +4738,11 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
             ) {
             // Set this fieldset as empty and locked
             $form[$ek] = fieldset_locked($element['#title']);
-            dsm($element, $ek .' - Closed special case fieldset. Not open.');
           }
-          else {
-            dsm($element, $ek .' - Special case fieldset. Did not close.');
-          }
+        }
+        // Paycheck - 536
+        elseif ($ek == 'paycheck_delivery' && !count(array_intersect(array(536), $form['#formtypes_open']))) {
+          unset($form[$ek]);
         }
       }
     }
@@ -4764,22 +4793,22 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
         sleep(5);
       }
       $form['#docs'] = $candidate->get_docs_not_missing($form['#formtypes']);
-      // Show docs box only if we have the possibility of submitting more formtypes
-      if (count($form['#formtypes_open'])) {
-        $form['docs'] = array(
-          '#value' => theme('oap_doc_download', $form['#docs']),
-          '#weight' => 1997,
-        );
+      $form['docs'] = array(
+        '#value' => theme('oap_doc_download', $form['#docs']),
+        '#weight' => 1997,
+      );
 
-        // Return json if we need it. Kind of filthy, but necessary.
-        if (arg(3) == 'docs') {
-          drupal_json(array('docs_markup' => drupal_render($form['docs'])));
-          exit();
-        }
+      // Return json if we need it. Kind of filthy, but necessary.
+      if (arg(3) == 'docs') {
+        drupal_json(array('docs_markup' => drupal_render($form['docs'])));
+        exit();
+      }
+      if (count($form['#formtypes_open'])) {
         $form['docs']['#prefix'] = '<div class="set-hide">';
         $form['docs']['#suffix'] = '</div>';
       }
     }
+
 
 
     // Add settings for Autosaving
