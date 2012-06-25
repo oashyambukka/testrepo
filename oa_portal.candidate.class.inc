@@ -3,7 +3,7 @@
 /**
  * Factory caching function for Candidate objects
  */
-function get_candidate($rmaxid, $reset = FALSE) {
+function get_candidate($rmaxid, $uid, $reset = FALSE) {
   if (!$rmaxid) {
     dsm('You can\'t access the Portal without an RMaxID.');
     drupal_goto('');
@@ -12,11 +12,13 @@ function get_candidate($rmaxid, $reset = FALSE) {
   if (is_object($candidates[$rmaxid]) && !$reset) {
     return $candidates[$rmaxid];
   }
-  $candidates[$rmaxid] = new Candidate($rmaxid);
+  $candidates[$rmaxid] = new Candidate($rmaxid, $uid);
   return $candidates[$rmaxid];
 }
 
 class Candidate {
+  public $uid;
+  public $account;
   public $modality_compliance;
   public $compliance_object;
   public $complianceRecordID;
@@ -25,12 +27,14 @@ class Candidate {
   public $profile;
   public $rmaxid;
 
+
   /**
    * Constructor
    * Get RMax profile by RMaxID
    */
-  function __construct($rmaxid) {
+  function __construct($rmaxid, $uid) {
     $this->rmaxid = $rmaxid;
+    $this->uid = $uid;
     $this->load_profile();
     $this->load_compliance();
   }
@@ -52,6 +56,8 @@ class Candidate {
   private function load_compliance() {
     $p = oa_portal_forms_info();
     $profile = $this->profile;
+    $account = user_load($this->uid);
+    $this->account = $account;
 
     // Get formtypes for Skills Checklists, Licensures & Certifications
     $p['p1']['checklist']['#formtypes'] = array_keys(oa_portal_get_category_formids('Skills Checklists'));
@@ -112,6 +118,16 @@ class Candidate {
           $p[$pk][$sk]['#formtypes_open'] = array_intersect($p[$pk][$sk]['#formtypes'], $modality_compliance['open']);
           $p[$pk][$sk]['#formtypes_pr'] = array_intersect($p[$pk][$sk]['#formtypes'], $modality_compliance['under-review']);
           $p[$pk][$sk]['#formtypes_closed'] = array_intersect($p[$pk][$sk]['#formtypes'], $modality_compliance['closed']);
+
+          // Consider "suppressed" formtypes from $account.
+          if (count($account->ucm_suppressed)) {
+            foreach ($account->ucm_suppressed AS $v) {
+              $k = array_search($v, $p[$pk][$sk]['#formtypes_open']);
+              if (is_numeric($k)) {
+                unset($p[$pk][$sk]['#formtypes_open'][$k]);
+              }
+            }
+          }
         }
       }
     }

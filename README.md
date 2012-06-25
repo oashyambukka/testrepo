@@ -53,7 +53,7 @@ Data storage/access
 
 1. User account (one per candidate): standard Drupal account. $account = user_load($uid);
 2. RMax ID stored as $account->rmaxid profile field. Not editable by user.
-3. Candidate objects: $candidate = get_candidate($rmaxid); currently loads everything. Statically cached per page request.
+3. Candidate objects: $candidate = get_candidate($rmaxid, $uid); currently loads everything. Statically cached per page request.
 4. Phase Status keys:
   - open
   - locked

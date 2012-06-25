@@ -15,7 +15,7 @@ function oa_portal_page() {
   $output .= '<div class="oap-status-icon oap-icon-open">Requires Your Attention!</div>';
   $output .= '<div class="oap-status-icon oap-icon-under-review">Currently Under Review!</div></div>';
 
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
   dsm($candidate, '$candidate object');
 
   $p_completed = 0;
@@ -58,7 +58,7 @@ function oa_portal_page() {
 function oa_portal_docs_page() {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
   $docs = $candidate->get_all_docs();
 //  dsm($docs, 'docs');
   $items = array();

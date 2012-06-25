@@ -57,7 +57,7 @@ function oa_portal_preprocess_oap_phase_row(&$vars) {
 function oa_portal_preprocess_oap_candidate_menu(&$vars) {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
  
   $vars['modality_name'] = substr($candidate->modality_name, strpos($candidate->modality_name, ' - ') + 2);
 
@@ -87,7 +87,7 @@ function oa_portal_preprocess_oap_candidate_menu(&$vars) {
 function oa_portal_preprocess_oap_phase_status(&$vars) {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
   $phase = $candidate->p[arg(1)];
   
   $vars['id'] = arg(1);

@@ -158,10 +158,10 @@ function oa_portal_p1_application_form($form_state) {
 function oa_portal_p1_application_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
   $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'], $form));
   $html_string = theme('oap_pdf_wrapper', $candidate, 'Application', $body_string);
-  $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
+  $result = oa_portal_submitdrupalform($account->rmaxid, 2, $html_string);
   if ($result->StatusInfo->statusCode === 0) {
     $form_state['redirect'] = 'portal/p1/checklist';
   }
@@ -177,7 +177,7 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
 function oa_portal_p1_checklist_form($form_state) {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
   $form = array();
   $form['directions'] = markup('<p>Directions: Indicate your level of experience by selecting the numbers below as follows:<br>
     1 = No Experience<br>
@@ -204,7 +204,7 @@ function oa_portal_p1_checklist_form($form_state) {
 function oa_portal_p1_checklist_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
 
   // Process all open formtypes
   $error = FALSE;
@@ -3802,7 +3802,7 @@ function oa_portal_p2_licensure_certs_form($form_state) {
   $all_cl = oa_portal_get_category_formids('Certifications') + oa_portal_get_category_formids('Licensure');
 
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
 
   $options = array();
   foreach ($candidate->p['p2']['licensure_certs']['#formtypes_open'] AS $ft) {
@@ -3847,6 +3847,15 @@ function oa_portal_p2_licensure_certs_form($form_state) {
 function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
+
+  // If fax preferred, suppress all open formtypes
+  if ($form_state['values']['lc']['chk_fax_preference'] == 1) {
+    foreach ($candidate->p['p2']['licensure_certs']['#formtypes_open'] AS $ft) {
+      oap_account_add_suppressed($account, $ft);
+    }
+  }
+
   if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['lc'])) {
     $filepath = $_FILES['files']['tmp_name']['lc'];
     $filesize = $_FILES['files']['size']['lc'];
@@ -3891,7 +3900,7 @@ function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
     }
   }
 
-  $candidate = get_candidate($account->rmaxid, TRUE);
+  $candidate = get_candidate($account->rmaxid, $account->uid, TRUE);
   if (count($candidate->p['p2']['licensure_certs']['#formtypes_open']) == 0 || $form_state['values']['lc']['chk_fax_preference'] == 1) {
     $form_state['redirect'] = 'portal/p2/background_reference';
   }
@@ -3958,7 +3967,7 @@ function oa_portal_p2_background_reference_form($form_state) {
 function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
   
   /**
    * @TODO Post 233 Background Consent to UCM
@@ -4059,7 +4068,7 @@ function oa_portal_p2_capabilities_form($form_state) {
 function oa_portal_p2_capabilities_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
 
   /**
    * @TODO Post 5 Job Capabilities Questionnaire to UCM
@@ -4138,7 +4147,7 @@ function oa_portal_p2_policies_form($form_state) {
 function oa_portal_p2_policies_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
 
   /**
    * @TODO Post 433 Employment Agreement to UCM
@@ -4317,6 +4326,10 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
  * Form callback for Competency Test
  */
 function oa_portal_p2_competency_form($form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
+
   $form = array();
   $form['#description'] = t('You are required to complete....');
 
@@ -4403,12 +4416,10 @@ function oa_portal_p3_paycheck_form_validate($form, &$form_state) {
  * Form submission callback for Paycheck Method
  */
 function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
-  if ($form_state['values']['rdo_delivery_option'] == 'directdeposit') {
-    /**
-     * @TODO Post 536 Direct Deposit to UCM
-     * @TODO needs PDF fields
-     * 
-     */
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
+  
     dsm($form_state['values'][536], 'Process & post 536 to UCM');
     if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 536, $form_state['values'][536])) {
       $form_state['redirect'] = 'portal/p3/w4';
@@ -4514,7 +4525,7 @@ function oa_portal_p3_i9_form($form_state) {
 function oa_portal_p3_i9_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
 
   /**
    * lastname - From Profile
@@ -4592,8 +4603,8 @@ function oa_portal_p3_eeo_form($form_state) {
 function oa_portal_p3_eeo_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
-  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'], $form));
+  $candidate = get_candidate($account->rmaxid, $account->uid);
+  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][1], $form[1]));
   $html_string = theme('oap_pdf_wrapper', $candidate, 'EEO', $body_string);
   dsm($html_string, 'PDF string');
   $result = oa_portal_submitdrupalform($account->rmaxid, 1, $html_string);
@@ -4636,7 +4647,7 @@ function oa_portal_p3_work_policy_form($form_state) {
 function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
-  $candidate = get_candidate($account->rmaxid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
 
   /**
    * Post 466 Work Policy Acknowledgement to UCM. Applies to all sections in this form.
@@ -4669,7 +4680,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
     $form['#ajax'] = array('enabled' => TRUE, 'disable_redirect' => TRUE);
 
     $account = user_load($user->uid);
-    $candidate = get_candidate($account->rmaxid);
+    $candidate = get_candidate($account->rmaxid, $account->uid);
     dsm($candidate, '$candidate object');
     $p = $candidate->p;
 
