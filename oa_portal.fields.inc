@@ -54,9 +54,8 @@ function email($title = 'Email', $size = 40) {
 
 function textfield_ssn() {
   $element = array(
-    '#type' => 'fieldset',
-    '#title' => t('Social Security Number:'),
-    '#attributes' => array('class' => 'sin-field'),
+    '#prefix' => '<div class="ssn-field cf">',
+    '#suffix' => '</div>',
     '#tree' => TRUE,
   );
   $el = array(
@@ -64,8 +63,10 @@ function textfield_ssn() {
     '#size' => 3,
     '#rules' => array('numeric'),
     '#filters' => array('trim'),
+    '#required' => TRUE,
   );
   $element[] = $el;
+  $element[0]['#title'] = t('Social Security Number');
   $element[] = $el;
   $element[] = $el;
   return $element;
@@ -269,5 +270,14 @@ function medical_file($title) {
     '#size' => 80,
     '#prefix' => '<div class="medical-file set-hide">',
     '#suffix' => '</div>',
+  );
+}
+
+function hidden($value, $title = NULL, $pdf_type = 'oap_pdf_item') {
+  return array(
+    '#type' => 'hidden',
+    '#title' => t($title),
+    '#value' => $value,
+    '#pdf_type' => $pdf_type,
   );
 }
