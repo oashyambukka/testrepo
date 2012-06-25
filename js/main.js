@@ -20,38 +20,6 @@ Drupal.behaviors.addAnotherLink = function (context) {
     $(this).parent().next().slideDown();
   });
 }
-
-// @TODO Verify still required
-Drupal.behaviors.paycheckOptions = function (context) {
-  $('#edit-delivery-rdo-delivery-option-directdeposit-wrapper input, #edit-delivery-rdo-delivery-option-no-wrapper input, #edit-delivery-rdo-delivery-option-cashpay-wrapper input').change(function () { fieldset_change(this); });
-
-  function fieldset_hide(id) {
-    if (!$('#fieldset-' + id).hasClass('collapsed')) {
-      $('#fieldset-' + id + ' legend a').click();
-    }
-  }
-  function fieldset_show(id) {
-    if ($('#fieldset-' + id).hasClass('collapsed')) {
-      $('#fieldset-' + id + ' legend a').click();
-    }
-  }
-
-  function fieldset_change(element) {
-    var value = $(element).val();
-    if (value == 'cashpay') {
-      fieldset_hide('directdeposit');
-      fieldset_show('cashpay');
-    }
-    if (value == 'directdeposit') {
-      fieldset_hide('cashpay');
-      fieldset_show('directdeposit');
-    }
-    if (value == 'no') {
-      fieldset_hide('cashpay');
-      fieldset_hide('directdeposit');
-    }
-  }
-}
  
 Drupal.behaviors.finalization = function (context) { 
 
@@ -165,21 +133,6 @@ Drupal.behaviors.finalization = function (context) {
   $('.portal-continue').click(function() {
     Drupal.Ajax.redirect('/portal');
     return false;
-  });
-
-}
-
-Drupal.behaviors.licensureCert = function (context) {
-  $('form#oa-portal-p2-licensure-certs-form .oap-doc-download.set-hide:last').show();
-
-  $('#edit-lc-chk-fax-preference').change(function() {
-    $('#cover-letter-box').slideDown();
-  });
-
-  $('#edit-lc-lc-licensure').change(function() {
-    if ($(this).val() != 'none') {
-      $('#cover-letter-link').attr('href', '/portal/createcoversheet/' + $(this).val());
-    }
   });
 
 }
