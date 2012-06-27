@@ -110,6 +110,11 @@
 	padding-bottom:10px;
 	border:none;
 }
+
+html.js .oaportal fieldset.collapsible .fieldset-wrapper {
+	width: inherit;
+}
+
 .oaportal fieldset h1 {
 	text-decoration:underline;
 	font-weight:bold;
@@ -468,12 +473,16 @@
 
 .ssn-field .form-item {
 	float: left;
-	width: 45px;
+	width: inherit;
 	clear: none;
+	display: inline-block;
+	padding-right: 10px;
 }
-.ssn-field #edit-461-ssn-0-wrapper {
-	width: 227px;
+
+.ssn-field #edit-461-ssn-0-wrapper, .ssn-field #edit-233-ssn-0-wrapper {
+	clear: both;
 }
+
 #i9-expiry {
 	margin-left: 15px;
 }

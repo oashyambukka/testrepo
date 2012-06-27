@@ -122,6 +122,12 @@
 	background-position:right;
 	background-repeat:no-repeat;
 }
+.oa-phase-row-status-locked,
+.oa-phase-row-status-locked .oap-phase-form-link {
+	background:url(../img/locked.png);
+	background-position:right;
+	background-repeat:no-repeat;
+}
 .oa-phase-row-status-open,
 .oa-phase-row-status-open .oap-phase-form-link {
 	background:url(../img/open.png);
