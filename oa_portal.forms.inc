@@ -76,12 +76,14 @@ function oa_portal_p1_application_form($form_state) {
 
   $form['experience']['chk_recent_grad'] = checkbox('Check box if you are a recent college graduate');  
 
-  $exp_fields['employer'] = textfield('Employer',75);
+  $exp_fields['employer'] = textfield('Employer', 75);
   $exp_fields['city'] = textfield('City');
   $exp_fields['state'] = state('State');
   unset($exp_fields['state']['#required'], $exp_fields['state']['#rules']);
   $exp_fields['empdatefrom'] = date_popup('Start Date', 'm-Y');
+  $exp_fields['empdatefrom']['#date_year_range'] = '-40:0';
   $exp_fields['empdateto'] = date_popup('End Date', 'm-Y');
+  $exp_fields['empdateto']['#date_year_range'] = '-40:0';
   $exp_fields['chk_present'] = checkbox('Present');
   $exp_fields['posheld'] = textfield('Title');
   $exp_fields['salary'] = textfield('Salary');
@@ -124,9 +126,13 @@ function oa_portal_p1_application_form($form_state) {
   $form['organizations'] = fieldset('Professional Organizations');
   $form['organizations']['chk_none'] = checkbox('I am not a member of any organizations');
   $proforgs['org_name'] = textfield('Organization');
+  $proforgs['org_name']['#required'] = FALSE;
   $proforgs['org_role'] = textfield('Role');
+  $proforgs['org_role']['#required'] = FALSE;
   $proforgs['org_start'] = date_popup('From');
+  $proforgs['org_start']['#required'] = FALSE;
   $proforgs['org_end'] = date_popup('To');
+  $proforgs['org_end']['#required'] = FALSE;
 
   $form['organizations']['orgs'] = oa_portal_set($proforgs, 'Add another Organization', 3);
   
@@ -148,7 +154,7 @@ function oa_portal_p1_application_form($form_state) {
   <p>I authorize On Assignment to release any employment records, including health records submitted 
   to On Assignment to any customer of On Assignment for consideration of employment at customer facility.</p>';
   
-  $form['application_terms'] = terms($terms_desc);
+  $form['organizations']['application_terms'] = terms($terms_desc);
   return $form;
 }
 
@@ -163,6 +169,14 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
   $html_string = theme('oap_pdf_wrapper', $candidate, 'Application', $body_string);
   $result = oa_portal_submitdrupalform($account->rmaxid, 2, $html_string);
   if ($result->StatusInfo->statusCode === 0) {
+    $account->oa_references = array();
+    foreach ($form_state['values']['experience']['exp'] AS $emp) {
+      $account->oa_references[] = $emp['employer'];
+    }
+    foreach ($form_state['values']['education']['edu'] AS $edu) {
+      $account->oa_references[] = $edu['school'];
+    }
+    $account = user_save($account, array('oa_references' => $account->oa_references));
     $form_state['redirect'] = 'portal/p1/checklist';
   }
   else {
