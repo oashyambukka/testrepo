@@ -60,15 +60,17 @@ function textfield_ssn() {
   );
   $el = array(
     '#type' => 'textfield',
-    '#size' => 3,
     '#rules' => array('numeric'),
     '#filters' => array('trim'),
     '#required' => TRUE,
   );
   $element[] = $el;
   $element[0]['#title'] = t('Social Security Number');
+  $element[0]['#size'] = $element[0]['#maxlength'] = 3;
   $element[] = $el;
+  $element[1]['#size'] = $element[1]['#maxlength'] = 2;
   $element[] = $el;
+  $element[2]['#size'] = $element[2]['#maxlength'] = 4;
   return $element;
 }
 
@@ -229,7 +231,7 @@ function zip() {
 
 function phone($title = 'Phone') {
   $element = textfield($title, 24);
-  $element['#rules'] = array(array('rule' => 'regexp[/\D*(\d*)\D*[2-9][0-8]\d\D*[2-9]\d{2}\D*\d{4}\D*\d*\D*/x]', 'error' => 'Please specify a valid %field number.'));
+  // $element['#rules'] = array(array('rule' => 'regexp[/\D*(\d*)\D*[2-9][0-8]\d\D*[2-9]\d{2}\D*\d{4}\D*\d*\D*/x]', 'error' => 'Please specify a valid %field number.'));
   return $element;
 }
 
