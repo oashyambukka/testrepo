@@ -1,3 +1,5 @@
+var autosave_on = true;
+
 Drupal.behaviors.autosave = function (context) {
   var timeout;
   var autosaved = Drupal.settings.autosave;
@@ -36,7 +38,7 @@ Drupal.behaviors.autosave = function (context) {
 
   // Autosave fuction
   Drupal.sendAutosave = function() {
-    if (!autosave_lock) {
+    if (!autosave_lock && autosave_on) {
       autosave_lock = true;
       clearTimeout(timeout);
       var serialized = $('#' + autosaved.form_id_id).formHash();

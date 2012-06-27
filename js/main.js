@@ -44,12 +44,14 @@ Drupal.behaviors.finalization = function (context) {
     $('#edit-finalize').hide();
     $('#finalize-confirm-box').show();
     lock_fields();
+    autosave_on = false;
   }
   function undo_finalize() {
     $('#form-throbber').hide();
     $('#finalize-confirm-box').hide();
     $('#edit-finalize').show();
     unlock_fields();
+    autosave_on = true;
   } 
 
   function lock_fields() {
