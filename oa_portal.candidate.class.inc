@@ -170,7 +170,7 @@ class Candidate {
     if (is_array($p[$phase][$section]['#dependencies'])) {
       if (count(array_intersect($p[$phase][$section]['#dependencies'], $modality_compliance['open']))) {
         dsm('Cant open '. $phase .' - '. $section .' due to missing dependencies');
-        return 'closed';
+        return 'locked';
       }
     }
 
