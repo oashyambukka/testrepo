@@ -3929,39 +3929,51 @@ function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
  * Form callback for Background/Reference Check
  */
 function oa_portal_p2_background_reference_form($form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
   $form = array();
   $form[233] = fieldset('Background Investigation Consent');
-  $form[233]['#description'] = '<p>I hereby authorize On Assignment, and/or its agents to make an independent investigation of my background, references, character, past employment, education, credit history, motor vehicle operation history, criminal or police records, including those maintained by both public and private organizations and all public records for the purpose of confirming the information contained on my Application and/or obtaining other information which may be material to my qualifications for employment.  I release On Assignment and/or its agents and any person or entity, which provides information pursuant to this authorization, from any and all liabilities, claims or law suits in regards to the information obtained from any and all above referenced sources used.  I understand that all or part of this information, including my social security number may be released to clients as part of the hiring process, and agree to the release of any part or all of this information including my social security number.</p><br>
-<p>This is a consumer notification that a Background Report will be requested and obtained, and that the report will be used for the purpose of evaluating me for employment, promotion, reassignment or retention as an employee.</p><br>
-<p>As a resident of Minnesota and Oklahoma only, I have a right to obtain a copy of this report by checking this box.</p><br>
-<p>NOTICE TO CALIFORNIA CANDIDATES</p><p><span style="font-size:90%">You have a right to obtain a copy of any consumer report or investigative consumer report obtained by On Assignment, Inc. by checking the box provided below. The report will be provided to you within three (3) business days after we receive the requested reports related to the matter investigated.  I request to receive a free copy of this report by checking this box.  Under section 1786.22 of the California Civil Code, you may view the file maintained on you by GIS (the search company) during normal business hours.  You may also obtain a copy of this file upon submitting proper identification and paying the costs of duplication services, by appearing at GIS in person or by mail.  You may also receive a summary of the file by telephone.  The agency is required to have personnel available to explain your file to you and the agency must explain to you any coded information appearing in your file.  If you appear in person, a person of your choice may accompany you, provided that this person furnishes proper identification.</span></p><br><br>
-<p><strong>The following is my true and complete legal name and all information is true and correct to the best of my knowledge:</strong></p>';
+  $form[233]['ack'] = acknowledgement('<p>I hereby authorize On Assignment, and/or its agents to make an independent investigation of my background, references, character, past employment, education, credit history, motor vehicle operation history, criminal or police records, including those maintained by both public and private organizations and all public records for the purpose of confirming the information contained on my Application and/or obtaining other information which may be material to my qualifications for employment.  I release On Assignment and/or its agents and any person or entity, which provides information pursuant to this authorization, from any and all liabilities, claims or law suits in regards to the information obtained from any and all above referenced sources used.  I understand that all or part of this information, including my social security number may be released to clients as part of the hiring process, and agree to the release of any part or all of this information including my social security number.</p><br />
+<p>This is a consumer notification that a Background Report will be requested and obtained, and that the report will be used for the purpose of evaluating me for employment, promotion, reassignment or retention as an employee.</p><br />');
 
-  $form[233]['receivereport'] = checkbox('I request to receive a free copy of this report by checking this box. Under section 1786.22 of the California Civil Code, you may view the file maintained on you by GIS (the search company) during normal business hours. You may also obtain a copy of this file upon submitting proper identification and paying the costs of duplication services, by appearing at GIS in person or by mail. You may also receive a summary of the file by telephone. The agency is required to have personnel available to explain your file to you and the agency must explain to you any coded information appearing in your file. If you appear in person, a person of your choice may accompany you, provided that this person furnishes proper identification.');
-  $form[233]['receivereport']['#prefix'] = 'NOTICE TO CALIFORNIA CANDIDATES<br /><p>You have a right to obtain a copy of any consumer report or investigative consumer report obtained by On Assignment, Inc by checking the box provided below. The report will be provided to you within three (3) business days after we receive the requested reports related to the matter investigated.</p>';
+  $form[233]['receivereport'] = checkbox('I request to receive a free copy of this report by checking this box.'); 
+  $form[233]['receivereport']['#prefix'] = '<p>As a resident of Minnesota and Oklahoma only, I have a right to obtain a copy of this report by checking the box provided below.</p><br />
+<p>NOTICE TO CALIFORNIA CANDIDATES<br /><p>You have a right to obtain a copy of any consumer report or investigative consumer report obtained by On Assignment, Inc by checking the box provided below. The report will be provided to you within three (3) business days after we receive the requested reports related to the matter investigated. Under section 1786.22 of the California Civil Code, you may view the file maintained on you by GIS (the search company) during normal business hours. You may also obtain a copy of this file upon submitting proper identification and paying the costs of duplication services, by appearing at GIS in person or by mail. You may also receive a summary of the file by telephone. The agency is required to have personnel available to explain your file to you and the agency must explain to you any coded information appearing in your file. If you appear in person, a person of your choice may accompany you, provided that this person furnishes proper identification.</p>';
+
+  $form[233]['is_correct'] = markup('<p><strong>The following is my true and complete legal name and all information is true and correct to the best of my knowledge:</strong></p>');
   $form[233]['maiden_name'] = textfield('Maiden/other names used');
   $form[233]['maiden_name']['#required'] = FALSE;
   $form[233]['dob'] = date_popup('Date of birth');
-  $form[233]['dob']['#date_year_range'] = '-80:-14';
+  $form[233]['dob']['#date_year_range'] = '-14:-80';
   $form[233]['ssn'] = textfield_ssn();
   $form[233]['dlnumber'] = textfield('Driver License Number', 20);
   $form[233]['stateoflicense'] = state('Driver License State');
   $form[233]['frompresentaddr'] = date_popup('Lived at your current address since', 'm-Y');
+  $form[233]['frompresentaddr']['#date_year_range'] = '0:-65';
   $form[233]['frompresentaddr']['#suffix'] = '<strong>Note: We need 7 years of address history. Please add all addresses for the past 7 years.</strong>';
   $form[233]['topresentaddr'] = array(
     '#type' => 'value',
     '#value' => 'Present',
   );
   $fmr = array();
+  // $fmr['title'] = markup('<h4>Former Address</h4>');
+  $fmr['title'] = markup('<h1>Former Address</h1>');
   $fmr['fromformeraddr'] = date_popup('From', 'm-Y');
+  $fmr['fromformeraddr']['#date_year_range'] = '0:-65';
   $fmr['toformeraddr'] = date_popup('To', 'm-Y');
+  $fmr['toformeraddr']['#date_year_range'] = '0:-65';
   $fmr = $fmr + address();
   unset($fmr['address2']);
+  // None are required
+  foreach ($fmr AS $k => $v) {
+    unset($fmr[$k]['#required'], $fmr[$k]['#rules']);
+  }
   $form[233]['former_addresses'] = oa_portal_set($fmr, 'Add another address', 7);
   $form[233]['chk_certification'] = checkbox('I certify...');
 
   $ref = array('#tree' => TRUE);
-  $ref['employer'] = select('Company', array('Company A', 'Company B'));
+  $ref['employer'] = select('Company', $account->oa_references + array('Other'));
   $ref['supname'] = textfield('Supervisor');
   $ref['title'] = textfield('Supervisor\'s Title');
   $ref['mailingaddress'] = textfield('Mailing Address', 30);
