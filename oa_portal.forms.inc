@@ -4119,6 +4119,10 @@ function oa_portal_p2_capabilities_form_submit($form, &$form_state) {
  * Form callback for Policies & Agreements
  */
 function oa_portal_p2_policies_form($form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
+
   $form = array();
   $form[256] = fieldset('Substance Abuse Testing Consent');
   $form[256]['testing'] = acknowledgement('I understand that I may be offered a position with On Assignment...');
@@ -4162,6 +4166,10 @@ function oa_portal_p2_policies_form($form_state) {
     B. To the extent a provision in an employment agreement purports to require an employee to assign an invention otherwise excluded from being required to be assigned under subdivision (a), then provision is against the public policy of this state and is unenforceable.
     Accordingly, On Assignment does not require Personnel to assign any invention prohibited by Section 2870 of the California Labor Code.');
 
+  // Hidden data from RMax Profile
+  $form[433]['personneladdress1'] = hidden($candidate->profile->addressline1, 'Address 1');
+  $form[433]['personneladdress2'] = hidden($candidate->profile->addressline2, 'Address 2');
+  $form[433]['personneladdress3'] = hidden($candidate->profile->addressline3, 'Address 3');
 
   $form[432] = fieldset('Direct Hire Candidate Agreement');
   $form[432]['relationship'] = acknowledgement('On Assignment Staffing Services...');
@@ -4188,24 +4196,6 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
    * timestamp - current date
    * personnelinitials
    */
-
-  // Inject data from the RMax Profile
-  // PDF Field => RMax Profile Field
-  // @TODO Move into form callback as hidden fields?
-  foreach (array(
-    // 'personnelname' => 'name',
-    'personneladdress1' => 'addressline1',
-    'personneladdress2' => 'addressline2',
-    'personneladdress3' => 'addressline3',
-    ) AS $pdff => $rmaxf) {
-    $form_state['values'][433][$pdff] = $candidate->profile->{$rmaxf};
-  }
-  
-  // Create fake form items for the data we're injecting into $values
-  // $form[433]['personnelname']['#title'] = 'Name';
-  $form[433]['personneladdress1']['#title'] = 'Address 1';
-  $form[433]['personneladdress2']['#title'] = 'Address 2';
-  $form[433]['personneladdress3']['#title'] = 'Address 3';
 
   $error = FALSE;
   foreach ($form['#formtypes_open'] AS $formtype) {
@@ -4406,43 +4396,17 @@ function oa_portal_p3_paycheck_form($form_state) {
   $form[536]['bank_name'] = textfield('Bank Name',40);
   $form[536]['bank_city'] = textfield('Bank City',40);
   $form[536]['bank_state'] = state('State');
+  unset($form[536]['bank_state']['#rules']);
   $form[536]['bank_phone'] = textfield('Bank Phone');
   $form[536]['bank_account'] = textfield('Bank Account');
   $form[536]['bank_route'] = textfield('Routing #');
-  $form[536]['rdo_account_type'] = radios('Account Type', array('Checking', 'Savings'), TRUE);
+  $form[536]['account_type'] = radios('Account Type', array('Checking', 'Savings'), TRUE);
   // No fields required.
   foreach ($form[536] AS $k => $v) {
     if (in_array($v['#type'], array('textfield', 'radios', 'select'))) {
-      $form[536][$k]['#required'] = null;
+      unset($form[536][$k]['#required']);
     }
   }
-
-  // @TODO To be removed. Not collecting Credit Card data.
-  /*
-  $form[537] = fieldset('CashPay Enrollment');
-  $form[537]['#attributes']['id'] = 'fieldset-cashpay';
-  $form[537]['#collapsed'] = TRUE;
-  $form[537]['#description'] = 'Please select the card type and English or Spanish below:';
-  $form[537]['rdo_cc_type'] = radios('', array('Visa', 'Instant Issue (Issue at Employment Location)'), TRUE);
-  $form[537]['rdo_cc_lang'] = radios('', array('English', 'Spanish'), TRUE);
-  $form[537]['cc_number']['#tree'] = TREE;
-  $cc_num = textfield('', 4, 4);
-  $form[537]['cc_number'][] = $cc_num;
-  $form[537]['cc_number'][0]['#prefix'] = '<div class="field-cc">';
-  $form[537]['cc_number'][] = $cc_num;
-  $form[537]['cc_number'][] = $cc_num;
-  $form[537]['cc_number'][] = $cc_num;
-  $form[537]['cc_number'][3]['#suffix'] = '</div>';
-
-
-  // No fields required.
-  foreach ($form[537] AS $k => $v) {
-    if ($v['#type'] == 'textfield' || $v['#type'] == 'radios') {
-      $form[537][$k]['#required'] = null;
-    }
-  }
-  */
-
   return $form;
 }
 
