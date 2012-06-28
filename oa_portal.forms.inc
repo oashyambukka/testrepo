@@ -4513,7 +4513,7 @@ function oa_portal_p3_i9_form($form_state) {
   $form[461] = fieldset('I9');
   $form[461]['ssn'] = textfield_ssn();
   $form[461]['dob'] = date_popup('Date of Birth');
-  $form[461]['dob']['#date_year_range'] = '-80:-14';
+  $form[461]['dob']['#date_year_range'] = '-14:-80';
   $form[461]['maiden'] = textfield('Maiden/other names used');
   $form[461]['maiden']['#required'] = FALSE;
   $form[461]['citizentype'] = radios('I attest, under penalty of perjury, that I am (check one of the following)',
@@ -4525,6 +4525,16 @@ function oa_portal_p3_i9_form($form_state) {
   $form[461]['certify'] = checkbox('I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.');
   $form[461]['verification'] = checkbox('I am aware that I must provide two (2) verification documents prior to employment. <span id="i9-verification-docs" class="fake-link">Click Here</span> to view a list of acceptable documents.</div>');
   $form[461]['verification']['#suffix'] = '<div id="i9-verification-box" class="set-hide"><div id="i9-verification"><span id="i9-verification-close" class="fake-link">CLOSE [X]</span><img src="/sites/all/modules/oahealthportal/img/i9-verification-docs.png" width="600" /></div></div>';
+
+  // RMax Profile Fields
+  $form[461]['lastname'] = hidden($candidate->profile->lname, "Last Name");
+  $form[461]['firstname'] = hidden($candidate->profile->fname, "First Name");
+  $form[461]['address'] = hidden($candidate->profile->address, "Address");
+  $form[461]['city'] = hidden($candidate->profile->city, "City");
+  $form[461]['state'] = hidden($candidate->profile->state, "State");
+  $form[461]['zip'] = hidden($candidate->profile->postal, "ZIP");
+  $form[461]['appsignature'] = hidden($candidate->profile->name, "Applicant Signature");
+
   return $form;
 }
 
@@ -4554,31 +4564,15 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
    * apptimestamp - current date/time
    */
 
-  // PDF Field => RMax Profile Field
-
-  foreach (array(
-    'lastname' => 'lname',
-    'firstname' => 'fname',
-    'address' => 'address',
-    'city' => 'city',
-    'state' => 'state',
-    'zip' => 'postal',
-    ) AS $pdff => $rmaxf) {
-    $form_state['values'][461][$pdff] = $candidate->profile->{$rmaxf};
-  }
-
   // No initial for now. Not in RMax profile.
   $form_state['values'][461]['initial'] = '';
-  
   $form_state['values'][461]['dob'] = date('m/d/Y', strtotime($form_state['values'][461]['dob']));
   $form_state['values'][461]['expiry'] = ($form_state['values'][461]['expiry']) ? date('m/d/Y', strtotime($form_state['values'][461]['expiry'])) : NULL;
-  $form_state['values'][461]['appsignature'] = $candidate->profile->name;
   $form_state['values'][461]['apptimestamp'] = date('m-d-Y g:i:s A');
   $form_state['values'][461]['ssn'] = implode($form_state['values'][461]['ssn'], '-');
   unset($form_state['values'][461]['certify'], $form_state['values'][461]['verification']);
 
   dsm($form_state['values'][461], 'Process & post 461 to UCM');
-
   if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 461, $form_state['values'][461])) {
     $form_state['redirect'] = 'portal/p3/eeo';
   }
@@ -4865,9 +4859,7 @@ function oa_portal_set($sub_elements, $text, $ct = 2) {
   for ($i = 1; $i <= $ct; $i++) {
     if ($i == 2) {
       foreach ($sub_elements AS $k => $v) {
-        if ($v['#required']) {
-          $sub_elements[$k]['#required'] = FALSE;
-        }
+        unset($sub_elements[$k]['#required'], $sub_elements[$k]['#rules']);
       }
     }
     $elements[] = $sub_elements;
