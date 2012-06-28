@@ -292,6 +292,11 @@ function oa_portal_theme($existing, $type, $theme, $path) {
       'path' => $path . '/templates',
       'arguments' => array('element' => NULL),
     ),
+    'oap_pdf_item_checkbox' => array(
+      'template' => 'oap_pdf_item_checkbox',
+      'path' => $path . '/templates',
+      'arguments' => array('element' => NULL),
+    ),
     'oap_pdf_item_checkboxes' => array(
       'template' => 'oap_pdf_item_checkboxes',
       'path' => $path . '/templates',

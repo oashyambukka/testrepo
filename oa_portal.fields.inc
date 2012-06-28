@@ -87,6 +87,7 @@ function checkbox($title) {
   $element = array(
     '#type' => 'checkbox',
     '#title' => t($title),
+    '#pdf_type' = 'oap_pdf_item_checkbox',
   );
   return $element;
 }
