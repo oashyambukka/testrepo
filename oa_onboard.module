@@ -89,36 +89,7 @@ function oa_onboard_form($form_state) {
   $form['Phone'] = phone('Primary Phone');
   $form['CellPhone'] = phone('Cell Phone');
   $form['CellPhone']['#required'] = FALSE;
-
-  $form['Specialty'] = select('Specialty', 
-    array(
-      'Environmental Experience',
-      'Organic Chemistry Techniques',
-      'Clinical Specialty',
-      'Medical Device Experience',
-      'Clinical Technique',
-      'Quality',
-      'Animal Experience',
-      'Biochemistry Techniques',
-      'Microbiology Techniques',
-      'Clinical Experience',
-      'Food and Fragrance Experience',
-      'Physical Testing Techniques',
-      'Regulatory Affairs',
-      'Material Science Experience',
-      'Computer Skills',
-      'Molecular Biology Techniques',
-      'General Chemistry Techniques',
-      'Clinical Instrumentation',
-      'Instrumentation',
-      'Manufacturing Experience',
-      'Histology Experience',
-      'Formulations',
-    )
-  );
-
   $form['DateAvailable'] = date_popup('Date Available');
-
   $form['Referral'] = array(
     '#type' => 'select',
     '#title' => t('Were you referred?'),

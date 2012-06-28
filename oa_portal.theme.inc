@@ -181,7 +181,6 @@ function oa_portal_preprocess_oap_pdf_wrapper_checklist(&$vars) {
  * Preprocess function for Dynamic HTML PDF generation
  */
 function oa_portal_preprocess_oap_pdf_item_checkboxes(&$vars) {
-  dsm($vars, 'oa_portal_preprocess_oap_pdf_item_checkboxes');
   $processed = FALSE;
   foreach ($vars['element']['#value'] AS $v) {
     if ($v) {
