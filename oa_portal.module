@@ -530,36 +530,6 @@ function oa_portal_fapi_validation_rules() {
 function oa_portal_rule_not_none($value) {
   return !((string) $value == 'none');
 }
-/**
- * Not used
-function oa_portal_ucm_oacheckin($formtype, $fields) {
-  global $user;
-  $account = user_load($user->uid);
-  $rmaxid = $account->rmaxid;
-  $params = array(
-    'dDocName' => $rmaxid ."_". $formtype,
-    // @TODO When is this Form vs FormSecure?
-    'dSecurityGroup' => 'Form',
-    'dDocAuthor' => 'weblogic',
-    'dDocAccount' => 'Recruit/QA',
-    'dDocType' => 'Rmax',
-    'dDocTitle' => $formtype ."-". $rmaxid,
-    'xContentType' => "Form",
-    'xFormType' => $formtype,
-    'xRM_ID' => $rmaxid,
-    'xStatus' => 'Pending Review',
-    'xComments' => '',
-    'xRejectReason' => '',
-    'xRejectOther' => '',
-    'xSuccessAudit' => '',
-    'fields' => $fields,
-  );
-  return TRUE;
-  
-  $result = oa_portal_soap('oacheckin', $params, TRUE);
-  return ($result->oacheckinResult == 'something') ? TRUE : $result->oacheckinResult;
-}
-*/
 
 /**
  * Get file contents by dID. Used by oa_portal_download_file($dDocName)
@@ -568,32 +538,6 @@ function oa_portal_ucm_getfilebyname($dDocName) {
   $result = oa_portal_soap('GetFileByName', array('dDocName' => $dDocName, 'revisionSelectionMethod' => 'Latest'));
   return $result->GetFileByNameResult;
 }
-
-/**
- * Get file contents by formtype (dDocName). Unused.
-function oa_portal_ucm_rmax_getfilebyname($rmaxid, $formtype) {
-  $result = oa_portal_soap('GetFileByName', array('dDocName' => $rmaxid .'_'. $formtype), TRUE);
-  return $result->GetFileByNameResult;
-}
-*/
-
-/**
- * Get file info by dID. Unused.
- *
-function oa_portal_ucm_docinfobyid($dID) {
-  $result = oa_portal_soap('DocInfoByID', array('dID' => $dID), TRUE);
-  return $result->DocInfoByIDResult;;
-}
-*/
-
-/**
- * Get file info by formtype (dDocName). Unused./
- *
-function oa_portal_ucm_docinfobyame($rmaxid, $formtype) {
-  $result = oa_portal_soap('DocInfoByName', array('dDocName' => $rmaxid .'_'. $formtype));
-  return $result->DocInfoByNameResult;
-}
-*/
 
 /**
  * Used by many forms to populate PDF templates in UCM
