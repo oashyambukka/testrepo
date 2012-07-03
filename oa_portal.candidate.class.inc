@@ -148,6 +148,7 @@ class Candidate {
     if ($p[$phase][$section]['#status'] == 'none') {
       return 'none';
     }
+
     // If section is marked as read-only, verify phase is open
     if ($p[$phase][$section]['#status'] == 'read-only') {
       if (($section == 'p2' && in_array($profile->status, array('Interviewed', 'Candidate'))) || ($section == 'p3' && $profile->status == 'Candidate')) {
@@ -169,7 +170,6 @@ class Candidate {
     // Check if dependencies are not met
     if (is_array($p[$phase][$section]['#dependencies'])) {
       if (count(array_intersect($p[$phase][$section]['#dependencies'], $modality_compliance['open']))) {
-        dsm('Cant open '. $phase .' - '. $section .' due to missing dependencies');
         return 'locked';
       }
     }
@@ -177,8 +177,12 @@ class Candidate {
     // Counting on #formtypes at this point. 
     if (is_array($p[$phase][$section]['#formtypes'])) {
       // Check for open forms first. Those are missing
-      if (count(array_intersect($p[$phase][$section]['#formtypes'], $modality_compliance['open']))) {
+      if (count(array_intersect($p[$phase][$section]['#formtypes_open'], $modality_compliance['open']))) {
         return 'open';
+      }
+      // Edge case: when docs are suppressed, their formtypes remain "open" in #formtypes, but not in #formtypes_open above
+      if (count(array_intersect($p[$phase][$section]['#formtypes'], $modality_compliance['open']))) {
+        return 'under-review';
       }
       // Otherwise we probably have some files under review
       if (count(array_intersect($p[$phase][$section]['#formtypes'], $modality_compliance['under-review']))) {
