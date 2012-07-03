@@ -87,7 +87,7 @@ function checkbox($title) {
   $element = array(
     '#type' => 'checkbox',
     '#title' => t($title),
-    '#pdf_type' = 'oap_pdf_item_checkbox',
+    '#pdf_type' => 'oap_pdf_item_checkbox',
   );
   return $element;
 }
@@ -166,7 +166,7 @@ function radios_yesno($title) {
   $element = array(
     '#type' => 'radios',
     '#title' => t($title),
-    '#options' => array(1 => t('Yes'), 0 => t('No')),
+    '#options' => drupal_map_assoc(array('Yes', 'No')),
     '#required' => TRUE,
     '#attributes' => array('class' => 'radios-yes-no'),
   );
@@ -243,6 +243,7 @@ function cap_yne($title, $yn_title = 'If no, explain') {
   $elements['rdo_yn']['#prefix'] = '<div class="field-yes-no-explain">';
   $elements['explain'] = textfield($yn_title);
   $elements['explain']['#suffix'] = '</div>';
+  $elements['explain']['#required'] = FALSE;
   return $elements;
 }
 
@@ -261,7 +262,6 @@ function initial($description) {
   $element = textfield('I acknowledge, understand, and accept this Agreement/Statement. Please initial here.', 2);
   $element['#prefix'] = '<div class="field-acknowledgement"><div class="acknowledgement-description">'. $description .'</div>';
   $element['#suffix'] = '</div>';
-  $element['#pdf_type'] = 'oap_pdf_item_initial';
   $element['#pdf_title'] = $description;
   return $element;
 }
@@ -278,7 +278,7 @@ function medical_file($title) {
 
 function hidden($value, $title = NULL, $pdf_type = 'oap_pdf_item') {
   return array(
-    '#type' => 'hidden',
+    '#type' => 'value',
     '#title' => t($title),
     '#value' => $value,
     '#pdf_type' => $pdf_type,

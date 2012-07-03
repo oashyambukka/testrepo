@@ -38,7 +38,11 @@ Drupal.behaviors.autosave = function (context) {
 
   // Autosave fuction
   Drupal.sendAutosave = function() {
+    if (!autosave_on) {
+      console.log('Autosave not on!');
+    }
     if (!autosave_lock && autosave_on) {
+      console.log('Sending autosave');
       autosave_lock = true;
       clearTimeout(timeout);
       var serialized = $('#' + autosaved.form_id_id).formHash();

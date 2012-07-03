@@ -89,6 +89,7 @@ function oa_onboard_form($form_state) {
   $form['Phone'] = phone('Primary Phone');
   $form['CellPhone'] = phone('Cell Phone');
   $form['CellPhone']['#required'] = FALSE;
+  $form['Specialty'] = hidden('');
   $form['DateAvailable'] = date_popup('Date Available');
   $form['Referral'] = array(
     '#type' => 'select',
@@ -146,8 +147,8 @@ function oa_onboard_form_submit($form, &$form_state) {
   unset($params['submit'], $params['op'], $params['form_build_id'], $params['form_token'], $params['form_id']);
 
   // What is OfficeID?
-  $params['OfficeID'] = 1057;
-
+  $params['OfficeID'] = 571;
+  // We need to set a division
   // Resume file upload
   if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['resume_file'])) {
     $filepath = $_FILES['files']['tmp_name']['resume_file'];

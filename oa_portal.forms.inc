@@ -171,10 +171,14 @@ function oa_portal_p1_application_form_submit($form, &$form_state) {
   if ($result->StatusInfo->statusCode === 0) {
     $account->oa_references = array();
     foreach ($form_state['values']['experience']['exp'] AS $emp) {
-      $account->oa_references[] = $emp['employer'];
+      if ($emp['employer']) {
+        $account->oa_references[] = $emp['employer'];
+      }
     }
     foreach ($form_state['values']['education']['edu'] AS $edu) {
-      $account->oa_references[] = $edu['school'];
+      if ($edu['school']) {
+        $account->oa_references[] = $edu['school'];
+      }
     }
     $account = user_save($account, array('oa_references' => $account->oa_references));
     $form_state['redirect'] = 'portal/p1/checklist';
@@ -3940,7 +3944,7 @@ function oa_portal_p2_background_reference_form($form_state) {
   $form[233]['receivereport'] = checkbox('I request to receive a free copy of this report by checking this box.'); 
   $form[233]['receivereport']['#prefix'] = '<p>As a resident of Minnesota and Oklahoma only, I have a right to obtain a copy of this report by checking the box provided below.</p><br />
 <p>NOTICE TO CALIFORNIA CANDIDATES<br /><p>You have a right to obtain a copy of any consumer report or investigative consumer report obtained by On Assignment, Inc by checking the box provided below. The report will be provided to you within three (3) business days after we receive the requested reports related to the matter investigated. Under section 1786.22 of the California Civil Code, you may view the file maintained on you by GIS (the search company) during normal business hours. You may also obtain a copy of this file upon submitting proper identification and paying the costs of duplication services, by appearing at GIS in person or by mail. You may also receive a summary of the file by telephone. The agency is required to have personnel available to explain your file to you and the agency must explain to you any coded information appearing in your file. If you appear in person, a person of your choice may accompany you, provided that this person furnishes proper identification.</p>';
-
+  $form[233]['receivereport']['#pdf_title'] = 'Request Report';
   $form[233]['is_correct'] = markup('<p><strong>The following is my true and complete legal name and all information is true and correct to the best of my knowledge:</strong></p>');
   $form[233]['maiden_name'] = textfield('Maiden/other names used');
   $form[233]['maiden_name']['#required'] = FALSE;
@@ -3971,6 +3975,7 @@ function oa_portal_p2_background_reference_form($form_state) {
   }
   $form[233]['former_addresses'] = oa_portal_set($fmr, 'Add another address', 7);
   $form[233]['chk_certification'] = checkbox('I certify...');
+  $form[233]['chk_certification']['#pdf_title'] = 'Terms';
 
   $ref = array('#tree' => TRUE);
   $ref['employer'] = select('Company', $account->oa_references + array('Other'));
@@ -3981,6 +3986,7 @@ function oa_portal_p2_background_reference_form($form_state) {
   $ref['phone'] = phone();
   $ref['email'] = email();
   $ref['chk_certification'] = checkbox('I hereby give permission to the above named employer to release information to On Assignment regarding my performance while employed at that facility');
+  $ref['chk_certification']['#pdf_title'] = 'Terms';
 
   $form[476] = fieldset('Reference Check 1');
   $form[476]['ref'] = $ref;
@@ -3997,64 +4003,12 @@ function oa_portal_p2_background_reference_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid, $account->uid);
-  
-  /**
-   * @TODO Post 233 Background Consent to UCM
-   *
-   * name - full name
-   * receivereport
-   * fullname
-   * maidenname
-   * dob
-   * ssn
-   * dlnumber
-   * stateoflicense
-   * presentaddress
-   * frompresentaddr
-   * topresentaddr
-   * citypresentaddr
-   * zippresentaddr
-   *
-   * Former Addresses (N: 1-7):
-   * formeraddressN
-   * fromformeraddrN
-   * toformeraddrN
-   * cityformeraddrN
-   * zipformeraddrN
-   */
-  dsm($form_state['values'][233], 'Process & post 233 to UCM');
-
-  /**
-   * @TODO Post 476 & 477 Professional Reference 1/2 to UCM
-   *
-   * name - fullname
-   * applicantname - fullname
-   * employer - From Application->Experience
-   *
-   * NOTE: All contact fields relate to the Company/Supervisor, not the applicant
-   * mailingaddress
-   * supname
-   * posheld - From Application->Experience
-   * empdatefrom
-   * empdateto
-   * city - From Application->Experience
-   * state - From Application->Experience
-   * zip
-   * title
-   * phone
-   * email
-   * datesigned - Date signed
-   */
-  dsm($form_state['values'][476], 'Process & post 476 to UCM');
-  dsm($form_state['values'][477], 'Process & post 477 to UCM');
-  
-  // @TODO Store Maiden Name for future use
-  
-  
+  $form_state['values'][233]['ssn'] = implode($form_state['values'][233]['ssn'], '-');
+  $form[233]['ssn']['#pdf_type'] = 'oap_pdf_item';
   $error = FALSE;
   foreach ($form['#formtypes_open'] AS $formtype) {
-    $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][$formtype], $form[$formtype]));
-    $html_string = theme('oap_pdf_wrapper', $candidate, 'Needs title', $body_string);
+    $body_string = oa_portal_pdf_section_to_string($form_state['values'][$formtype], $form[$formtype]);
+    $html_string = theme('oap_pdf_wrapper', $candidate, $form[$formtype]['#title'], $body_string);
     $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
     if ($result->StatusInfo->statusCode !== 0) {
       $error = TRUE;
@@ -4088,6 +4042,7 @@ function oa_portal_p2_capabilities_form($form_state) {
   $form[5]['allergies']['rdo_latex'] = radios_yesno('Are you allergic to latex gloves?');
   $form[5]['preference'] = cap_yne('Are there any assignments that you cannot or prefer not to do?');
   $form[5]['chk_certify'] = checkbox('I certify this information is correct, and understand that withholding or giving false information will result in refusal to hire or disciplinary action up to, and including, termination.');
+  $form[5]['chk_certify']['#pdf_title'] = 'Terms';
   return $form;
 }
 
@@ -4098,12 +4053,7 @@ function oa_portal_p2_capabilities_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid, $account->uid);
-
-  /**
-   * @TODO Post 5 Job Capabilities Questionnaire to UCM
-   */
-  dsm($form_state['values'][5], 'Process & post 5 to UCM');
-  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][5], $form[5]));
+  $body_string = oa_portal_pdf_section_to_string($form_state['values'][5], $form[5]);
   $html_string = theme('oap_pdf_wrapper', $candidate, $form[5]['#title'], $body_string);
   dsm($html_string, 'PDF string');
   $result = oa_portal_submitdrupalform($account->rmaxid, 5, $html_string);
@@ -4186,22 +4136,10 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid, $account->uid);
 
-  /**
-   * @TODO Post 433 Employment Agreement to UCM
-   *
-   * personnelname - From Profile
-   * signature
-   * personneladdress - From Profile
-   * personnelphone - From Profile
-   * timestamp - current date
-   * personnelinitials
-   */
-
   $error = FALSE;
   foreach ($form['#formtypes_open'] AS $formtype) {
-    $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][$formtype], $form[$formtype]));
-    $html_string = theme('oap_pdf_wrapper', $candidate, 'Needs title', $body_string);
-    dsm($html_string, 'PDF string');
+    $body_string = oa_portal_pdf_section_to_string($form_state['values'][$formtype], $form[$formtype]);
+    $html_string = theme('oap_pdf_wrapper', $candidate, $form[$formtype]['#title'], $body_string);
     $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
     if ($result->StatusInfo->statusCode !== 0) {
       $error = TRUE;
@@ -4432,8 +4370,7 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
   $candidate = get_candidate($account->rmaxid, $account->uid);
   
   if ($form_state['values']['paycheck_delivery']['delivery_option'] == 'directdeposit') {
-    dsm($form_state['values'][536], 'Process & post 536 to UCM');
-    $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][536], $form[536]));
+    $body_string = oa_portal_pdf_section_to_string($form_state['values'][536], $form[536]);
     $html_string = theme('oap_pdf_wrapper', $candidate, 'Direct Deposit', $body_string);
     $result = oa_portal_submitdrupalform($account->rmaxid, 536, $html_string);
     if ($result->StatusInfo->statusCode === 0) {
@@ -4455,6 +4392,10 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
  * Form callback for W4
  */
 function oa_portal_p3_w4_form($form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
+
   $form = array();
   $form[474] = fieldset('W4');
 
@@ -4462,15 +4403,18 @@ function oa_portal_p3_w4_form($form_state) {
 
   $form[474]['ssn'] = textfield_ssn();
   // $form[474]['dob'] = date_popup('Date of Birth');
+    // $form[233]['dob']['#date_year_range'] = '-80:-14';
 
   $form[474]['rdo_marital_status'] = radios('', array('Single', 'Married', 'Married, but withhold at higher Single rate'), TRUE);
   $form[474]['marital_status']['#description'] = t('<strong>Note:</strong> If married, but legally seperated, or spouse is a nonresident alien, check the "Single" box');
   $form[474]['different_name'] = markup('<p><strong>If your last name differs from that shown on your social security card, check here.<br/>You must call 1-800-772-1213 for a replacement.</strong></p>');
   $form[474]['totalclaims'] = textfield('Total number of allowances you are claiming', 6);
   $form[474]['addtnlamount'] = textfield('Additional amount, if any, you want withheld from each paycheck', 6);
+  $form[474]['addtnlamount']['#required'] = FALSE;
   $form[474]['exempt_desc'] = markup('<strong>I claim exemption from withholding for 2012, and I certify that I meet both of the following conditions for exemption:</strong><br/>
   <ul><li>Last year I had a right to a refund of all federal income tax withheld because I had no tax liability, and </li><li>This year I expect a refund of all federal income tax withheld because I expect to have no tax liability</li></ul><strong>');
   $form[474]['exempt'] = textfield('If you meet both conditions, write "Exempt" here', 6);
+  $form[474]['exempt']['#required'] = FALSE;
   $form[474]['chk_certify'] = checkbox('Under penalties of perjury, I declare that I have examined this certificate and, to the best of my knowledge and belief, it is true, correct, and complete.');
   $form[474]['firstnameandinitial'] = hidden($candidate->profile->fname);
   $form[474]['lastname'] = hidden($candidate->profile->lname);
@@ -4496,6 +4440,7 @@ function oa_portal_p3_w4_form_submit($form, &$form_state) {
    * addtnlamount
    * exempt
    */
+  $form_state['values'][474]['ssn'] = implode($form_state['values'][474]['ssn'], '-');
   dsm($form_state['values'][474], 'Process & post 477 to UCM');
   if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 474, $form_state['values'][474])) {
     $form_state['redirect'] = 'portal/p3/i9';
@@ -4509,6 +4454,9 @@ function oa_portal_p3_w4_form_submit($form, &$form_state) {
  * Form callback for I-9
  */
 function oa_portal_p3_i9_form($form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
   $form = array();
   $form[461] = fieldset('I9');
   $form[461]['ssn'] = textfield_ssn();
@@ -4586,20 +4534,23 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
  */
 function oa_portal_p3_eeo_form($form_state) {
   $form = array();
-  $form['#description'] = t('');
-  
   $form[1] = fieldset('EEO');
   $form[1]['#description'] = t('Please fill out the Affirmative Action date below. To ensure that On Assignment complies with pertinent hiring practices, On Assignment must keep records about our applicants for employment.  This questionnaire will be kept in a confidential file, seperate from the application for employment.  Failure to provide this information will in no way adversely affect your candidacy for this position.  However, we would greatly appreciate your willingness to submit this information for our commitment to equal opportunity.<br/><br/><em>Note that all definitions as listed below were provuded by the U.S. Federal Government Equal Employment Opportunity Commission (EEOC)</em>');
-  $form[1]['ethnicity'] = radios('Ethnicity Code', array('hispanic' => t('Hispanic or Latino'),'asian' => t('Asian'),'white' => t('White'),'american_indian' => t('American Indian or Alaskan Native'),'black' => t('Black'),'two_more' => t('Two or more races'),'hawaiian' => t('Native Hawaiian or Pacific Islander') ) );
-  $form[1]['gender'] = radios('Gender', array('male' => t('Male'), 'female' => t('Female')));
-  $form[1]['handicap'] = radios_yesno('Handicap Status');
-  $form[1]['handicap']['#suffix'] = t('<em>(Any person who has a physical or mental impairment that substantially limits one or more major life activities, has a record of such impairments or is regarded as having such impairments)</em>');
-  $form[1]['veteran'] = checkboxes('Veteran Status', array('armed_forces' => t('Armed Forces Service Medal Veteran'), 'disabled' => t('Disabled Veteran'), 'protected' => t('Other Protected Veteran'), 'seperated' => t('Recently Seperated Veteran')) );
-  $form[1]['veteran']['#description'] = t('<em>If you are unsure of your Veteran status under these definitions, contact your recruiter.</em>');
-  $form[1]['veteran']['#required'] = FALSE;
+  $form[1]['Ethnicity Code'] = radios('Ethnicity Code', array('Hispanic or Latino', 'Asian', 'White', 'American Indian or Alaskan Native', 'Black', 'Two or more races', 'Native Hawaiian or Pacific Islander'), TRUE);
+  $form[1]['Gender'] = radios('Gender', array('Male', 'Female'), TRUE);
+  $form[1]['Handicap Status'] = radios_yesno('Handicap Status');
+  $form[1]['Handicap Status']['#suffix'] = t('<em>(Any person who has a physical or mental impairment that substantially limits one or more major life activities, has a record of such impairments or is regarded as having such impairments)</em>');
+  $form[1]['Veteran Status'] = checkboxes('Veteran Status', array('Armed Forces Service Medal Veteran', 'Disabled Veteran', 'Other Protected Veteran', 'Recently Seperated Veteran'), TRUE);
+  $form[1]['Veteran Status']['#description'] = t('<br /><em>If you are unsure of your Veteran status under these definitions, contact your recruiter.</em>');
+  $form[1]['Veteran Status']['#required'] = FALSE;
   $form[1]['age'] = radios_yesno('Age');
   $form[1]['age']['#description'] = '<em>'. t('Are you over age 40 but under age 70?') .'</em>';
-  
+  $form[1]['age']['#pdf_title'] = t('Are you over age 40 but under age 70?');
+  foreach (array('Ethnicity Code', 'Gender', 'Handicap Status', 'Veteran Status', 'age') AS $k) {
+    $form[1][$k]['#required'] = FALSE;
+  }
+  $form[1]['Decline'] = checkbox('I Decline...');
+  $form[1]['Decline']['#pdf_title'] = 'Declaration declined';
   return $form;
 }
 
@@ -4610,9 +4561,8 @@ function oa_portal_p3_eeo_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid, $account->uid);
-  $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'][1], $form[1]));
+  $body_string = oa_portal_pdf_section_to_string($form_state['values'][1], $form[1]);
   $html_string = theme('oap_pdf_wrapper', $candidate, 'EEO', $body_string);
-  dsm($html_string, 'PDF string');
   $result = oa_portal_submitdrupalform($account->rmaxid, 1, $html_string);
   if ($result->StatusInfo->statusCode === 0) {
     $form_state['redirect'] = 'portal/p3/work_policy';
@@ -4654,15 +4604,9 @@ function oa_portal_p3_work_policy_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid, $account->uid);
-
-  /**
-   * Post 466 Work Policy Acknowledgement to UCM. Applies to all sections in this form.
-   */
-  dsm($form_state['values'], 'Process & post 466 to UCM');
-
   $body_string = drupal_render(oa_portal_html_to_pdf_change_type($form_state['values'], $form));
-  $html_string = theme('oap_pdf_wrapper', $candidate, 'Work Policy Acknowledgement', $body_string);
-  $result = oa_portal_submitdrupalform($account->rmaxid, 466, $html_string);
+  $html_string = theme('oap_pdf_wrapper', $candidate, 'Work Policy', $body_string);
+  $result = oa_portal_submitdrupalform($account->rmaxid, 446, $html_string);
   if ($result->StatusInfo->statusCode === 0) {
     $form_state['redirect'] = 'portal';
   }
@@ -4727,6 +4671,10 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
         // Paycheck - 536
         elseif ($ek == 'paycheck_delivery' && !count(array_intersect(array(536), $form['#formtypes_open']))) {
           unset($form[$ek]);
+        }
+        // Work Policy - 446
+        elseif (in_array($ek, array('harassment', 'safety', 'stock_plan')) && !count(array_intersect(array(446), $form['#formtypes_open']))) {
+          $form[$ek] = fieldset_locked($element['#title']);
         }
       }
     }
@@ -4840,9 +4788,9 @@ function oa_portal_checklist(&$elements, $skills) {
   }
 }
 
-
 /**
  * Multi-Fieldgroup constructor
+ * @TODO Add PDF title with count
  */
 function oa_portal_set($sub_elements, $text, $ct = 2) {
   $sub_elements['#tree'] = TRUE;

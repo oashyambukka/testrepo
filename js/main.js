@@ -107,7 +107,6 @@ Drupal.behaviors.finalization = function (context) {
       lock_fields();
 
       // Pull in new doc links with AJAX
-      // Add a throbber
       $('.oap-doc-download').hide().parent().show();
       $('.oap-doc-download').html('<div id="docs-throbber"></div>');
       $('.oap-doc-download').parent().slideDown();
@@ -120,8 +119,6 @@ Drupal.behaviors.finalization = function (context) {
         complete: function(XMLHttpRequest, textStatus) {
         },
         success: function(data) {
-          // console.log('get docs success. Data:');
-          // console.log(data);
           $('.oap-doc-download').replaceWith(data.docs_markup);
           $('.form-throbber').slideUp();
           $('.oap-doc-download').parent().show();

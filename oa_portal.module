@@ -338,7 +338,6 @@ function oa_portal_user($op, &$edit, &$account, $category = NULL) {
  */
 function oa_portal_forms_info() {
   $p = array();
-  
   $p['p1'] = array(
     '#title' => t('Phase 1'),
     '#status' => 'open',
@@ -355,7 +354,6 @@ function oa_portal_forms_info() {
       '#formtypes' => array(),
     ),
   );
-  
   $p['p2'] = array(
     '#title' => t('Phase 2'),
     'professional_orgs' => array(
@@ -369,6 +367,7 @@ function oa_portal_forms_info() {
     'background_reference' => array(
       '#title' => t('Background/Reference Check'),
       '#formtypes' => array(233, 476, 477),
+      '#dependencies' => array(2),
     ),
     'capabilities' => array(
       '#title' => t('Capabilities Questionnaire'),
@@ -421,7 +420,7 @@ function oa_portal_forms_info() {
     'work_policy' => array(
       '#title' => t('Work Policy'),
       '#status' => '',
-      '#formtypes' => array(466),
+      '#formtypes' => array(446),
     ),
   );
   return $p;
@@ -657,7 +656,6 @@ function oa_portal_html_to_pdf_change_type($values, $felements) {
       );
     }
   }
-  dsm($return, 'to render');
   return $return;
 }
 

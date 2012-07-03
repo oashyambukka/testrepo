@@ -1,5 +1,6 @@
           <tr>
             <td class="question"><?php print $element['#title']; ?>:</td>
-            <td class="answer"><?php print $element['#value']; ?></td>
+            <td class="answer">&nbsp;</td>
           </tr>
+<?php print $element['#children']; ?>
 

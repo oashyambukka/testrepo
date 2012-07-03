@@ -180,18 +180,8 @@ function oa_portal_preprocess_oap_pdf_wrapper_checklist(&$vars) {
 /**
  * Preprocess function for Dynamic HTML PDF generation
  */
-function oa_portal_preprocess_oap_pdf_item_checkboxes(&$vars) {
-  $processed = FALSE;
-  foreach ($vars['element']['#value'] AS $v) {
-    if ($v) {
-      $vars['element']['#value'] = $v;
-      $processed = TRUE;
-      continue;
-    }
-  }
-  if (!$processed) {
-    $vars['element']['#value'] = '<none>';
-  }
+function oa_portal_preprocess_oap_pdf_item_checkbox(&$vars) {
+  $vars['element']['#value'] = ($vars['element']['#value']) ? 'Yes' : 'No';
 }
 
 function theme_oap_skill_radio($element) {
