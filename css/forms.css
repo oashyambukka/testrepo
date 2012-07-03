@@ -80,6 +80,12 @@
   height: 18px;
   background-image: url(../img/ajax-loader.gif);
 }
+#docs-throbber {
+  width: 24px;
+  height: 24px;
+  background-image: url(../img/ajax-docs-loader.gif);
+  margin: 21px 0px 0px 60px;
+}
 
 
 /*** Autosave ***/

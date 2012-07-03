@@ -51,6 +51,11 @@ Drupal.behaviors.finalization = function (context) {
     $('#finalize-confirm-box').hide();
     $('#edit-finalize').show();
     unlock_fields();
+    $('fieldset').each(function() {
+      if ($(this).hasClass('collapsed')) {
+        $('legend a', this).click();
+      }
+    });
     autosave_on = true;
   } 
 
@@ -69,9 +74,8 @@ Drupal.behaviors.finalization = function (context) {
   $('fieldset.locked > legend a', context).each(function(link) {
     $(link).unbind('click');
   });
-  
+  var errors_exist = false;
   Drupal.Ajax.plugins.oaportal = function(hook, args) {
-    var errors_exist = false;
     if (hook === 'submit') {
       $('#edit-finalize').hide();
       fieldsets_hide_all();
@@ -105,8 +109,9 @@ Drupal.behaviors.finalization = function (context) {
       // Pull in new doc links with AJAX
       // Add a throbber
       $('.oap-doc-download').hide().parent().show();
-      $('.oap-doc-download').html('<div id="form-throbber" class="set-hide"></div>');
+      $('.oap-doc-download').html('<div id="docs-throbber"></div>');
       $('.oap-doc-download').parent().slideDown();
+      $('.oap-doc-download').slideDown();
       $.ajax({
         url: window.location.pathname + '/docs',
         type: "GET",
@@ -118,6 +123,7 @@ Drupal.behaviors.finalization = function (context) {
           // console.log('get docs success. Data:');
           // console.log(data);
           $('.oap-doc-download').replaceWith(data.docs_markup);
+          $('.form-throbber').slideUp();
           $('.oap-doc-download').parent().show();
         }
       });
