@@ -4381,10 +4381,8 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
     }
   }
   else {
-    // @TODO Mark this section as complete anyway.
-    // Suppress 536/537 DirectDeposit/CashPay
+    // Suppress 536/537 DirectDeposit
     oap_account_add_suppressed($account, 536);
-    oap_account_add_suppressed($account, 537);
   }
 }
 
@@ -4405,8 +4403,8 @@ function oa_portal_p3_w4_form($form_state) {
   // $form[474]['dob'] = date_popup('Date of Birth');
     // $form[233]['dob']['#date_year_range'] = '-80:-14';
 
-  $form[474]['rdo_marital_status'] = radios('', array('Single', 'Married', 'Married, but withhold at higher Single rate'), TRUE);
-  $form[474]['marital_status']['#description'] = t('<strong>Note:</strong> If married, but legally seperated, or spouse is a nonresident alien, check the "Single" box');
+  $form[474]['marital_status'] = radios('', array('single' => t('Single'), 'married' => t('Married'), 'married_withhold' => t('Married, but withhold at higher Single rate')));
+  $form[474]['marital_status']['#description'] = t('<strong>Note:</strong> If married, but legally seperated, or spouse is a nonresident alien, choose the "Single" box');
   $form[474]['different_name'] = markup('<p><strong>If your last name differs from that shown on your social security card, check here.<br/>You must call 1-800-772-1213 for a replacement.</strong></p>');
   $form[474]['totalclaims'] = textfield('Total number of allowances you are claiming', 6);
   $form[474]['addtnlamount'] = textfield('Additional amount, if any, you want withheld from each paycheck', 6);
@@ -4420,6 +4418,10 @@ function oa_portal_p3_w4_form($form_state) {
   $form[474]['lastname'] = hidden($candidate->profile->lname);
   $form[474]['address'] = hidden($candidate->profile->address);
   $form[474]['citystatezip'] = hidden($candidate->profile->city .', '. $candidate->profile->state .' '. $candidate->profile->postal);
+  $form[474]['appsignature'] = hidden($candidate->profile->name, "Applicant Signature");
+  $form[474]['empnamenadaddress'] = hidden('');
+  $form[474]['officecode'] = hidden('');
+  $form[474]['ein'] = hidden('');
   return $form;
 }
 
@@ -4427,21 +4429,11 @@ function oa_portal_p3_w4_form($form_state) {
  * Form submission callback for W4
  */
 function oa_portal_p3_w4_form_submit($form, &$form_state) {
-  /**
-   * @TODO Post 474 2011 W4 to UCM
-   *
-   * firstnameandinitial - From Profile
-   * lastname - From Profile
-   * ssn
-   * address - From Profile
-   * citystatezip - From Profile
-   * @TODO Note: missing from PDF doc: Marital status (marital_status above)
-   * totalclaims
-   * addtnlamount
-   * exempt
-   */
+  global $user;
+  $account = user_load($user->uid);
+  unset($form_state['values'][474]['chk_certify']);
+  $form_state['values'][474]['apptimestamp'] = date('m-d-Y g:i:s A');
   $form_state['values'][474]['ssn'] = implode($form_state['values'][474]['ssn'], '-');
-  dsm($form_state['values'][474], 'Process & post 477 to UCM');
   if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 474, $form_state['values'][474])) {
     $form_state['redirect'] = 'portal/p3/i9';
   }
@@ -4493,25 +4485,6 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid, $account->uid);
-
-  /**
-   * lastname - From Profile
-   * firstname - From Profile
-   * initial - From Profile
-   * maiden
-   * address - From Profile
-   * apt - From Profile
-   * dob
-   * city - From Profile
-   * state - From Profile
-   * zip - From Profile
-   * ssn
-   * citizentype
-   * expiry - @TODO Missing from PDF: Expiration date of employment status
-   * appsignature - From Profile
-   * apptimestamp - current date/time
-   */
-
   // No initial for now. Not in RMax profile.
   $form_state['values'][461]['initial'] = '';
   $form_state['values'][461]['dob'] = date('m/d/Y', strtotime($form_state['values'][461]['dob']));
@@ -4519,8 +4492,6 @@ function oa_portal_p3_i9_form_submit($form, &$form_state) {
   $form_state['values'][461]['apptimestamp'] = date('m-d-Y g:i:s A');
   $form_state['values'][461]['ssn'] = implode($form_state['values'][461]['ssn'], '-');
   unset($form_state['values'][461]['certify'], $form_state['values'][461]['verification']);
-
-  dsm($form_state['values'][461], 'Process & post 461 to UCM');
   if ($success = oa_portal_ucm_createpdfform($account->rmaxid, 461, $form_state['values'][461])) {
     $form_state['redirect'] = 'portal/p3/eeo';
   }
@@ -4676,6 +4647,10 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
         elseif (in_array($ek, array('harassment', 'safety', 'stock_plan')) && !count(array_intersect(array(446), $form['#formtypes_open']))) {
           $form[$ek] = fieldset_locked($element['#title']);
         }
+        // Otherwise
+        // else {
+        //   dsm($element, $ek .' - Special case fieldset. Did not close.');
+        // }
       }
     }
 
