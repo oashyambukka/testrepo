@@ -155,6 +155,7 @@ function oa_portal_p1_application_form($form_state) {
   to On Assignment to any customer of On Assignment for consideration of employment at customer facility.</p>';
   
   $form['organizations']['application_terms'] = terms($terms_desc);
+  $form['organizations']['application_terms']['#pdf_title'] = 'Terms';
   return $form;
 }
 
@@ -3811,38 +3812,30 @@ function oa_portal_p2_professional_orgs_form($form_state) {
  */
 function oa_portal_p2_licensure_certs_form($form_state) {
   global $user;
-  $form = array();
-  $form['#attributes'] = array('enctype' => "multipart/form-data");
-
-  $form['lc'] = fieldset('Licensure/Certification');
-  $form['lc']['#description'] = t('Upload a copy of your licensure/certification. .pdf, .jpg and .doc are acceptable formats.');
-
-  $all_cl = oa_portal_get_category_formids('Certifications') + oa_portal_get_category_formids('Licensure');
-
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid, $account->uid);
-
+  $form = array();
+  $form['#attributes'] = array('enctype' => "multipart/form-data");
+  $form['lc'] = fieldset('Licensure/Certification');
+  $form['lc']['#description'] = t('Upload a copy of your licensure/certification. .pdf, .jpg and .doc are acceptable formats.');
+  $all_cl = oa_portal_get_category_formids('Certifications') + oa_portal_get_category_formids('Licensure');
   $options = array();
   foreach ($candidate->p['p2']['licensure_certs']['#formtypes_open'] AS $ft) {
     $options['Required'][$ft] = $all_cl[$ft];
     unset($all_cl[$ft]);
   }
-
   $options['Other'][61] = t('Other');
   $options['Other'] = $options['Other'] + $all_cl;
-
   $form['lc']['lc_licensure'] = select('Select which certificate you are uploading', $options, FALSE);
   unset($form['lc']['lc_licensure']['#required']);
   unset($form['lc']['lc_licensure']['#rules']);
   $form['lc']['upload'] = array(
     '#type' => 'file',
     '#title' => t('Upload file'),
-//    '#required' => TRUE,
     '#size' => 80,
   );
   $form['lc']['chk_fax_preference'] = checkbox('Check this box if you prefer to fax copies of your licensures/certifications');
   $form['lc']['fax'] = markup('<div id="cover-letter-box" class="oap-fax-download set-hide">Please include this cover letter and fax it to (818) 555-5555. <a href="/portal/createcoversheet/" id="cover-letter-link">Cover Letter</a></div>');
-
   $form['#docs'] = $candidate->get_docs_not_missing($candidate->p['p2']['licensure_certs']['#formtypes']);
   if (is_array($form['#docs']) && count($form['#docs'])) {
     $form['docs'] = array(
@@ -3850,7 +3843,6 @@ function oa_portal_p2_licensure_certs_form($form_state) {
       '#weight' => 1997,
     );
   }
-
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Finalize'),
@@ -3916,6 +3908,7 @@ function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
     else {
       drupal_set_message(t('An error occured. Please try again.'));
     }
+
     // Delay a bit so we'll catch the files on the way back. 
     sleep(6);
   }
@@ -4055,7 +4048,6 @@ function oa_portal_p2_capabilities_form_submit($form, &$form_state) {
   $candidate = get_candidate($account->rmaxid, $account->uid);
   $body_string = oa_portal_pdf_section_to_string($form_state['values'][5], $form[5]);
   $html_string = theme('oap_pdf_wrapper', $candidate, $form[5]['#title'], $body_string);
-  dsm($html_string, 'PDF string');
   $result = oa_portal_submitdrupalform($account->rmaxid, 5, $html_string);
   if ($result->StatusInfo->statusCode === 0) {
     $form_state['redirect'] = 'portal/p2/policies';
@@ -4352,7 +4344,7 @@ function oa_portal_p3_paycheck_form($form_state) {
  * Form submission callback for Paycheck Method
  */
 function oa_portal_p3_paycheck_form_validate($form, &$form_state) {
-  if ($form_state['values']['paycheck_delivery']['delivery_option'] == 'directdeposit') { 
+  if ($form_state['values']['paycheck_delivery']['delivery_option'] == 'directdeposit') {
     foreach(array('bank_name', 'bank_city', 'bank_state', 'bank_phone', 'bank_account', 'bank_route', 'account_type') AS $k) {
       if (!$form_state['values'][536][$k]) {
         form_set_error('536]['. $k, 'You must specify a value for '. $form[536][$k]['#title']);
@@ -4368,7 +4360,7 @@ function oa_portal_p3_paycheck_form_submit($form, &$form_state) {
   global $user;
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid, $account->uid);
-  
+
   if ($form_state['values']['paycheck_delivery']['delivery_option'] == 'directdeposit') {
     $body_string = oa_portal_pdf_section_to_string($form_state['values'][536], $form[536]);
     $html_string = theme('oap_pdf_wrapper', $candidate, 'Direct Deposit', $body_string);
@@ -4397,11 +4389,11 @@ function oa_portal_p3_w4_form($form_state) {
   $form = array();
   $form[474] = fieldset('W4');
 
-  $form[474]['#description'] = 'If you would like to reference the W4 Personal Allowances Worksheet, Deductions and Adjustments Worksheet, and Two-Earners/Multiple Jobs Worksheet please <a href="to-do">click here</a>.';
+  $form[474]['#description'] = 'If you would like to reference the W4 Personal Allowances Worksheet, Deductions and Adjustments Worksheet, and Two-Earners/Multiple Jobs Worksheet please <a href="http://www.irs.gov/pub/irs-pdf/fw4.pdf" target="_blank">click here</a>.';
 
   $form[474]['ssn'] = textfield_ssn();
   // $form[474]['dob'] = date_popup('Date of Birth');
-    // $form[233]['dob']['#date_year_range'] = '-80:-14';
+  // $form[474]['dob']['#date_year_range'] = '-80:-14';
 
   $form[474]['marital_status'] = radios('', array('single' => t('Single'), 'married' => t('Married'), 'married_withhold' => t('Married, but withhold at higher Single rate')));
   $form[474]['marital_status']['#description'] = t('<strong>Note:</strong> If married, but legally seperated, or spouse is a nonresident alien, choose the "Single" box');
@@ -4414,9 +4406,9 @@ function oa_portal_p3_w4_form($form_state) {
   $form[474]['exempt'] = textfield('If you meet both conditions, write "Exempt" here', 6);
   $form[474]['exempt']['#required'] = FALSE;
   $form[474]['chk_certify'] = checkbox('Under penalties of perjury, I declare that I have examined this certificate and, to the best of my knowledge and belief, it is true, correct, and complete.');
-  $form[474]['firstnameandinitial'] = hidden($candidate->profile->fname);
+  $form[474]['firstname'] = hidden($candidate->profile->fname);
   $form[474]['lastname'] = hidden($candidate->profile->lname);
-  $form[474]['address'] = hidden($candidate->profile->address);
+  $form[474]['address'] = hidden($candidate->profile->addressline1 .' '. $candidate->profile->addressline2 .' '. $candidate->profile->addressline3);
   $form[474]['citystatezip'] = hidden($candidate->profile->city .', '. $candidate->profile->state .' '. $candidate->profile->postal);
   $form[474]['appsignature'] = hidden($candidate->profile->name, "Applicant Signature");
   $form[474]['empnamenadaddress'] = hidden('');
@@ -4637,6 +4629,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
             ) {
             // Set this fieldset as empty and locked
             $form[$ek] = fieldset_locked($element['#title']);
+            // dsm($element, $ek .' - Closed special case fieldset. Not open.');
           }
         }
         // Paycheck - 536
@@ -4654,7 +4647,6 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
       }
     }
 
-    // @TODO If all formtypes are submitted, expose continue button only
     $something_to_submit = FALSE;
     foreach ($form AS $ek => $element) {
       if ($element['#type'] == 'fieldset') {
