@@ -25,10 +25,6 @@ function oa_portal_page() {
     $s_completed = 0;
     $s_ct = 0;
     
-    // Check completion date for compliance
-    if ($p[$pk]['#status'] == 'locked') {
-      $p_completed++;
-    }
     foreach (element_children($phase) AS $sk) {
       $section = $phase[$sk];
       $s_ct++;
@@ -38,7 +34,7 @@ function oa_portal_page() {
      }
      else {
         $status = $candidate->get_section_status($pk, $sk);
-        if ($status == 'closed' || $status == 'locked') {
+        if (in_array($status, array('closed', 'locked', 'under-review'))) {
           $s_completed++;
         }
         $t = ($status == 'locked') ? '<span>'. $section['#title'] .'</span>' : l($section['#title'], 'portal/'. $pk .'/'. $sk);
@@ -47,6 +43,10 @@ function oa_portal_page() {
     }
 
     $output .= theme('oap_phase', $pk, $phase['#title'], $phase['#status'], implode("\n", $rows), "$s_completed of $s_ct");
+
+    if ($p[$pk]['#status'] == 'locked' || $s_completed == $s_ct) {
+      $p_completed++;
+    }
   }
   $output .= '<strong><em>('. $p_completed .' of 3 complete)</em></strong>';
   return $output;
@@ -60,7 +60,6 @@ function oa_portal_docs_page() {
   $account = user_load($user->uid);
   $candidate = get_candidate($account->rmaxid, $account->uid);
   $docs = $candidate->get_all_docs();
-//  dsm($docs, 'docs');
   $items = array();
   foreach ($docs AS $doc) {
     $items[] = oa_portal_doc_link($doc);
@@ -120,7 +119,7 @@ function oa_portal_download_file($dDocName) {
   $headers = array(
     'Content-Type: ' . $file->FileInfo->dFormat,
     'Content-Length: ' . $file->FileInfo->dFileSize,
-    'Content-Disposition: attachment; filename="' . $file->FileInfo->dOriginalName .'"',
+    'Content-Disposition: attachment; filename="' . $file->FileInfo->dDocTitle .'"',
   );
   foreach ($headers as $header) {
     $header = preg_replace('/\r?\n(?!\t| )/', '', $header);

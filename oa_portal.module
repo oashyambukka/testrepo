@@ -399,7 +399,7 @@ function oa_portal_forms_info() {
       '#title' => t('Paycheck Method'),
       '#phase' => 3,
       '#status' => '',
-      '#formtypes' => array(536, 537),
+      '#formtypes' => array(536),
     ),
     'w4' => array(
       '#title' => t('W4'),
@@ -854,7 +854,12 @@ function oa_portal_get_category_formids($form_category) {
  */
 function oa_portal_doc_link($doc) {
   $title = preg_split('/ - /', $doc->dDocTitle);
-  $t = ($title[0]) ? $title[0] : $doc->dDocTitle;
+  if (count($title) == 3) {
+    $t = $title[0] .' - '. $title[1];
+  }
+  else {
+    $t = ($title[0]) ? $title[0] : $doc->dDocTitle;
+  }
   return l($t, 'portal/file/'. $doc->dDocName);
 }
 

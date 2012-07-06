@@ -7,7 +7,8 @@
   <title><?php print $formtitle; ?></title>
 </head>
 
-<body>
+<body class="form">
+<div id="logo">&nbsp;</div>
 <div id="wrapper">
   <div class="header">
     <div class="formTitle"><?php print $formtitle; ?></div>
