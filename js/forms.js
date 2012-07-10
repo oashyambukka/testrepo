@@ -26,7 +26,9 @@ Drupal.behaviors.p2_capabilities = function (context) {
 Drupal.behaviors.p2_medical = function (context) {
   // If fax pref box checked, hide file upload.
   $('input[name="tb[tb_option]"]').change(function() {
-    $('#edit-tb-tb-file-wrapper').parent().show();
+    if (!$('#edit-tb-tb-fax').attr('checked')) {
+      $('#edit-tb-tb-file-wrapper').parent().show();
+    }
     $('#edit-tb-tb-fax-wrapper').parent().show();
   });
   $('#edit-tb-tb-fax').change(function() {
@@ -77,7 +79,24 @@ Drupal.behaviors.p2_medical = function (context) {
     }
   });
 
-  $('input[name="varivax[varivax_choice]"]').change(function() {
+
+  $('input[name="cls[cls_option]"]').change(function() {
+    if (!$('#edit-cls-cls-fax').attr('checked')) {
+      $('#edit-cls-cls-file-wrapper').parent().show();
+    }
+    $('#edit-cls-cls-fax-wrapper').parent().show();
+  });
+  $('#edit-cls-cls-fax').change(function() {
+    if ($(this).attr('checked')) {
+      $('#edit-cls-cls-file-wrapper').parent().hide();
+    }
+    else {
+      $('#edit-cls-cls-file-wrapper').parent().show();
+    }
+  });
+
+
+  $('input[name="varivax[varivax_option]"]').change(function() {
     if (!$('#edit-varivax-varivax-fax').attr('checked')) {
       $('#edit-varivax-varivax-file-wrapper').parent().show();
     }
@@ -101,38 +120,44 @@ Drupal.behaviors.p2_medical = function (context) {
     $('#edit-hepb-declination-wrapper').parent().parent().hide();
     $('#edit-hepb-hepb-fax-wrapper').parent().show();
 
-    if ($(this).val() == 'hep123') {
-      $('#edit-hepb-hepb-file-1-wrapper').parent().show();
-      $('#edit-hepb-hepb-file-2-wrapper').parent().show();
-      $('#edit-hepb-hepb-file-3-wrapper').parent().show();
-    }
-    else if ($(this).val() == '274') {
-      $('#edit-hepb-hepb-file-274-wrapper').parent().show();
-    }
-    else if ($(this).val() == '275') {
-      $('#edit-hepb-declination-wrapper').parent().parent().show();
+    if (!$('#edit-hepb-hepb-fax').attr('checked')) {
+      if ($(this).val() == 'hep123') {
+        console.log('Showing 123');
+        $('#edit-hepb-hepb-file-1-wrapper').parent().show();
+        $('#edit-hepb-hepb-file-2-wrapper').parent().show();
+        $('#edit-hepb-hepb-file-3-wrapper').parent().show();
+      }
+      else if ($(this).val() == '274') {
+        console.log('Showing 274');
+        $('#edit-hepb-hepb-file-274-wrapper').parent().show();
+      }
+      else if ($(this).val() == '275') {
+        console.log('Showing 275');
+        $('#edit-hepb-declination-wrapper').parent().parent().show();
+        $('#edit-hepb-hepb-fax-wrapper').parent().hide();
+      }
     }
   });
 
   $('#edit-hepb-hepb-fax').change(function() {
-    if ($(this).attr('checked')) {
+    if (!$(this).attr('checked')) {
       if ($('input[name="hepb[hepb_option]"]:checked').val() == 'hep123') {
         $('#edit-hepb-hepb-file-1-wrapper').parent().show();
         $('#edit-hepb-hepb-file-2-wrapper').parent().show();
         $('#edit-hepb-hepb-file-3-wrapper').parent().show();
       }
       else if ($('input[name="hepb[hepb_option]"]:checked').val() == 274) {
-        $('#edit-hepb-hepb-file-274').show();
+        $('#edit-hepb-hepb-file-274-wrapper').parent().show();
       }
-      else if ($('input[name="hepb[hepb_option]"]:checked').val() == 275) {
-        $('#edit-hepb-declination-wrapper').parent().parent().show();
-      }
+      // else if ($('input[name="hepb[hepb_option]"]:checked').val() == 275) {
+      //   $('#edit-hepb-declination-wrapper').parent().parent().show();
+      // }
     }
     else {
-      $('#edit-hepb-hepb-file-1').parent().hide();
-      $('#edit-hepb-hepb-file-2').parent().hide();
-      $('#edit-hepb-hepb-file-3').parent().hide();
-      $('#edit-hepb-hepb-file-274').parent().hide();
+      $('#edit-hepb-hepb-file-1-wrapper').parent().hide();
+      $('#edit-hepb-hepb-file-2-wrapper').parent().hide();
+      $('#edit-hepb-hepb-file-3-wrapper').parent().hide();
+      $('#edit-hepb-hepb-file-274-wrapper').parent().hide();
     }
   });
 
