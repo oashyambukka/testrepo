@@ -4213,11 +4213,9 @@ function oa_portal_p2_medical_form($form_state) {
     296 => 'Varicella Immunity Stmt/Hist. of Disease',
     295 => 'Varicella Titer'));
 
-  // @TODO Show when varivax_option is specified
   $form['varivax']['varivax_file'] = medical_file('Certificate');
-  $form['varivax']['tb_fax'] = fax_preference_checkbox();
+  $form['varivax']['varivax_fax'] = fax_preference_checkbox();
 
-  // @TODO Which PDF(s) for Hepatitis B?
   // #1: Hep B Series 1, 2 & 3 - 270, 271, 272
   // #2: Hep B Antigen Titer - 274
   // #3: Declination - 275
@@ -4229,17 +4227,12 @@ function oa_portal_p2_medical_form($form_state) {
     274 => 'Hep B Titer',
     275 => 'Hep B Declination'));
 
-  // @TODO Show when hepb_option = hep123
+
   $form['hepb']['hepb_file_1'] = medical_file('Hep B Series 1 Certificate');
-  // @TODO Show when hepb_option = hep123
   $form['hepb']['hepb_file_2'] = medical_file('Hep B Series 2 Certificate');
-  // @TODO Show when hepb_option = hep123
   $form['hepb']['hepb_file_3'] = medical_file('Hep B Series 3 Certificate');
-  // @TODO Show when hepb_option = 274
   $form['hepb']['hepb_file_274'] = medical_file('Hep B Titer Certificate');
   $form['hepb']['hepb_fax'] = fax_preference_checkbox();
-  
-  // @TODO Hide this field unless cls_option is specified
   $form['hepb']['declination'] = acknowledgement(
     'Hepatitis B Vaccination Declination - Please complete Bloodborne Training before...',
     'I acknowledge, understand, and accept this Agreement/Statement. *This is a reg..'
@@ -4711,7 +4704,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
 
 
     // Add settings for Autosaving
-    if ($form_id != 'oa_portal_p1_checklist_form') {
+    if ($form_id != 'oa_portal_p1_checklist_form' && $form_id != 'oa_portal_p2_medical_form') {
       $path = drupal_get_path('module', 'oa_portal');
       drupal_add_js($path . '/js/jquery.field.js');
       drupal_add_js($path . '/js/autosave.js');

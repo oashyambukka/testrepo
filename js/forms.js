@@ -24,7 +24,121 @@ Drupal.behaviors.p2_capabilities = function (context) {
   // @TODO
 }
 Drupal.behaviors.p2_medical = function (context) {
+  // If fax pref box checked, hide file upload.
+  $('input[name="tb[tb_option]"]').change(function() {
+    $('#edit-tb-tb-file-wrapper').parent().show();
+    $('#edit-tb-tb-fax-wrapper').parent().show();
+  });
+  $('#edit-tb-tb-fax').change(function() {
+    if ($(this).attr('checked')) {
+      $('#edit-tb-tb-file-wrapper').parent().hide();
+    }
+    else {
+      $('#edit-tb-tb-file-wrapper').parent().show();
+    }
+  });
+
+  $('input[name="mmr[mmr_option]"]').change(function() {
+    $('#edit-mmr-mmr-file-284-wrapper').parent().hide();
+    $('#edit-mmr-mmr-file-285-wrapper').parent().hide();
+    $('#edit-mmr-mmr-file-261-wrapper').parent().hide();
+    $('#edit-mmr-mmr-file-262-wrapper').parent().hide();
+    $('#edit-mmr-mmr-fax-wrapper').parent().show();
+    if (!$('#edit-mmr-mmr-fax').attr('checked')) {
+      if ($(this).val() == 'mmr') {
+        $('#edit-mmr-mmr-file-261-wrapper').parent().show();
+        $('#edit-mmr-mmr-file-262-wrapper').parent().show();
+      }
+      else if ($(this).val() == 'rubella_titer') {
+        $('#edit-mmr-mmr-file-284-wrapper').parent().show();
+        $('#edit-mmr-mmr-file-285-wrapper').parent().show();
+      }
+    }
+  });
+
+  $('#edit-mmr-mmr-fax').change(function() {
+    if ($(this).attr('checked')) {
+      $('#edit-mmr-mmr-file-284-wrapper').parent().hide();
+      $('#edit-mmr-mmr-file-285-wrapper').parent().hide();
+      $('#edit-mmr-mmr-file-261-wrapper').parent().hide();
+      $('#edit-mmr-mmr-file-262-wrapper').parent().hide();
+    }
+    else {
+      if (!$('#edit-mmr-mmr-fax').attr('checked')) {
+        if ($('input[name="mmr[mmr_option]"]:checked').val() == 'mmr') {
+          $('#edit-mmr-mmr-file-261-wrapper').parent().show();
+          $('#edit-mmr-mmr-file-262-wrapper').parent().show();
+        }
+        else if ($('input[name="mmr[mmr_option]"]:checked').val() == 'rubella_titer') {
+          $('#edit-mmr-mmr-file-284-wrapper').parent().show();
+          $('#edit-mmr-mmr-file-285-wrapper').parent().show();
+        }
+      }
+    }
+  });
+
+  $('input[name="varivax[varivax_choice]"]').change(function() {
+    if (!$('#edit-varivax-varivax-fax').attr('checked')) {
+      $('#edit-varivax-varivax-file-wrapper').parent().show();
+    }
+    $('#edit-varivax-varivax-fax-wrapper').parent().show();
+  });
+  $('#edit-varivax-varivax-fax').change(function() {
+    if ($(this).attr('checked')) {
+      $('#edit-varivax-varivax-file-wrapper').parent().hide();
+    }
+    else {
+      $('#edit-varivax-varivax-file-wrapper').parent().show();
+    }
+  });
+
+
+  $('input[name="hepb[hepb_option]"]').change(function() {
+    $('#edit-hepb-hepb-file-1-wrapper').parent().hide();
+    $('#edit-hepb-hepb-file-2-wrapper').parent().hide();
+    $('#edit-hepb-hepb-file-3-wrapper').parent().hide();
+    $('#edit-hepb-hepb-file-274-wrapper').parent().hide();
+    $('#edit-hepb-declination-wrapper').parent().parent().hide();
+    $('#edit-hepb-hepb-fax-wrapper').parent().show();
+
+    if ($(this).val() == 'hep123') {
+      $('#edit-hepb-hepb-file-1-wrapper').parent().show();
+      $('#edit-hepb-hepb-file-2-wrapper').parent().show();
+      $('#edit-hepb-hepb-file-3-wrapper').parent().show();
+    }
+    else if ($(this).val() == '274') {
+      $('#edit-hepb-hepb-file-274-wrapper').parent().show();
+    }
+    else if ($(this).val() == '275') {
+      $('#edit-hepb-declination-wrapper').parent().parent().show();
+    }
+  });
+
+  $('#edit-hepb-hepb-fax').change(function() {
+    if ($(this).attr('checked')) {
+      if ($('input[name="hepb[hepb_option]"]:checked').val() == 'hep123') {
+        $('#edit-hepb-hepb-file-1-wrapper').parent().show();
+        $('#edit-hepb-hepb-file-2-wrapper').parent().show();
+        $('#edit-hepb-hepb-file-3-wrapper').parent().show();
+      }
+      else if ($('input[name="hepb[hepb_option]"]:checked').val() == 274) {
+        $('#edit-hepb-hepb-file-274').show();
+      }
+      else if ($('input[name="hepb[hepb_option]"]:checked').val() == 275) {
+        $('#edit-hepb-declination-wrapper').parent().parent().show();
+      }
+    }
+    else {
+      $('#edit-hepb-hepb-file-1').parent().hide();
+      $('#edit-hepb-hepb-file-2').parent().hide();
+      $('#edit-hepb-hepb-file-3').parent().hide();
+      $('#edit-hepb-hepb-file-274').parent().hide();
+    }
+  });
+
+
 }
+
 Drupal.behaviors.p2_competency = function (context) {
   // @TODO Store click action of external link
 }
