@@ -8,7 +8,6 @@ include_once('oa_portal.theme.inc');
  */
 function oa_portal_init() {
   global $user;
-
   $path = drupal_get_path('module', 'oa_portal');
   drupal_add_css($path . '/css/misc.css');
   if (arg(0) == 'portal') {
