@@ -4153,10 +4153,16 @@ function oa_portal_p2_medical_form($form_state) {
   $form['#attributes'] = array('enctype' => "multipart/form-data");
 
   $form[263] = fieldset('Authorization For Use Or Disclosure Of Health Information');
-  $form[263]['disclosure'] = acknowledgement('I authorize the use or disclosure of my health information...');
+  $form[263]['disclosure'] = acknowledgement('I authorize the use or disclosure of my health information as described below.
+    <br />1. Providers Authorized to Disclose/Release Information
+    <br />All relevant providers of information as described in Item 3 below, OR specific person(s)/provider(s) or class of persons/providers authorized to use or disclose the information, i.e., name of Provider, lab, etc. that will disclose the information.
+    <br />2. Person(s) or class of persons authorized to receive the information');
   $form[263]['providers'] = textfield('As described in section 1, list specific providers of information if applicable', 80);
+  $form[263]['providers']['#required'] = FALSE;
   $form[263]['info'] = textfield('As described in section 3, list specific information that may be used or disclosed if applicable', 80);
+  $form[263]['info']['#required'] = FALSE;
   $form[263]['dates'] = textfield('As described in section 7, list date or event per 3) if applicable', 80);
+  $form[263]['dates']['#required'] = FALSE;
   
   // @TODO Add help tooltip
   $form['tb'] = fieldset('TB');
@@ -4194,12 +4200,9 @@ function oa_portal_p2_medical_form($form_state) {
     19 => 'BLS',
     37 => 'CPR',
     13 => 'ACLS'));
-
-  // @TODO Hide this field until cls_option is specified
   $form['cls']['cls_file'] = medical_file('Certificate');
   $form['cls']['cls_fax'] = fax_preference_checkbox();
-  
-  // @TODO Which PDF(s) for Varivax/Varicella?
+
   // Varivax/Varicella PDFs: 295, 296, 297, 298, 299
   // #1: Varivax Immunization #1 - 298
   // #2: Varicella Immunity Stmt / Hist of Disease - 296
@@ -4208,7 +4211,7 @@ function oa_portal_p2_medical_form($form_state) {
   // 299 ?
 
   $form['varivax'] = fieldset('Varivax/Varicella');
-  $form['varivax']['varivax_choice'] = radios('', array(
+  $form['varivax']['varivax_option'] = radios('', array(
     298 => 'Varivax Vaccine #1',
     296 => 'Varicella Immunity Stmt/Hist. of Disease',
     295 => 'Varicella Titer'));
@@ -4237,6 +4240,8 @@ function oa_portal_p2_medical_form($form_state) {
     'Hepatitis B Vaccination Declination - Please complete Bloodborne Training before...',
     'I acknowledge, understand, and accept this Agreement/Statement. *This is a reg..'
   );
+  $form['hepb']['declination']['#required'] = FALSE;
+  unset($form['hepb']['declination']['#rules']);
   $form['hepb']['declination']['#prefix'] = '<div class="set-hide">' . $form['hepb']['declination']['#prefix'];
   $form['hepb']['declination']['#suffix'] = $form['hepb']['declination']['#suffix'] .'</div>';
   return $form;
@@ -4246,14 +4251,81 @@ function oa_portal_p2_medical_form($form_state) {
  * Form submission callback for Medical Authorization and Disclosures
  */
 function oa_portal_p2_medical_form_submit($form, &$form_state) {
+  global $user;
+  $account = user_load($user->uid);
+  $candidate = get_candidate($account->rmaxid, $account->uid);
+  $error = FALSE;
+
+  //  Disclosures: Post 263 Health Disclosure Agreement to UCM
+  $body_string = oa_portal_pdf_section_to_string($form_state['values'][263], $form[263]);
+  $html_string = theme('oap_pdf_wrapper', $candidate, $form[263]['#title'], $body_string);
+  $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
+  if ($result->StatusInfo->statusCode !== 0) {
+    $error = TRUE;
+  }
+
+  // TB
+  if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['tb_file'])) {
+    $filepath = $_FILES['files']['tmp_name']['tb_file'];
+    $filesize = $_FILES['files']['size']['tb_file'];
+    $filename = $_FILES['files']['name']['tb_file'];
+    $handle = fopen($filepath, "r");
+    $contents = fread($handle, $filesize);
+    fclose($handle);
+
+    $params = array(
+      'dDocName' => $account->rmaxid .'_'. $form_state['values']['tb']['tb_option'],
+      'dDocTitle' => $form_state['values']['tb']['tb_option'] .' - '. $account->rmaxid,
+      'dDocType' => 'Rmax',
+      'dDocAuthor' => 'weblogic',
+      'dSecurityGroup' => 'Form',
+      'dDocAccount' => 'Recruit/QA',
+      'xContentType' => 'Form',
+      'xFormType' => $form_state['values']['tb']['tb_option'],
+      'xRM_ID' => $account->rmaxid,
+      'xStatus' => 'Pending Review',
+      'xComments' => '',
+      'xRejectReason' => '',
+      'xRejectOther' => '',
+      'xSuccessAudit' => '',
+    );
+    $params['primaryFile'] = array(
+      'fileName'=> $_FILES['files']['name']['tb_file'],
+      'fileContent' => $contents,
+    );
+    $result = oa_portal_soap('oacheckin', $params);
+    if ($result->oacheckinResult->StatusInfo->statusCode === 0) {
+      drupal_set_message(t('Your file upload was successful.'));
+      if ($form_state['values']['tb']['tb_option'] == 291) {
+        oap_account_add_suppressed(&$account, 288);
+      }
+      elseif ($form_state['values']['tb']['tb_option'] == 288) {
+        oap_account_add_suppressed(&$account, 291);
+      }
+    }
+    else {
+      $error = TRUE;
+      drupal_set_message(t('An error occured. Please try again.'));
+    }
+  }
+  elseif ($form_state['values']['tb']['tb_fax'] == 'on') {
+    oap_account_add_suppressed(&$account, 291);
+    oap_account_add_suppressed(&$account, 288);
+  }
+
+  // MMR
   // @TODO Upload ['mmr']['mmr_file'] to 261 if ['mmr']['mmr_option'] == 'mmr'
   // @TODO Upload ['mmr']['mmr_file'] to 284 if ['mmr']['mmr_option'] == 'rubella_titer'
-  /**
-   * @TODO Post 263 Health Disclosure Agreement to UCM
-   * @TODO needs PDF fields
-   * 
-   */
-  dsm($form_state['values'][263], 'Process & post 263 to UCM');
+
+  // CLS
+
+  // Varivax
+
+  // Hep B
+
+
+  // 291, 298
+
 
   /**
    * @TODO Post Everything else to UCM
