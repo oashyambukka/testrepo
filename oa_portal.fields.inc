@@ -266,13 +266,14 @@ function initial($description) {
   return $element;
 }
 
-function medical_file($title) {
+function medical_file($title, $key = NULL) {
   return array(
     '#type' => 'file',
     '#title' => t($title),
     '#size' => 80,
     '#prefix' => '<div class="medical-file set-hide">',
     '#suffix' => '</div>',
+    '#name' => ($key) ? 'files['. $key .']' : NULL,
   );
 }
 

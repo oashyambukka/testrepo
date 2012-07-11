@@ -4136,7 +4136,7 @@ function oa_portal_p2_policies_form_submit($form, &$form_state) {
     if ($result->StatusInfo->statusCode !== 0) {
       $error = TRUE;
     }
-  }  
+  }
   if ($error) {
     drupal_set_message('An error occured. Please try again.');
   }
@@ -4172,7 +4172,7 @@ function oa_portal_p2_medical_form($form_state) {
     291 => 'TB Vaccine Stage 1 & Stage 2',
     288 => 'Negative Chest X-ray (every 3 years)',
     ));
-  $form['tb']['tb_file'] = medical_file('Certificate');
+  $form['tb']['tb_file'] = medical_file('Certificate', 'tb_file');
   $form['tb']['tb_fax'] = fax_preference_checkbox();
 
   // @TODO Add help tooltip
@@ -4184,10 +4184,10 @@ function oa_portal_p2_medical_form($form_state) {
     'rubella_titer' => 'Rubela Titer / Rubeola Titer / Mumps Titer',
     ));
 
-  $form['mmr']['mmr_file_261'] = medical_file('MMR #1 Certificate');
-  $form['mmr']['mmr_file_262'] = medical_file('MMR #2 Certificate');
-  $form['mmr']['mmr_file_284'] = medical_file('Rubella Titer Certificate');
-  $form['mmr']['mmr_file_285'] = medical_file('Rubeola Titer Certificate');
+  $form['mmr']['mmr_file_261'] = medical_file('MMR #1 Certificate', 'mmr_file_261');
+  $form['mmr']['mmr_file_262'] = medical_file('MMR #2 Certificate', 'mmr_file_262');
+  $form['mmr']['mmr_file_284'] = medical_file('Rubella Titer Certificate', 'mmr_file_284');
+  $form['mmr']['mmr_file_285'] = medical_file('Rubeola Titer Certificate', 'mmr_file_285');
   $form['mmr']['mmr_fax'] = fax_preference_checkbox();
 
   // @TODO Which PDF(s) for Cardiac Life Support?
@@ -4200,7 +4200,7 @@ function oa_portal_p2_medical_form($form_state) {
     19 => 'BLS',
     37 => 'CPR',
     13 => 'ACLS'));
-  $form['cls']['cls_file'] = medical_file('Certificate');
+  $form['cls']['cls_file'] = medical_file('Certificate', 'cls_file');
   $form['cls']['cls_fax'] = fax_preference_checkbox();
 
   // Varivax/Varicella PDFs: 295, 296, 297, 298, 299
@@ -4216,7 +4216,7 @@ function oa_portal_p2_medical_form($form_state) {
     296 => 'Varicella Immunity Stmt/Hist. of Disease',
     295 => 'Varicella Titer'));
 
-  $form['varivax']['varivax_file'] = medical_file('Certificate');
+  $form['varivax']['varivax_file'] = medical_file('Certificate', 'varivax_file');
   $form['varivax']['varivax_fax'] = fax_preference_checkbox();
 
   // #1: Hep B Series 1, 2 & 3 - 270, 271, 272
@@ -4231,10 +4231,10 @@ function oa_portal_p2_medical_form($form_state) {
     275 => 'Hep B Declination'));
 
 
-  $form['hepb']['hepb_file_1'] = medical_file('Hep B Series 1 Certificate');
-  $form['hepb']['hepb_file_2'] = medical_file('Hep B Series 2 Certificate');
-  $form['hepb']['hepb_file_3'] = medical_file('Hep B Series 3 Certificate');
-  $form['hepb']['hepb_file_274'] = medical_file('Hep B Titer Certificate');
+  $form['hepb']['hepb_file_270'] = medical_file('Hep B Series 1 Certificate', 'hepb_file_270');
+  $form['hepb']['hepb_file_271'] = medical_file('Hep B Series 2 Certificate', 'hepb_file_271');
+  $form['hepb']['hepb_file_272'] = medical_file('Hep B Series 3 Certificate', 'hepb_file_272');
+  $form['hepb']['hepb_file_274'] = medical_file('Hep B Titer Certificate', 'hepb_file_274');
   $form['hepb']['hepb_fax'] = fax_preference_checkbox();
   $form['hepb']['declination'] = acknowledgement(
     'Hepatitis B Vaccination Declination - Please complete Bloodborne Training before...',
@@ -4264,43 +4264,21 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
     $error = TRUE;
   }
 
-  // TB
-  if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['tb_file'])) {
-    $filepath = $_FILES['files']['tmp_name']['tb_file'];
-    $filesize = $_FILES['files']['size']['tb_file'];
-    $filename = $_FILES['files']['name']['tb_file'];
-    $handle = fopen($filepath, "r");
-    $contents = fread($handle, $filesize);
-    fclose($handle);
 
-    $params = array(
-      'dDocName' => $account->rmaxid .'_'. $form_state['values']['tb']['tb_option'],
-      'dDocTitle' => $form_state['values']['tb']['tb_option'] .' - '. $account->rmaxid,
-      'dDocType' => 'Rmax',
-      'dDocAuthor' => 'weblogic',
-      'dSecurityGroup' => 'Form',
-      'dDocAccount' => 'Recruit/QA',
-      'xContentType' => 'Form',
-      'xFormType' => $form_state['values']['tb']['tb_option'],
-      'xRM_ID' => $account->rmaxid,
-      'xStatus' => 'Pending Review',
-      'xComments' => '',
-      'xRejectReason' => '',
-      'xRejectOther' => '',
-      'xSuccessAudit' => '',
-    );
-    $params['primaryFile'] = array(
-      'fileName'=> $_FILES['files']['name']['tb_file'],
-      'fileContent' => $contents,
-    );
-    $result = oa_portal_soap('oacheckin', $params);
-    if ($result->oacheckinResult->StatusInfo->statusCode === 0) {
-      drupal_set_message(t('Your file upload was successful.'));
-      if ($form_state['values']['tb']['tb_option'] == 291) {
-        oap_account_add_suppressed(&$account, 288);
-      }
-      elseif ($form_state['values']['tb']['tb_option'] == 288) {
-        oap_account_add_suppressed(&$account, 291);
+  // TB
+  if ($form_state['values']['tb']['tb_fax'] === 1) {
+    oap_account_add_suppressed(&$account, 291);
+    oap_account_add_suppressed(&$account, 288);
+  }
+  elseif (is_uploaded_file($_FILES['files']['tmp_name']['tb_file'])) {
+    if (oa_portal_upload_cert($account->rmaxid, $form_state['values']['tb']['tb_option'], 'tb_file')) {
+      switch ($form_state['values']['tb']['tb_option']) {
+        case 291:
+          oap_account_add_suppressed(&$account, 288);
+        break;
+        case 288:
+          oap_account_add_suppressed(&$account, 291);
+        break;
       }
     }
     else {
@@ -4308,32 +4286,190 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
       drupal_set_message(t('An error occured. Please try again.'));
     }
   }
-  elseif ($form_state['values']['tb']['tb_fax'] == 'on') {
-    oap_account_add_suppressed(&$account, 291);
-    oap_account_add_suppressed(&$account, 288);
+  else {
+    dsm('Something unexpected happened. No file or fax checkbox for TB.');
   }
 
+
   // MMR
-  // @TODO Upload ['mmr']['mmr_file'] to 261 if ['mmr']['mmr_option'] == 'mmr'
-  // @TODO Upload ['mmr']['mmr_file'] to 284 if ['mmr']['mmr_option'] == 'rubella_titer'
+  if ($form_state['values']['mmr']['mmr_fax'] === 1) {
+    oap_account_add_suppressed(&$account, 261);
+    oap_account_add_suppressed(&$account, 262);
+    oap_account_add_suppressed(&$account, 284);
+    oap_account_add_suppressed(&$account, 285);
+  }
+  elseif ($form_state['values']['mmr']['mmr_option'] == 'mmr' && is_uploaded_file($_FILES['files']['tmp_name']['mmr_file_261']) && is_uploaded_file($_FILES['files']['tmp_name']['mmr_file_262'])) {
+    if (oa_portal_upload_cert($account->rmaxid, 261, 'mmr_file_261') && oa_portal_upload_cert($account->rmaxid, 262, 'mmr_file_262')) {
+      oap_account_add_suppressed(&$account, 284);
+      oap_account_add_suppressed(&$account, 285);
+    }
+    else {
+      $error = TRUE;
+      drupal_set_message(t('An error occured uploading one or more files. Please try again.'));
+    }
+  }
+  elseif ($form_state['values']['mmr']['mmr_option'] == 'rubella_titer' && is_uploaded_file($_FILES['files']['tmp_name']['mmr_file_284']) && is_uploaded_file($_FILES['files']['tmp_name']['mmr_file_285'])) {
+    if (oa_portal_upload_cert($account->rmaxid, 284, 'mmr_file_284') && oa_portal_upload_cert($account->rmaxid, 285, 'mmr_file_285')) {
+      oap_account_add_suppressed(&$account, 261);
+      oap_account_add_suppressed(&$account, 262);
+    }
+    else {
+      $error = TRUE;
+      drupal_set_message(t('An error occured uploading one or more files. Please try again.'));
+    }
+  }
+  else {
+    dsm('Something unexpected happened. No file or fax checkbox for MMR.');
+  }
+
 
   // CLS
+  if ($form_state['values']['cls']['cls_fax'] === 1) {
+    oap_account_add_suppressed(&$account, 19);
+    oap_account_add_suppressed(&$account, 37);
+    oap_account_add_suppressed(&$account, 13);
+  }
+  elseif (is_uploaded_file($_FILES['files']['tmp_name']['cls_file'])) {
+    if (oa_portal_upload_cert($account->rmaxid, $form_state['values']['cls']['cls_option'], 'cls_file')) {
+      switch ($form_state['values']['cls']['cls_option']) {
+        case 19:
+          oap_account_add_suppressed(&$account, 37);
+          oap_account_add_suppressed(&$account, 13);
+        break;
+        case 37:
+          oap_account_add_suppressed(&$account, 19);
+          oap_account_add_suppressed(&$account, 13);
+        break;
+        case 13:
+          oap_account_add_suppressed(&$account, 37);
+          oap_account_add_suppressed(&$account, 19);
+        break;
+      }
+    }
+    else {
+      $error = TRUE;
+      drupal_set_message(t('An error occured. Please try again.'));
+    }
+  }
+  elseif ($form_state['values']['cls']['cls_option']) {
+    dsm('Something unexpected happened. No file or fax checkbox for CLS.');
+  }
+
 
   // Varivax
+  if ($form_state['values']['varivax']['varivax_fax'] === 1) {
+    oap_account_add_suppressed(&$account, 298);
+    oap_account_add_suppressed(&$account, 296);
+    oap_account_add_suppressed(&$account, 295);
+  }
+  elseif (is_uploaded_file($_FILES['files']['tmp_name']['varivax_file'])) {
+    if (oa_portal_upload_cert($account->rmaxid, $form_state['values']['varivax']['varivax_option'], 'varivax_file')) {
+      switch ($form_state['values']['varivax']['varivax_option']) {
+        case 298:
+          oap_account_add_suppressed(&$account, 296);
+          oap_account_add_suppressed(&$account, 295);
+        break;
+        case 296:
+          oap_account_add_suppressed(&$account, 298);
+          oap_account_add_suppressed(&$account, 295);
+        case 295:
+          oap_account_add_suppressed(&$account, 298);
+          oap_account_add_suppressed(&$account, 296);
+        break;
+      }
+    }
+    else {
+      $error = TRUE;
+      drupal_set_message(t('An error occured. Please try again.'));
+    }
+  }
+  elseif ($form_state['values']['varivax']['varivax_option']) {
+    dsm('Something unexpected happened. No file or fax checkbox for Varivax.');
+  }
+
 
   // Hep B
+  if ($form_state['values']['hepb']['hepb_fax'] === 1) {
+    oap_account_add_suppressed(&$account, 270);
+    oap_account_add_suppressed(&$account, 271);
+    oap_account_add_suppressed(&$account, 272);
+    oap_account_add_suppressed(&$account, 274);
+    oap_account_add_suppressed(&$account, 275);
+  }
+  elseif ($form_state['values']['hepb']['hepb_option'] == 'hep123' && is_uploaded_file($_FILES['files']['tmp_name']['hepb_file_270']) && is_uploaded_file($_FILES['files']['tmp_name']['hepb_file_271']) && is_uploaded_file($_FILES['files']['tmp_name']['hepb_file_272'])) {
+    if (oa_portal_upload_cert($account->rmaxid, 270, 'mmr_file_270') && oa_portal_upload_cert($account->rmaxid, 271, 'mmr_file_271') && oa_portal_upload_cert($account->rmaxid, 272, 'mmr_file_272')) {
+      oap_account_add_suppressed(&$account, 274);
+      oap_account_add_suppressed(&$account, 275);
+    }
+    else {
+      $error = TRUE;
+      drupal_set_message(t('An error occured uploading one or more files. Please try again.'));
+    }
+  }
+  elseif ($form_state['values']['hepb']['hepb_option'] == 274 && is_uploaded_file($_FILES['files']['tmp_name']['hepb_file_274'])) {
+    if (oa_portal_upload_cert($account->rmaxid, 274, 'mmr_file_274')) {
+      oap_account_add_suppressed(&$account, 270);
+      oap_account_add_suppressed(&$account, 271);
+      oap_account_add_suppressed(&$account, 272);
+      oap_account_add_suppressed(&$account, 275);
+    }
+    else {
+      $error = TRUE;
+      drupal_set_message(t('An error occured uploading one or more files. Please try again.'));
+    }
+  }
+  elseif ($form_state['values']['hepb']['hepb_option'] == 275 && is_uploaded_file($_FILES['files']['tmp_name']['hepb_file_275'])) {
+    if (oa_portal_upload_cert($account->rmaxid, 275, 'mmr_file_275')) {
+      oap_account_add_suppressed(&$account, 270);
+      oap_account_add_suppressed(&$account, 271);
+      oap_account_add_suppressed(&$account, 272);
+      oap_account_add_suppressed(&$account, 274);
+    }
+    else {
+      $error = TRUE;
+      drupal_set_message(t('An error occured uploading one or more files. Please try again.'));
+    }
+  }
+  elseif ($form_state['values']['hepb']['hepb_option']) {
+    dsm('Something unexpected happened. No file or fax checkbox for Hep B.');
+  }
 
 
-  // 291, 298
+  if ($error) {
+    drupal_set_message('An error occured. Please try again.');
+  }
+  else {
+    $form_state['redirect'] = 'portal/p2/competency';
+  }
+}
 
-
-  /**
-   * @TODO Post Everything else to UCM
-   * @TODO needs PDF(s) and fields
-   * 
-   */
-  dsm($form_state['values'], 'Process & post everything else to UCM');
-
+function oa_portal_upload_cert($rmaxid, $formtype, $file_key) {
+  $handle = fopen($_FILES['files']['tmp_name'][$file_key], "r");
+  $contents = fread($handle, $_FILES['files']['size'][$file_key]);
+  fclose($handle);
+  $params = array(
+    'dDocName' => $rmaxid .'_'. $formtype,
+    'dDocTitle' => $formtype .' - '. $rmaxid,
+    'dDocType' => 'Rmax',
+    'dDocAuthor' => 'weblogic',
+    'dSecurityGroup' => 'Form',
+    'dDocAccount' => 'Recruit/QA',
+    'xContentType' => 'Form',
+    'xFormType' => $formtype,
+    'xRM_ID' => $rmaxid,
+    'xStatus' => 'Pending Review',
+    'xComments' => '',
+    'xRejectReason' => '',
+    'xRejectOther' => '',
+    'xSuccessAudit' => '',
+  );
+  dsm($params, $file_key . ' - '. $formtype .' - params wo file contents');
+  $params['primaryFile'] = array(
+    'fileName'=> $_FILES['files']['name'][$file_key],
+    'fileContent' => $contents,
+  );
+  $result = oa_portal_soap('oacheckin', $params);
+  return ($result->oacheckinResult->StatusInfo->statusCode === 0);
 }
 
 /**

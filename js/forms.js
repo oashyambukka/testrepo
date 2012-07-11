@@ -113,9 +113,9 @@ Drupal.behaviors.p2_medical = function (context) {
 
 
   $('input[name="hepb[hepb_option]"]').change(function() {
-    $('#edit-hepb-hepb-file-1-wrapper').parent().hide();
-    $('#edit-hepb-hepb-file-2-wrapper').parent().hide();
-    $('#edit-hepb-hepb-file-3-wrapper').parent().hide();
+    $('#edit-hepb-hepb-file-270-wrapper').parent().hide();
+    $('#edit-hepb-hepb-file-271-wrapper').parent().hide();
+    $('#edit-hepb-hepb-file-272-wrapper').parent().hide();
     $('#edit-hepb-hepb-file-274-wrapper').parent().hide();
     $('#edit-hepb-declination-wrapper').parent().parent().hide();
     $('#edit-hepb-hepb-fax-wrapper').parent().show();
@@ -123,9 +123,9 @@ Drupal.behaviors.p2_medical = function (context) {
     if (!$('#edit-hepb-hepb-fax').attr('checked')) {
       if ($(this).val() == 'hep123') {
         console.log('Showing 123');
-        $('#edit-hepb-hepb-file-1-wrapper').parent().show();
-        $('#edit-hepb-hepb-file-2-wrapper').parent().show();
-        $('#edit-hepb-hepb-file-3-wrapper').parent().show();
+        $('#edit-hepb-hepb-file-270-wrapper').parent().show();
+        $('#edit-hepb-hepb-file-271-wrapper').parent().show();
+        $('#edit-hepb-hepb-file-272-wrapper').parent().show();
       }
       else if ($(this).val() == '274') {
         console.log('Showing 274');
@@ -142,9 +142,9 @@ Drupal.behaviors.p2_medical = function (context) {
   $('#edit-hepb-hepb-fax').change(function() {
     if (!$(this).attr('checked')) {
       if ($('input[name="hepb[hepb_option]"]:checked').val() == 'hep123') {
-        $('#edit-hepb-hepb-file-1-wrapper').parent().show();
-        $('#edit-hepb-hepb-file-2-wrapper').parent().show();
-        $('#edit-hepb-hepb-file-3-wrapper').parent().show();
+        $('#edit-hepb-hepb-file-270-wrapper').parent().show();
+        $('#edit-hepb-hepb-file-271-wrapper').parent().show();
+        $('#edit-hepb-hepb-file-272-wrapper').parent().show();
       }
       else if ($('input[name="hepb[hepb_option]"]:checked').val() == 274) {
         $('#edit-hepb-hepb-file-274-wrapper').parent().show();
@@ -154,9 +154,9 @@ Drupal.behaviors.p2_medical = function (context) {
       // }
     }
     else {
-      $('#edit-hepb-hepb-file-1-wrapper').parent().hide();
-      $('#edit-hepb-hepb-file-2-wrapper').parent().hide();
-      $('#edit-hepb-hepb-file-3-wrapper').parent().hide();
+      $('#edit-hepb-hepb-file-270-wrapper').parent().hide();
+      $('#edit-hepb-hepb-file-271-wrapper').parent().hide();
+      $('#edit-hepb-hepb-file-272-wrapper').parent().hide();
       $('#edit-hepb-hepb-file-274-wrapper').parent().hide();
     }
   });
