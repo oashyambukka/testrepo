@@ -208,7 +208,7 @@ function oa_portal_p1_checklist_form($form_state) {
       $form[$cft] = $fn();
     }
     else {
-      dsm('We are missing formtype #'. $cft);
+      oadsm('We are missing formtype #'. $cft);
     }
   }
 
@@ -4254,6 +4254,9 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
   $candidate = get_candidate($account->rmaxid, $account->uid);
   $error = FALSE;
 
+  oadsm($form_state['values'], 'Values');
+  oadsm($_FILES['files'], 'Files');
+
   //  Disclosures: Post 263 Health Disclosure Agreement to UCM
   if ($form_state['values'][263]) {
     $body_string = oa_portal_pdf_section_to_string($form_state['values'][263], $form[263]);
@@ -4286,7 +4289,7 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
     }
   }
   elseif ($form_state['values']['tb']['tb_option']) {
-    dsm('Something unexpected happened. No file or fax checkbox for TB.');
+    oadsm('Something unexpected happened. No file or fax checkbox for TB.');
   }
 
 
@@ -4318,7 +4321,7 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
     }
   }
   elseif ($form_state['values']['mmr']['mmr_option']) {
-    dsm('Something unexpected happened. No file or fax checkbox for MMR.');
+    oadsm('Something unexpected happened. No file or fax checkbox for MMR.');
   }
 
 
@@ -4351,7 +4354,7 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
     }
   }
   elseif ($form_state['values']['cls']['cls_option']) {
-    dsm('Something unexpected happened. No file or fax checkbox for CLS.');
+    oadsm('Something unexpected happened. No file or fax checkbox for CLS.');
   }
 
 
@@ -4383,7 +4386,7 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
     }
   }
   elseif ($form_state['values']['varivax']['varivax_option']) {
-    dsm('Something unexpected happened. No file or fax checkbox for Varivax.');
+    oadsm('Something unexpected happened. No file or fax checkbox for Varivax.');
   }
 
 
@@ -4432,7 +4435,7 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
     }
   }
   elseif ($form_state['values']['hepb']['hepb_option']) {
-    dsm('Something unexpected happened. No file or fax checkbox for Hep B.');
+    oadsm('Something unexpected happened. No file or fax checkbox for Hep B.');
   }
 
 
@@ -4464,12 +4467,15 @@ function oa_portal_upload_cert($rmaxid, $formtype, $file_key) {
     'xRejectOther' => '',
     'xSuccessAudit' => '',
   );
-  dsm($params, $file_key . ' - '. $formtype .' - params wo file contents');
+  oadsm($params, $file_key . ' - '. $formtype .' - params wo file contents');
   $params['primaryFile'] = array(
     'fileName'=> $_FILES['files']['name'][$file_key],
     'fileContent' => $contents,
   );
   $result = oa_portal_soap('oacheckin', $params);
+  if (!$result->oacheckinResult->StatusInfo->statusCode === 0) {
+    oadsm($result, 'Got an error - '. $formtype .' - '. $file_key);
+  }
   return ($result->oacheckinResult->StatusInfo->statusCode === 0);
 }
 
@@ -4482,9 +4488,6 @@ function oa_portal_p2_competency_form($form_state) {
   $candidate = get_candidate($account->rmaxid, $account->uid);
 
   $form = array();
-  // $form['#description'] = t('You are required to complete....');
-
-  // @TODO Get a test link from ___?
   $form['take_the_test'] = markup('<p>Please click on the link below and follow the instructions to complete the required Competency Exams for your specialty.</p>
     <p>Login Information:<br />
     Link to the Competency Exam testing site: <a href="http://oaallied.nursecompetency.com">http://oaallied.nursecompetency.com</a><br />
@@ -4796,7 +4799,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
 
     $account = user_load($user->uid);
     $candidate = get_candidate($account->rmaxid, $account->uid);
-    dsm($candidate, '$candidate object');
+    oadsm($candidate, '$candidate object');
     $p = $candidate->p;
 
     $form['#formtypes'] = $p[arg(1)][arg(2)]['#formtypes'];
@@ -4842,7 +4845,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
         }
         // Otherwise
         // else {
-        //   dsm($element, $ek .' - Special case fieldset. Did not close.');
+        //   oadsm($element, $ek .' - Special case fieldset. Did not close.');
         // }
       }
     }
@@ -4931,7 +4934,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
       drupal_add_js($settings, 'setting');
     }
 
-    dsm($form, 'Completed $form');
+    oadsm($form, 'Completed $form');
   }
 
 }

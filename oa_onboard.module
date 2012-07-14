@@ -222,9 +222,9 @@ function oa_onboard_soap($method, $params, $debug = FALSE) {
   }
 
   if ($debug) {
-    dsm($params, $method . ' $params');
-    dsm($client, $method . ' $client');
-    dsm($response, $method . ' $response');
+    oadsm($params, $method . ' $params');
+    oadsm($client, $method . ' $client');
+    oadsm($response, $method . ' $response');
   }
 
   return $response;

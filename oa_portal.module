@@ -35,7 +35,6 @@ function oa_portal_init() {
  */
 function oa_portal_menu() {
   $items = array();
-
   $items['admin/portal'] = array(
     'title' => 'OA Portal Admin',
     'page callback' => 'oa_portal_admin', 
@@ -116,6 +115,7 @@ function oa_portal_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  // Recursively add all Portal Sections as menu callbacks
   $p = oa_portal_forms_info();
   foreach ($p AS $pk => $phase) {
     foreach (element_children($phase) AS $sk) {
@@ -150,13 +150,8 @@ function oa_portal_candidate_access($phase, $section) {
   if (user_access('administer portal', $account)) {
     return TRUE;
   }
-
-  // Per-Candidate access checking
   $candidate = get_candidate($account->rmaxid, $account->uid);
-  // May require this eventually
-  //$candidate->load_compliance();
-
-  // If previous sections are marked as approved, grant access
+  // Depending on the applicant Status (Applicant, Interviewed, Candidate), grant access.
   if ($section = 'p1' || ($section == 'p2' && in_array($candidate->profile->status, array('Interviewed', 'Candidate'))) || ($section == 'p3' && $candidate->profile->status == 'Candidate')) {
     return TRUE;
   }
@@ -203,6 +198,9 @@ function oa_portal_block_view($delta) {
   }
 }
 
+/**
+ * Menu callback for Candidate Menu.
+ */
 function oa_portal_block_view_oap_candidate_menu() {
   global $user;
   if ($user->uid) {
@@ -426,7 +424,7 @@ function oa_portal_forms_info() {
 }
 
 /**
- * SOAP interface
+ * UCM SOAP interface
  */
 function oa_portal_soap($method, $params, $debug = FALSE) {
   ini_set("soap.wsdl_cache_enabled", "0");
@@ -474,9 +472,9 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
   }
 
   if ($debug) {
-    dsm($params, $method . ' $params');
-    dsm($client, $method . ' $client');
-    dsm($response, $method . ' $response');
+    oadsm($params, $method . ' $params');
+    oadsm($client, $method . ' $client');
+    oadsm($response, $method . ' $response');
   }
 
   return $response;
@@ -570,7 +568,7 @@ function oa_portal_html_to_pdf_change_type($values, $felements) {
  * Process Dynamic HTML, send for PDF generation
  */
 function oa_portal_submitdrupalform($rmaxid, $formid, $html) {
-  $result = oa_portal_soap('submitdrupalform', array('rmaxid' => $rmaxid, 'formid' => $formid, 'htmlConversionString' => $html), TRUE);
+  $result = oa_portal_soap('submitdrupalform', array('rmaxid' => $rmaxid, 'formid' => $formid, 'htmlConversionString' => $html));
   return $result->submitdrupalformResult;
 }
 
@@ -593,8 +591,7 @@ function oa_portal_500($e = NULL) {
 
   $path = drupal_get_normal_path(variable_get('site_500', ''));
   if ($path && $path != $_GET['q']) {
-    // Set the active item in case there are tabs to display, or other
-    // dependencies on the path.
+    // Set the active item in case there are tabs to display, or other dependencies on the path.
     menu_set_active_item($path);
     $return = menu_execute_active_handler($path);
   }
@@ -630,8 +627,7 @@ function oa_portal_503($e = NULL) {
 
   $path = drupal_get_normal_path(variable_get('site_503', ''));
   if ($path && $path != $_GET['q']) {
-    // Set the active item in case there are tabs to display, or other
-    // dependencies on the path.
+    // Set the active item in case there are tabs to display, or other dependencies on the path.
     menu_set_active_item($path);
     $return = menu_execute_active_handler($path);
   }
@@ -789,7 +785,6 @@ function oa_portal_user_mail_notify($op, $account) {
   $result = oa_portal_soap('oasendemail', $params, TRUE);
 }
 
-
 /**
  * $form_category possible values:
  *  Certifications
@@ -835,4 +830,13 @@ function oap_account_add_suppressed(&$account, $ft) {
   }
   $account->ucm_suppressed[$ft] = $ft;
   $account = user_save($account, array('ucm_suppressed' => $account->ucm_suppressed));
+}
+
+/**
+ * OA DSM - trigger Devel DSM only if module is enabled
+ */
+function oadsm($obj, $str = NULL) {
+  if (function_exists('dsm')) {
+    dsm($obj, $str);
+  }
 }

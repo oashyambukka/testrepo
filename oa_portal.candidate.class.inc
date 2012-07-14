@@ -5,8 +5,7 @@
  */
 function get_candidate($rmaxid, $uid, $reset = FALSE) {
   if (!$rmaxid) {
-    dsm('You can\'t access the Portal without an RMaxID.');
-    drupal_goto('');
+    oa_portal_500();
   }
   static $candidates = array();
   if (is_object($candidates[$rmaxid]) && !$reset) {
@@ -91,7 +90,6 @@ class Candidate {
       ($dcr->missing == 0) ? array() : explode(',', $dcr->missing),
       ($dcr->rejected == 0) ? array() : explode(',', $dcr->rejected)
     );
-
     $modality_compliance['under-review'] = array_merge(
       ($dcr->inprogress == 0) ? array() : explode(',', $dcr->inprogress),
       ($dcr->pendingreview == 0) ? array() : explode(',', $dcr->pendingreview)
@@ -194,7 +192,7 @@ class Candidate {
       }
     }  
     if (!is_array($p[$phase][$section]['#formtypes'])) {
-      dsm('Cant give a status for '. $phase .' - '. $section .' due to missing formtypes');
+      oadsm('Cant give a status for '. $phase .' - '. $section .' due to missing formtypes');
     }
     return 'unknown';
   }
@@ -221,7 +219,7 @@ class Candidate {
   public function get_docs_not_missing($formtypes) {
     $formtypesquery = 'xFormType <matches> `'. implode($formtypes, '` <or> xFormType <matches> `') .'`';
     $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> <not>xStatus <matches> `Missing` <AND>('. $formtypesquery .')';
-    $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '20'));
+    $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '200'));
     if ($result->AdvancedSearchResult->SearchInfo->totalRows) {
       return (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults : array($result->AdvancedSearchResult->SearchResults);
     }

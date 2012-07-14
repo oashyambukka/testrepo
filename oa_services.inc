@@ -136,11 +136,9 @@ function _messageresource_create($data) {
   $data['was_read'] = 0;
 
   if ($message = oa_services_message_create($data)) {
-    dsm($message, 'Message created');
     return (object)array(
       'msg_id' => $message->msg_id,
       'message' => $message,
-//      'uri' => services_resource_uri(array('message', $message->msg_id)),
     );
   }
   else {
