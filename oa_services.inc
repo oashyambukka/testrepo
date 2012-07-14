@@ -105,7 +105,6 @@ function _accountresource_update($rmaxid, $data) {
   }
 }
 
-
 /**
  * Callback for creating message resources.
  *

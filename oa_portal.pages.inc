@@ -105,27 +105,27 @@ function oa_portal_tutorial_page() {
 function oa_portal_download_file($dDocName) {
   global $user;
   $account = user_load($user->uid);
-  // To return this document, the dDocName must begin with their rmaxid
-  if (strpos($dDocName, $account->rmaxid) !== 0) {
-    drupal_access_denied();
-    return;
+  $candidate = get_candidate($account->rmaxid, $account->uid);
+
+  if ($file = $candidate->get_doc_safe($dDocName)) {
+    if (!$file->FileInfo->dFileSize) {
+      drupal_not_found();
+      return;
+    }
+    $headers = array(
+      'Content-Type: ' . $file->FileInfo->dFormat,
+      'Content-Length: ' . $file->FileInfo->dFileSize,
+      'Content-Disposition: attachment; filename="' . $file->FileInfo->dDocTitle .'"',
+    );
+    foreach ($headers as $header) {
+      $header = preg_replace('/\r?\n(?!\t| )/', '', $header);
+      drupal_set_header($header);
+    }
+    print $file->downloadFile->fileContent;
+    exit();
   }
-  $file = oa_portal_ucm_getfilebyname($dDocName);
-  if (!$file->FileInfo->dFileSize) {
-    drupal_not_found();
-    return;
-  }
-  $headers = array(
-    'Content-Type: ' . $file->FileInfo->dFormat,
-    'Content-Length: ' . $file->FileInfo->dFileSize,
-    'Content-Disposition: attachment; filename="' . $file->FileInfo->dDocTitle .'"',
-  );
-  foreach ($headers as $header) {
-    $header = preg_replace('/\r?\n(?!\t| )/', '', $header);
-    drupal_set_header($header);
-  }
-  print $file->downloadFile->fileContent;
-  exit();
+  drupal_access_denied();
+  return;
 }
 
 /**
