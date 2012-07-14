@@ -483,35 +483,6 @@ function oa_portal_soap($method, $params, $debug = FALSE) {
 }
 
 /**
- * Demonstrate how to upload files
- */
-function oa_portal_soap_file_form_submit($form, &$form_state) {
-  if (isset($_FILES['files']) && is_uploaded_file($_FILES['files']['tmp_name']['upload'])) {
-    $filepath = $_FILES['files']['tmp_name']['upload'];
-    $filesize = $_FILES['files']['size']['upload'];
-    $filename = $_FILES['files']['name']['upload'];
-    $handle = fopen($filepath, "r");
-    $contents = fread($handle, $filesize);
-    fclose($handle);
-
-    $params = array(
-      'dDocType' => 'Rmax',
-      'dDocAuthor' => 'weblogic',
-      'dDocAccount' => 'Recruit/QA',
-      'dSecurityGroup' => 'Form',
-      'dDocTitle' => 'Test from RP',
-      'dDocName' => 'RP' . time(),
-      'primaryFile' =>array(
-        'fileName'=> $_FILES['files']['name']['upload'],
-        'fileContent' => $contents),
-    );
-
-    $results = oa_portal_soap('CheckInUniversal', $params);
-    dsm($results, 'SOAP $results for file upload');
-  }
-}
-
-/**
  * Implementation of hook_fapi_validation_rules
  */
 function oa_portal_fapi_validation_rules() {
