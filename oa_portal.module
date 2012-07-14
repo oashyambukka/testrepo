@@ -516,17 +516,18 @@ function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
       'value' => $v,
     );
   }
-  //$result = oa_portal_soap('createpdfform', $params, TRUE);
   $result = oa_portal_soap('createpdfform', $params);
-  return (get_class($result) == 'SoapFault') ? FALSE : $result->createpdfformResult;
+  return ($result->createpdfformResult === -1) ? FALSE : $result->createpdfformResult;
 }
 
-function oa_portal_pdf_section_to_string($section_title, $values, $felements) {
+function oa_portal_pdf_section_to_string($values, $felements) {
+  $fieldset = fieldset('');
+  $fieldset['#type'] = 'oap_pdf_section_wrapper';
+  $fieldset['c'] = oa_portal_html_to_pdf_change_type($values, $felements);
+
   // Recursively transform the values to something renderable
-  $to_render = oa_portal_html_to_pdf_change_type($values, $felements);
-  
   // return theme('oap_pdf_section_wrapper', $section_title, drupal_render($to_render));
-  return drupal_render($to_render);
+  return drupal_render($fieldset);
 }
 
 /**
