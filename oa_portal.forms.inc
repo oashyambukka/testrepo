@@ -4255,13 +4255,14 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
   $error = FALSE;
 
   //  Disclosures: Post 263 Health Disclosure Agreement to UCM
-  $body_string = oa_portal_pdf_section_to_string($form_state['values'][263], $form[263]);
-  $html_string = theme('oap_pdf_wrapper', $candidate, $form[263]['#title'], $body_string);
-  $result = oa_portal_submitdrupalform($account->rmaxid, $formtype, $html_string);
-  if ($result->StatusInfo->statusCode !== 0) {
-    $error = TRUE;
+  if ($form_state['values'][263]) {
+    $body_string = oa_portal_pdf_section_to_string($form_state['values'][263], $form[263]);
+    $html_string = theme('oap_pdf_wrapper', $candidate, $form[263]['#title'], $body_string);
+    $result = oa_portal_submitdrupalform($account->rmaxid, 263, $html_string);
+    if ($result->StatusInfo->statusCode !== 0) {
+      $error = TRUE;
+    }
   }
-
 
   // TB
   if ($form_state['values']['tb']['tb_fax'] === 1) {
@@ -4284,7 +4285,7 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
       drupal_set_message(t('An error occured. Please try again.'));
     }
   }
-  else {
+  elseif ($form_state['values']['tb']['tb_option']) {
     dsm('Something unexpected happened. No file or fax checkbox for TB.');
   }
 
@@ -4316,7 +4317,7 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
       drupal_set_message(t('An error occured uploading one or more files. Please try again.'));
     }
   }
-  else {
+  elseif ($form_state['values']['mmr']['mmr_option']) {
     dsm('Something unexpected happened. No file or fax checkbox for MMR.');
   }
 
@@ -4395,7 +4396,7 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
     oap_account_add_suppressed(&$account, 275);
   }
   elseif ($form_state['values']['hepb']['hepb_option'] == 'hep123' && is_uploaded_file($_FILES['files']['tmp_name']['hepb_file_270']) && is_uploaded_file($_FILES['files']['tmp_name']['hepb_file_271']) && is_uploaded_file($_FILES['files']['tmp_name']['hepb_file_272'])) {
-    if (oa_portal_upload_cert($account->rmaxid, 270, 'mmr_file_270') && oa_portal_upload_cert($account->rmaxid, 271, 'mmr_file_271') && oa_portal_upload_cert($account->rmaxid, 272, 'mmr_file_272')) {
+    if (oa_portal_upload_cert($account->rmaxid, 270, 'hepb_file_270') && oa_portal_upload_cert($account->rmaxid, 271, 'hepb_file_271') && oa_portal_upload_cert($account->rmaxid, 272, 'hepb_file_272')) {
       oap_account_add_suppressed(&$account, 274);
       oap_account_add_suppressed(&$account, 275);
     }
@@ -4405,7 +4406,7 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
     }
   }
   elseif ($form_state['values']['hepb']['hepb_option'] == 274 && is_uploaded_file($_FILES['files']['tmp_name']['hepb_file_274'])) {
-    if (oa_portal_upload_cert($account->rmaxid, 274, 'mmr_file_274')) {
+    if (oa_portal_upload_cert($account->rmaxid, 274, 'hepb_file_274')) {
       oap_account_add_suppressed(&$account, 270);
       oap_account_add_suppressed(&$account, 271);
       oap_account_add_suppressed(&$account, 272);
@@ -4413,19 +4414,21 @@ function oa_portal_p2_medical_form_submit($form, &$form_state) {
     }
     else {
       $error = TRUE;
-      drupal_set_message(t('An error occured uploading one or more files. Please try again.'));
+      drupal_set_message(t('HB 2 An error occured uploading one or more files. Please try again.'));
     }
   }
-  elseif ($form_state['values']['hepb']['hepb_option'] == 275 && is_uploaded_file($_FILES['files']['tmp_name']['hepb_file_275'])) {
-    if (oa_portal_upload_cert($account->rmaxid, 275, 'mmr_file_275')) {
+  elseif ($form_state['values']['hepb']['hepb_option'] == 275) {
+    $body_string = oa_portal_pdf_section_to_string($form_state['values']['hepb'], $form['hepb']);
+    $html_string = theme('oap_pdf_wrapper', $candidate, 'Hep B Declination', $body_string);
+    $result = oa_portal_submitdrupalform($account->rmaxid, 275, $html_string);
+    if ($result->StatusInfo->statusCode !== 0) {
+      $error = TRUE;
+    }
+    else {
       oap_account_add_suppressed(&$account, 270);
       oap_account_add_suppressed(&$account, 271);
       oap_account_add_suppressed(&$account, 272);
       oap_account_add_suppressed(&$account, 274);
-    }
-    else {
-      $error = TRUE;
-      drupal_set_message(t('An error occured uploading one or more files. Please try again.'));
     }
   }
   elseif ($form_state['values']['hepb']['hepb_option']) {
@@ -4826,9 +4829,7 @@ function oa_portal_form_alter(&$form, &$form_state, $form_id) {
             ($ek == 'varivax' && !count(array_intersect(array(298, 296, 295), $form['#formtypes_open']))) ||
             ($ek == 'hepb' && !count(array_intersect(array(270, 271, 272, 274, 275), $form['#formtypes_open'])))
             ) {
-            // Set this fieldset as empty and locked
             $form[$ek] = fieldset_locked($element['#title']);
-            // dsm($element, $ek .' - Closed special case fieldset. Not open.');
           }
         }
         // Paycheck - 536
