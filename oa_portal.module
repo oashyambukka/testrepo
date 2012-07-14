@@ -520,13 +520,13 @@ function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
   return ($result->createpdfformResult === -1) ? FALSE : $result->createpdfformResult;
 }
 
+/**
+ * Sometimes we need to render things that weren't contained within a fieldset.
+ */
 function oa_portal_pdf_section_to_string($values, $felements) {
   $fieldset = fieldset('');
   $fieldset['#type'] = 'oap_pdf_section_wrapper';
   $fieldset['c'] = oa_portal_html_to_pdf_change_type($values, $felements);
-
-  // Recursively transform the values to something renderable
-  // return theme('oap_pdf_section_wrapper', $section_title, drupal_render($to_render));
   return drupal_render($fieldset);
 }
 
