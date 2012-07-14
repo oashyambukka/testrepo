@@ -210,7 +210,7 @@ class Candidate {
    * Get all docs
    */
   public function get_all_docs() {
-    $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> <not>xStatus <matches> `Missing`';
+    $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> <not>xStatus <matches> `Missing` <AND> dSecurityGroup <matches> `Form`';
     $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '200'));
     return (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults : array($result->AdvancedSearchResult->SearchResults);
   }
@@ -226,6 +226,19 @@ class Candidate {
       return (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults : array($result->AdvancedSearchResult->SearchResults);
     }
     return array();
+  }
+
+  /**
+   * Get file contents by dDocName
+   */
+  function get_doc_safe($dDocName) {
+    $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> dDocName <matches> `'. $dDocName .'` <AND> dSecurityGroup <matches> `Form`';
+    $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '1'));
+    if ($result->AdvancedSearchResult->SearchInfo->totalRows) {
+      $result = oa_portal_soap('GetFileByName', array('dDocName' => $dDocName, 'revisionSelectionMethod' => 'Latest'));
+      return $result->GetFileByNameResult;
+    }
+    return FALSE;
   }
 
 }

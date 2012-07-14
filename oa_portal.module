@@ -502,14 +502,6 @@ function oa_portal_rule_not_none($value) {
 }
 
 /**
- * Get file contents by dID. Used by oa_portal_download_file($dDocName)
- */
-function oa_portal_ucm_getfilebyname($dDocName) {
-  $result = oa_portal_soap('GetFileByName', array('dDocName' => $dDocName, 'revisionSelectionMethod' => 'Latest'));
-  return $result->GetFileByNameResult;
-}
-
-/**
  * Used by many forms to populate PDF templates in UCM
  */
 function oa_portal_ucm_createpdfform($rmaxid, $formtype, $fields) {
