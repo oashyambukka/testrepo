@@ -58,7 +58,6 @@ function oa_portal_p1_application_form($form_state) {
   unset($edu_fields['degree']['#required'], $edu_fields['degree']['#rules']);
   $edu_fields['city'] = textfield('City', 30);
   $edu_fields['state'] = state();
-  unset($edu_fields['state']['#required'], $edu_fields['state']['#rules']);
   $edu_fields['year'] = textfield('Year', 10, 4);
   $edu_fields['major'] = textfield('Major', 30);
   $edu_fields['minor'] = textfield('Minor', 30);
@@ -79,7 +78,6 @@ function oa_portal_p1_application_form($form_state) {
   $exp_fields['employer'] = textfield('Employer', 75);
   $exp_fields['city'] = textfield('City');
   $exp_fields['state'] = state('State');
-  unset($exp_fields['state']['#required'], $exp_fields['state']['#rules']);
   $exp_fields['empdatefrom'] = date_popup('Start Date', 'm-Y');
   $exp_fields['empdatefrom']['#date_year_range'] = '-40:0';
   $exp_fields['empdateto'] = date_popup('End Date', 'm-Y');
