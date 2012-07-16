@@ -257,7 +257,7 @@ function oa_portal_theme($existing, $type, $theme, $path) {
     'oap_tooltip' => array(
       'template' => 'oap_tooltip',
       'path' => $path . '/templates',
-      'arguments' => array('status' => NULL, 'body' => NULL),
+      'arguments' => array('status' => NULL, 'tipID' => NULL, 'body' => NULL),
     ),
     'oap_doc_download' => array(
       'template' => 'oap_doc_download',

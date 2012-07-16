@@ -7,8 +7,10 @@ function oa_portal_preprocess_oap_messages(&$vars) {
   global $user;
   $account = user_load($user->uid);
   $time = time();
+  $vars['tip'] = theme('oap_tooltip', 'messages', 'messagetip', 'Messages tooltip message goes here.');
+  $path = drupal_get_path('module', 'oa_portal');
+  $vars['tols'] = '<img class="oap-tooltip-icons" id="messagetip" src="'. $path .'/img/tooltiphelp_lrg.png"/>';
 
-  $vars['tip'] = theme('oap_tooltip', 'messages', 'Messages tooltip message goes here.');
   $vars['count'] = count($vars['messages']);
   // array(
   //   array('date' => 'Today', 'teaser' => 'Please complete the first phase of your application by clicking on...'),
@@ -44,7 +46,11 @@ function theme_oap_messages_page(&$vars) {
  * Preprocess function for Phases
  */
 function oa_portal_preprocess_oap_phase(&$vars) {
-  $vars['status_tip'] = theme('oap_tooltip', 'phase-'. $vars['status']);
+  //constructing the tooltip ID;
+  $tipID = str_replace(' ', '_', $vars['title']);
+  $vars['status_tip'] = theme('oap_tooltip', 'phase-'. $vars['status'], $tipID);
+  $path = drupal_get_path('module', 'oa_portal');
+  $vars['tip'] = ($vars['status']=='open') ? '<img class="oap-tooltip-icons" id="'. $tipID .'" src="'. $path .'/img/tooltiphelp_lrg.png"/>' : ' ';
 }
 
 /**

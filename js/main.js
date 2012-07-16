@@ -1,18 +1,16 @@
 Drupal.behaviors.tooltips = function (context) {
-  // @TODO Verify operaional
-  $(".oap-tooltip-trigger", context).click(
-    function() {
-      $(".oap-tooltip").css("display","block");
-    },
-    function(){
-      $(".oap-tooltip").css("display","none");
+  $(".oap-tooltip-icons", context).click(function(e) {
+    var selector = ".oap-tooltip." + $(this).attr("id");
+    $(selector).css('top', e.pageY);
+    $(selector).css('left', e.pageX - 300);
+    $(selector).show();
   });
 
   $(".oap-tooltip .close", context).click(function() {
-    $(".oap-tooltip").css("display","none");
+    $(this).parent().hide();
   });
-
 }
+
 
 Drupal.behaviors.addAnotherLink = function (context) {
   $(".add-another-link").click(function() {

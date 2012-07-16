@@ -19,9 +19,9 @@
 	height:350px;
 	width:30%;
 }
-#oa-phase-1, #oa-phase-status-p1 {background:#B77D7C;overflow:hidden;padding:0 10px 10px 10px}
-#oa-phase-2, #oa-phase-status-p2 {background:#AEA85C;overflow:hidden;padding:0 10px 10px 10px}
-#oa-phase-3, #oa-phase-status-p3 {background:#619650;overflow:hidden;padding:0 10px 10px 10px}
+#oa-phase-1, #oa-phase-status-p1 {background:#93c5de;overflow:hidden;padding:0 10px 10px 10px}
+#oa-phase-2, #oa-phase-status-p2 {background:#5399ba;overflow:hidden;padding:0 10px 10px 10px}
+#oa-phase-3, #oa-phase-status-p3 {background:#357b9d;overflow:hidden;padding:0 10px 10px 10px}
 
 #oa-phase-status-p1 .oap-phase-form-link,
 #oa-phase-status-p2 .oap-phase-form-link,
