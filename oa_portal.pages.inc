@@ -64,7 +64,26 @@ function oa_portal_docs_page() {
   foreach ($docs AS $doc) {
     $items[] = oa_portal_doc_link($doc);
   }
-  return theme('item_list', $items);
+  $html = theme('item_list', $items);
+
+  $items = array();
+  $exp_rej = $candidate->get_expired_rejected_docs();
+  foreach ($exp_rej AS $doc) {
+    $items[] = oa_portal_doc_link($doc);
+  }
+
+  $expired = array(
+    '#type' => 'fieldset',
+    '#title' => t('Expired or Rejected Documents'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $expired['docs'] = array(
+    '#type' => 'markup',
+    '#value' => theme('item_list', $items),
+  );
+  $html .= drupal_render($expired);
+  return $html;
 }
 
 /**
