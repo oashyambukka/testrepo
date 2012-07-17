@@ -232,7 +232,7 @@ class Candidate {
   function get_doc_safe($dDocName) {
     $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> dDocName <matches> `'. $dDocName .'` <AND> dSecurityGroup <matches> `Form`';
     $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '1'));
-    if ($result->AdvancedSearchResult->SearchInfo->totalRows) {
+    if ($result->AdvancedSearchResult->SearchResults->dDocName == $dDocName) {
       $result = oa_portal_soap('GetFileByName', array('dDocName' => $dDocName, 'revisionSelectionMethod' => 'Latest'));
       return $result->GetFileByNameResult;
     }
