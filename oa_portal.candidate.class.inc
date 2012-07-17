@@ -143,9 +143,9 @@ class Candidate {
     $modality_compliance = $this->modality_compliance;
     $profile = $this->profile;
 
-    // Specifically for Nurse competency link
-    if ($p[$phase][$section]['#status'] == 'none') {
-      return 'none';
+    // Specifically for Nurse competency link. Hide link when there were no formtypes to fill out.
+    if ($section == 'competency' && !count($p['p2']['competency']['#formtypes'])) {
+      return 'hidden';
     }
 
     // If section is marked as read-only, verify phase is open

@@ -140,6 +140,9 @@
 	background-position:right;
 	background-repeat:no-repeat;
 }
+.oa-phase-row-status-hidden {
+	display: none;
+}
 
 .oap-phase-status-locked h3 {
 	background:url(../img/locked.png);

@@ -27,19 +27,20 @@ function oa_portal_page() {
     
     foreach (element_children($phase) AS $sk) {
       $section = $phase[$sk];
-      $s_ct++;
-
-     if ($candidate->p[$pk]['#status'] == 'locked') {
+      if ($candidate->p[$pk]['#status'] == 'locked') {
        $rows[] = theme('oap_phase_row', $section['#title'], 'phase-closed');
-     }
-     else {
+      }
+      else {
         $status = $candidate->get_section_status($pk, $sk);
         if (in_array($status, array('closed', 'locked', 'under-review'))) {
           $s_completed++;
         }
         $t = ($status == 'locked') ? '<span>'. $section['#title'] .'</span>' : l($section['#title'], 'portal/'. $pk .'/'. $sk);
         $rows[] = theme('oap_phase_row', $t, $status);
-     }
+      }
+      if ($status != 'hidden') {
+        $s_ct++;
+      }
     }
 
     $output .= theme('oap_phase', $pk, $phase['#title'], $phase['#status'], implode("\n", $rows), "$s_completed of $s_ct");
