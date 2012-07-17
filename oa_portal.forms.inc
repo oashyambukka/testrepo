@@ -3872,15 +3872,18 @@ function oa_portal_p2_licensure_certs_form_submit($form, &$form_state) {
     $contents = fread($handle, $filesize);
     fclose($handle);
 
-
 // RS: Currently, there is an "Other (Misc) Certification" formtype with the id #61.
 // I still have to fully document the approach, but the general idea for handling "other form types" is to set their xFormType, 
 // but do NOT set their dDocName. This will allow for a dynamically created dDocName and, at the same time, not restrict the number 
 // of items can be set to a single xFormType. The downside to this is that it will not be derivable what the dDocName (i.e., unique identifier) 
 // is for any "other" document.
 
+    $dDocName = $account->rmaxid .'_'. $form_state['values']['lc']['lc_licensure'];
+    // Set a unique dDocName using rmaxid and formtype for Other docs
+    $dDocName = ($form_state['values']['lc']['lc_licensure'] == 61) ? $dDocName .'_'. time() : $dDocName;
+
     $params = array(
-      'dDocName' => ($form_state['values']['lc']['lc_licensure'] == 61) ? '' : $account->rmaxid .'_'. $form_state['values']['lc']['lc_licensure'],
+      'dDocName' => $dDocName,
       'dDocTitle' => $form_state['values']['lc']['lc_licensure'] .' - '. $account->rmaxid,
       'dDocType' => 'Rmax',
       'dDocAuthor' => 'weblogic',
