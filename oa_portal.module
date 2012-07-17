@@ -386,7 +386,7 @@ function oa_portal_forms_info() {
     ),
     'competency' => array(
       '#title' => t('Competency Test'),
-      '#status' => 'none',
+      '#formtypes' => array(),
     ),
   );
   $p['p3'] = array(

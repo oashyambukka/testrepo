@@ -58,11 +58,12 @@ class Candidate {
     $account = user_load($this->uid);
     $this->account = $account;
 
-    // Get formtypes for Skills Checklists, Licensures & Certifications
+    // Get formtypes for Skills Checklists, Licensures & Certifications, and Competency Tests
     $p['p1']['checklist']['#formtypes'] = array_keys(oa_portal_get_category_formids('Skills Checklists'));
     $certifications = array_keys(oa_portal_get_category_formids('Certifications'));
     $licensures = array_keys(oa_portal_get_category_formids('Licensure'));
     $p['p2']['licensure_certs']['#formtypes'] = array_merge($certifications, $licensures);
+    $p['p2']['competency']['#formtypes'] = array_keys(oa_portal_get_category_formids('Competency Test'));
 
     // Get Compliance object
     $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> dDocType <matches> `Rmax`  <AND>  dDocAccount <matches> `Recruit/QA`  <AND>  xContentType <matches> `Compliance`';
