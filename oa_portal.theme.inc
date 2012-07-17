@@ -9,7 +9,7 @@ function oa_portal_preprocess_oap_messages(&$vars) {
   $time = time();
   $vars['tip'] = theme('oap_tooltip', 'messages', 'messagetip', 'Messages tooltip message goes here.');
   $path = drupal_get_path('module', 'oa_portal');
-  $vars['tols'] = '<img class="oap-tooltip-icons" id="messagetip" src="'. $path .'/img/tooltiphelp_lrg.png"/>';
+  $vars['tols'] = '<img class="oap-tooltip-icons" id="messagetip" src="/'. $path .'/img/tooltiphelp_lrg.png"/>';
 
   $vars['count'] = count($vars['messages']);
   // array(
@@ -50,7 +50,7 @@ function oa_portal_preprocess_oap_phase(&$vars) {
   $tipID = str_replace(' ', '_', $vars['title']);
   $vars['status_tip'] = theme('oap_tooltip', 'phase-'. $vars['status'], $tipID);
   $path = drupal_get_path('module', 'oa_portal');
-  $vars['tip'] = ($vars['status']=='open') ? '<img class="oap-tooltip-icons" id="'. $tipID .'" src="'. $path .'/img/tooltiphelp_lrg.png"/>' : ' ';
+  $vars['tip'] = ($vars['status']=='open') ? '<img class="oap-tooltip-icons" id="'. $tipID .'" src="/'. $path .'/img/tooltiphelp_lrg.png"/>' : ' ';
 }
 
 /**
