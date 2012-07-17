@@ -833,6 +833,14 @@ function oap_account_add_suppressed(&$account, $ft) {
 }
 
 /**
+ * Suppress formtypes we don't want to fill out
+ */
+function oap_account_clear_suppressed(&$account) {
+  $account->ucm_suppressed = array();
+  $account = user_save($account, array('ucm_suppressed' => $account->ucm_suppressed));
+}
+
+/**
  * OA DSM - trigger Devel DSM only if module is enabled
  */
 function oadsm($obj, $str = NULL) {
