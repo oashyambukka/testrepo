@@ -209,7 +209,16 @@ class Candidate {
    * Get all docs
    */
   public function get_all_docs() {
-    $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> <not>xStatus <matches> `Missing` <AND> dSecurityGroup <matches> `Form`';
+    $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> <not>xStatus <matches> `Missing` <AND> <not>xStatus <matches> `Rejected` <AND> <not>xStatus <matches> `Expired` <AND> dSecurityGroup <matches> `Form`';
+    $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '200'));
+    return (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults : array($result->AdvancedSearchResult->SearchResults);
+  }
+
+  /**
+   * Get all docs
+   */
+  public function get_expired_rejected_docs() {
+    $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> (xStatus <matches> `Rejected` <OR> xStatus <matches> `Expired`) <AND> dSecurityGroup <matches> `Form`';
     $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '200'));
     return (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults : array($result->AdvancedSearchResult->SearchResults);
   }
@@ -219,7 +228,7 @@ class Candidate {
    */
   public function get_docs_not_missing($formtypes) {
     $formtypesquery = 'xFormType <matches> `'. implode($formtypes, '` <or> xFormType <matches> `') .'`';
-    $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> <not>xStatus <matches> `Missing` <AND>('. $formtypesquery .')';
+    $query = 'xRM_ID <matches> `'. $this->rmaxid .'` <AND> <not>xStatus <matches> `Missing` <AND> <not>xStatus <matches> `Rejected` <AND> <not>xStatus <matches> `Expired` <AND>('. $formtypesquery .')';
     $result = oa_portal_soap('AdvancedSearch', array('queryText' => $query, 'sortField' => 'dDocTitle', 'sortOrder' => 'Asc', 'resultCount' => '200'));
     if ($result->AdvancedSearchResult->SearchInfo->totalRows) {
       return (is_array($result->AdvancedSearchResult->SearchResults)) ? $result->AdvancedSearchResult->SearchResults : array($result->AdvancedSearchResult->SearchResults);
